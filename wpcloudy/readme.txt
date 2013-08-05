@@ -38,7 +38,7 @@ Many features like:
 
 1. Upload 'wpcloudy' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Click on the new custom post type called Weather and start created your own weather!
+3. Click on the new custom post type called Weather and start creating your own weather!
 
 == Frequently Asked Questions ==
 
