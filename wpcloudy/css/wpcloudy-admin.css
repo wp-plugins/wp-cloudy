@@ -1,0 +1,97 @@
+/*************************************************************************************************/
+/* Admin - Base																					 */
+/*************************************************************************************************/
+.menu-icon-wpc-weather .wp-menu-image {
+    background-image: url("../img/icon-admin-wpc.png");
+    background-position: -193px 8px;
+}
+.menu-icon-wpc-weather .wp-menu-image img {
+	display:none;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav {
+    display: inline-block;
+    height: 26px;
+    position: relative;
+    width: 100%;
+    z-index: 50;
+	margin: 0;
+	padding: 0;
+}
+#wpcloudy_basic .ui-helper-clearfix:after {
+	content:none;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-panel {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DDDDDD;
+    border-radius: 0 3px 3px 3px;
+	display: block;
+	padding: 1em 1.4em;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li, #wpcloudy_basic .ui-tabs-anchor {
+	cursor:pointer !important;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #DDDDDD #DDDDDD #FFFFFF;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    position: relative;
+    z-index: 60;
+	cursor:pointer;
+}
+#wpcloudy_basic #tabs-1 label, #wpcloudy_basic #tabs-3 label {
+    border-bottom: 1px solid #DDDDDD;
+    display: block;
+    margin: 20px 0 5px;
+}
+#wpcloudy_basic .wp-color-result {
+	margin:0;
+}
+#wpcloudy_basic #tabs-1 input {
+	width:300px;
+}
+#wpcloudy_basic select {
+	width:300px;
+}
+/*************************************************************************************************/
+/* Admin - Tabs 																				 */
+/*************************************************************************************************/
+#wpcloudy_basic .ui-tabs {
+	position: relative;/* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+	padding: .2em;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li {
+	list-style: none;
+	float: left;
+	position: relative;
+	top: 0;
+	margin: 1px .2em 0 0;
+	border-bottom-width: 0;
+	padding: 0;
+	white-space: nowrap;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li a {
+	float: left;
+	padding: .5em 1em;
+	text-decoration: none;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li.ui-tabs-active {
+	margin-bottom: -1px;
+	padding-bottom: 1px;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li.ui-tabs-loading a {
+	cursor: text;
+}
+#wpcloudy_basic .ui-tabs .ui-tabs-nav li a, /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+#wpcloudy_basic .ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
+	cursor: pointer;
+}
+#wpcloudy_basic .ui-tabs-vertical { width: 55em; }
+#wpcloudy_basic .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+#wpcloudy_basic .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+#wpcloudy_basic .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+#wpcloudy_basic .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+#wpcloudy_basic .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
