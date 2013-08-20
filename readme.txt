@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 0.6
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
-* 40 000 cities listed (thanks to OpenWeatherMap)
+* 70 000 cities listed (thanks to OpenWeatherMap)
 * Hourly forecasts
 * Week forecasts
 * Temperatures (current, min and max)
