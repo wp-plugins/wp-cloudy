@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
@@ -111,29 +111,29 @@ function wpcloudy_basic($post){
   
   echo '<div id="wpcloudy-tabs">
 			<ul>
-				<li><a href="#tabs-1">Basic settings</a></li>
-				<li><a href="#tabs-2">Display</a></li>
-				<li><a href="#tabs-3">Advanced</a></li>
+				<li><a href="#tabs-1">'. __( 'Basic settings', 'wpcloudy' ) .'</a></li>
+				<li><a href="#tabs-2">'. __( 'Display', 'wpcloudy' ) .'</a></li>
+				<li><a href="#tabs-3">'. __( 'Advanced', 'wpcloudy' ) .'</a></li>
 			</ul>
 			
 			<div id="tabs-1">
 				<p>
-					<label for="wpcloudy_city_meta">City</label>
+					<label for="wpcloudy_city_meta">'. __( 'City', 'wpcloudy' ) .'</label>
 					<input id="wpcloudy_city_meta" type="text" name="wpcloudy_city" value="'.$wpcloudy_city.'" />
 				</p>
 				<p>
-					<label for="wpcloudy_country_meta">Country? (you can enter your country code as well as the country, in your own language, eg: "fr" or "france" or "francia"...)</label>
+					<label for="wpcloudy_country_meta">'. __( 'Country? (you can enter your country code as well as the country, in your own language, eg: "fr" or "france" or "francia"...)', 'wpcloudy' ) .'</label>
 					<input id="wpcloudy_country_meta" type="text" name="wpcloudy_country_code" value="'.$wpcloudy_country_code.'" />
 				</p>
 				<p>
-					<label for="unit_meta">Imperial or metric units?</label>
+					<label for="unit_meta">'. __( 'Imperial or metric units?', 'wpcloudy' ) .'</label>
 					<select name="wpcloudy_unit">
-						<option ' . selected( 'imperial', $wpcloudy_unit, false ) . ' value="imperial">Imperial</option>
-						<option ' . selected( 'metric', $wpcloudy_unit, false ) . ' value="metric">Metric</option>
+						<option ' . selected( 'imperial', $wpcloudy_unit, false ) . ' value="imperial">'. __( 'Imperial', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'metric', $wpcloudy_unit, false ) . ' value="metric">'. __( 'Metric', 'wpcloudy' ) .'</option>
 					</select>
 				</p>
 				<p>
-					<label for="wpcloudy_lang_meta">Display language (eg: english, french, spanish, german... Note: depends on the languages ​​supported by your webhost server.)</label>
+					<label for="wpcloudy_lang_meta">'. __( 'Display language: english, french, spanish, german etc. ', 'wpcloudy' ) .'</label>
 					<input id="wpcloudy_lang_meta" type="text" name="wpcloudy_lang" value="'.$wpcloudy_lang.'" />
 				</p>
 			</div>
@@ -141,65 +141,65 @@ function wpcloudy_basic($post){
 				<p>				
 					<label for="wpcloudy_wind_meta">
 						<input type="checkbox" name="wpcloudy_wind" id="wpcloudy_wind_meta" value="yes" '. checked( $wpcloudy_wind, 'yes', false ) .' />
-							Wind?
+							'. __( 'Wind?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_humidity_meta">
 						<input type="checkbox" name="wpcloudy_humidity" id="wpcloudy_humidity_meta" value="yes" '. checked( $wpcloudy_humidity, 'yes', false ) .' />
-							Humidity?
+							'. __( 'Humidity?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_pressure_meta">
 						<input type="checkbox" name="wpcloudy_pressure" id="wpcloudy_pressure_meta" value="yes" '. checked( $wpcloudy_pressure, 'yes', false ) .' />
-							Pressure?
+							'. __( 'Pressure?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_cloudiness_meta">
 						<input type="checkbox" name="wpcloudy_cloudiness" id="wpcloudy_cloudiness_meta" value="yes" '. checked( $wpcloudy_cloudiness, 'yes', false ) .' />
-							Cloudiness?
+							'. __( 'Cloudiness?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_hour_forecast_meta">
 						<input type="checkbox" name="wpcloudy_hour_forecast" id="wpcloudy_hour_forecast_meta" value="yes" '. checked( $wpcloudy_hour_forecast, 'yes', false ) .' />
-							Hour Forecast?
+							'. __( 'Hour Forecast?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_temperature_min_max_meta">
 						<input type="checkbox" name="wpcloudy_temperature_min_max" id="wpcloudy_temperature_min_max_meta" value="yes" '. checked( $wpcloudy_temperature_min_max, 'yes', false ) .' />
-							Today date + Min-Max Temperatures?
+							'. __( 'Today date + Min-Max Temperatures?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_forecast_meta">
 						<input type="checkbox" name="wpcloudy_forecast" id="wpcloudy_forecast_meta" value="yes" '. checked( $wpcloudy_forecast, 'yes', false ) .' />
-							7-Day Forecast?
+							'. __( '7-Day Forecast?', 'wpcloudy' ) .'
 					</label>
 				</p>
 			</div>
 			<div id="tabs-3">
 				<p>
-					<label for="wpcloudy_meta_bg_color2">Background color</label>
+					<label for="wpcloudy_meta_bg_color2">'. __( 'Background color', 'wpcloudy' ) .'</label>
 					<input name="wpcloudy_meta_bg_color" type="text" value="'. $wpcloudy_meta_bg_color .'" class="wpcloudy_meta_bg_color_picker" />
 				</p>
 				<p>
-					<label for="wpcloudy_meta_txt_color2">Text color</label>
+					<label for="wpcloudy_meta_txt_color2">'. __( 'Text color', 'wpcloudy' ) .'</label>
 					<input name="wpcloudy_meta_txt_color" type="text" value="'. $wpcloudy_meta_txt_color .'" class="wpcloudy_meta_txt_color_picker" />
 				</p>
 				<p>
-					<label for="wpcloudy_meta_border_color2">Border color</label>
+					<label for="wpcloudy_meta_border_color2">'. __( 'Border color', 'wpcloudy' ) .'</label>
 					<input name="wpcloudy_meta_border_color" type="text" value="'. $wpcloudy_meta_border_color .'" class="wpcloudy_meta_border_color_picker" />
 				</p>
 				<p>
-					<label for="size_meta">Weather size?</label>
+					<label for="size_meta">'. __( 'Weather size?', 'wpcloudy' ) .'</label>
 					<select name="wpcloudy_size">
-						<option ' . selected( 'small', $wpcloudy_size, false ) . ' value="small">Small</option>
-						<option ' . selected( 'medium', $wpcloudy_size, false ) . ' value="medium">Medium</option>
-						<option ' . selected( 'large', $wpcloudy_size, false ) . ' value="large">Large</option>
+						<option ' . selected( 'small', $wpcloudy_size, false ) . ' value="small">'. __( 'Small', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'medium', $wpcloudy_size, false ) . ' value="medium">'. __( 'Medium', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'large', $wpcloudy_size, false ) . ' value="large">'. __( 'Large', 'wpcloudy' ) .'</option>
 					</select>
 				</p>
 			</div>
@@ -590,7 +590,7 @@ function wpcloudy_weather() {
 		'show_in_nav_menus'   => true,
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 20,
-		'menu_icon' 		  => plugins_url( 'wpcloudy/img/icon-admin-wpc.png' , dirname(__FILE__) ),
+		'menu_icon' 		  => plugins_url( 'wp-cloudy/img/icon-admin-wpc.png' , dirname(__FILE__) ),
 		'can_export'          => true,
 		'has_archive'         => false,
 		'exclude_from_search' => true,
