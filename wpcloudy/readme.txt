@@ -52,7 +52,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 2. WP Cloudy in action
 
 == Changelog ==
-
+= 1.1 =
+* Stable release.
 = 0.5 =
 * First beta release.
 
