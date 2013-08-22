@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,9 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 2. WP Cloudy in action
 
 == Changelog ==
+= 1.2 =
+* NEW Support for translations + French version provided
+* FIX WP Cloudy icon in admin
 = 1.1 =
 * Stable release.
 = 0.5 =

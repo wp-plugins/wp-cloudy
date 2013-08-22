@@ -1,15 +1,237 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Cloudy\n"
-"POT-Creation-Date: 2013-08-20 18:06+0100\n"
-"PO-Revision-Date: 2013-08-20 18:08+0100\n"
+"POT-Creation-Date: 2013-08-22 10:13+0100\n"
+"PO-Revision-Date: 2013-08-22 10:13+0100\n"
 "Last-Translator: \n"
 "Language-Team: Benjamin DENIS <contact@wpcloudy.com>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-Basepath: .\n"
-"Language: en\n"
 "X-Poedit-SearchPath-0: ..\n"
+
+#: ../wpcloudy.php:91
+msgid "Copy and paste this shortcode anywhere in posts, pages, text widgets: "
+msgstr ""
+
+#: ../wpcloudy.php:99
+msgid ""
+"If you need to display this weather anywhere in your theme, simply copy and "
+"paste this code snippet in your PHP file like sidebar.php: "
+msgstr ""
+
+#: ../wpcloudy.php:123
+msgid "Basic settings"
+msgstr ""
+
+#: ../wpcloudy.php:124
+msgid "Display"
+msgstr ""
+
+#: ../wpcloudy.php:125
+msgid "Advanced"
+msgstr ""
+
+#: ../wpcloudy.php:130
+msgid "City"
+msgstr ""
+
+#: ../wpcloudy.php:134
+msgid ""
+"Country? (you can enter your country code as well as the country, in your "
+"own language, eg: \"fr\" or \"france\" or \"francia\"...)"
+msgstr ""
+
+#: ../wpcloudy.php:138
+msgid "Imperial or metric units?"
+msgstr ""
+
+#: ../wpcloudy.php:140
+msgid "Imperial"
+msgstr ""
+
+#: ../wpcloudy.php:141
+msgid "Metric"
+msgstr ""
+
+#: ../wpcloudy.php:145
+msgid "Display language: english, french, spanish, german etc. "
+msgstr ""
+
+#: ../wpcloudy.php:153
+msgid "Wind?"
+msgstr ""
+
+#: ../wpcloudy.php:159
+msgid "Humidity?"
+msgstr ""
+
+#: ../wpcloudy.php:165
+msgid "Pressure?"
+msgstr ""
+
+#: ../wpcloudy.php:171
+msgid "Cloudiness?"
+msgstr ""
+
+#: ../wpcloudy.php:177
+msgid "Hour Forecast?"
+msgstr ""
+
+#: ../wpcloudy.php:183
+msgid "Today date + Min-Max Temperatures?"
+msgstr ""
+
+#: ../wpcloudy.php:189
+msgid "7-Day Forecast?"
+msgstr ""
+
+#: ../wpcloudy.php:195
+msgid "Background color"
+msgstr ""
+
+#: ../wpcloudy.php:199
+msgid "Text color"
+msgstr ""
+
+#: ../wpcloudy.php:203
+msgid "Border color"
+msgstr ""
+
+#: ../wpcloudy.php:207
+msgid "Weather size?"
+msgstr ""
+
+#: ../wpcloudy.php:209
+msgid "Small"
+msgstr ""
+
+#: ../wpcloudy.php:210
+msgid "Medium"
+msgstr ""
+
+#: ../wpcloudy.php:211
+msgid "Large"
+msgstr ""
+
+#: ../wpcloudy.php:403
+msgid "Wind"
+msgstr ""
+
+#: ../wpcloudy.php:407
+msgid "Humidity"
+msgstr ""
+
+#: ../wpcloudy.php:410
+msgid "Pressure"
+msgstr ""
+
+#: ../wpcloudy.php:413
+msgid "Cloudiness"
+msgstr ""
+
+#: ../wpcloudy.php:418
+msgid "Now"
+msgstr ""
+
+#: ../wpcloudy.php:553
+msgid "Shortcode"
+msgstr ""
+
+#: ../wpcloudy.php:575 ../wpcloudy.php:576 ../wpcloudy.php:577
+msgid "Weather"
+msgstr ""
+
+#: ../wpcloudy.php:578
+msgid "Parent Weather:"
+msgstr ""
+
+#: ../wpcloudy.php:579
+msgid "All Weather"
+msgstr ""
+
+#: ../wpcloudy.php:580
+msgid "View Weather"
+msgstr ""
+
+#: ../wpcloudy.php:581
+msgid "Add New Weather"
+msgstr ""
+
+#: ../wpcloudy.php:582
+msgid "New Weather"
+msgstr ""
+
+#: ../wpcloudy.php:583
+msgid "Edit Weather"
+msgstr ""
+
+#: ../wpcloudy.php:584
+msgid "Update Weather"
+msgstr ""
+
+#: ../wpcloudy.php:585
+msgid "Search Weather"
+msgstr ""
+
+#: ../wpcloudy.php:586
+msgid "No weather found"
+msgstr ""
+
+#: ../wpcloudy.php:587
+msgid "No weather found in Trash"
+msgstr ""
+
+#: ../wpcloudy.php:591
+msgid "weather"
+msgstr ""
+
+#: ../wpcloudy.php:592
+msgid "Listing weather"
+msgstr ""
+
+#: ../wpcloudy.php:625 ../wpcloudy.php:628
+msgid " updated."
+msgstr ""
+
+#: ../wpcloudy.php:626
+msgid "Custom field updated."
+msgstr ""
+
+#: ../wpcloudy.php:627
+msgid "Custom field deleted."
+msgstr ""
+
+#: ../wpcloudy.php:629
+#, php-format
+msgid " restored to revision from %s"
+msgstr ""
+
+#: ../wpcloudy.php:630
+msgid " published."
+msgstr ""
+
+#: ../wpcloudy.php:631
+msgid "Page saved."
+msgstr ""
+
+#: ../wpcloudy.php:632
+msgid " submitted."
+msgstr ""
+
+#: ../wpcloudy.php:633
+#, php-format
+msgid " scheduled for: <strong>%1$s</strong>. "
+msgstr ""
+
+#: ../wpcloudy.php:633
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: ../wpcloudy.php:634
+msgid " draft updated."
+msgstr ""

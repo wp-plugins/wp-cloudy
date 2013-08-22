@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 1.1
+Version: 1.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -39,6 +39,15 @@ function weather_deactivation() {
 register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Translation
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function wpcloudy_init() {
+  load_plugin_textdomain( 'wpcloudy', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' ); 
+}
+add_action('plugins_loaded', 'wpcloudy_init');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Enqueue styles Front-end
@@ -563,24 +572,24 @@ function custom_wpc_weather_column($column, $post_id) {
 // Register Custom Post Type
 function wpcloudy_weather() {
 	$labels = array(
-		'name'                => _x( 'Weather', 'Post Type General Name', 'wpcloudy_weather' ),
-		'singular_name'       => _x( 'Weather', 'Post Type Singular Name', 'wpcloudy_weather' ),
-		'menu_name'           => __( 'Weather', 'wpcloudy_weather' ),
-		'parent_item_colon'   => __( 'Parent Weather:', 'wpcloudy_weather' ),
-		'all_items'           => __( 'All Weather', 'wpcloudy_weather' ),
-		'view_item'           => __( 'View Weather', 'wpcloudy_weather' ),
-		'add_new_item'        => __( 'Add New Weather', 'wpcloudy_weather' ),
-		'add_new'             => __( 'New Weather', 'wpcloudy_weather' ),
-		'edit_item'           => __( 'Edit Weather', 'wpcloudy_weather' ),
-		'update_item'         => __( 'Update Weather', 'wpcloudy_weather' ),
-		'search_items'        => __( 'Search Weather', 'wpcloudy_weather' ),
-		'not_found'           => __( 'No weather found', 'wpcloudy_weather' ),
-		'not_found_in_trash'  => __( 'No weather found in Trash', 'wpcloudy_weather' ),
+		'name'                => _x( 'Weather', 'Post Type General Name', 'wpcloudy' ),
+		'singular_name'       => _x( 'Weather', 'Post Type Singular Name', 'wpcloudy' ),
+		'menu_name'           => __( 'Weather', 'wpcloudy' ),
+		'parent_item_colon'   => __( 'Parent Weather:', 'wpcloudy' ),
+		'all_items'           => __( 'All Weather', 'wpcloudy' ),
+		'view_item'           => __( 'View Weather', 'wpcloudy' ),
+		'add_new_item'        => __( 'Add New Weather', 'wpcloudy' ),
+		'add_new'             => __( 'New Weather', 'wpcloudy' ),
+		'edit_item'           => __( 'Edit Weather', 'wpcloudy' ),
+		'update_item'         => __( 'Update Weather', 'wpcloudy' ),
+		'search_items'        => __( 'Search Weather', 'wpcloudy' ),
+		'not_found'           => __( 'No weather found', 'wpcloudy' ),
+		'not_found_in_trash'  => __( 'No weather found in Trash', 'wpcloudy' ),
 	);
 
 	$args = array(
-		'label'               => __( 'weather', 'wpcloudy_weather' ),
-		'description'         => __( 'Listing weather', 'wpcloudy_weather' ),
+		'label'               => __( 'weather', 'wpcloudy' ),
+		'description'         => __( 'Listing weather', 'wpcloudy' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', ),
 		'hierarchical'        => false,
