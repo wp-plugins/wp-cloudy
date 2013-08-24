@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 1.2
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,10 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
+* NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
+
 * 70 000 cities listed (thanks to OpenWeatherMap)
+* Current weather
 * Hourly forecasts
 * Week forecasts
 * Temperatures (current, min and max)
@@ -52,6 +55,10 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 2. WP Cloudy in action
 
 == Changelog ==
+= 2.0 =
+* NEW Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
+* NEW Display/hide current weather 
+* FIX some CSS
 = 1.2 =
 * NEW Support for translations + French version provided
 * FIX WP Cloudy icon in admin

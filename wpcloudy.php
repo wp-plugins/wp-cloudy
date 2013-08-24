@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 1.2
+Version: 2.0
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -106,6 +106,8 @@ function wpcloudy_basic($post){
   $wpcloudy_country_code 			= get_post_meta($post->ID,'_wpcloudy_country_code',true);
   $wpcloudy_unit 					= get_post_meta($post->ID,'_wpcloudy_unit',true);
   $wpcloudy_lang 					= get_post_meta($post->ID,'_wpcloudy_lang',true);
+  $wpcloudy_current_weather			= get_post_meta($post->ID,'_wpcloudy_current_weather',true);
+  $wpcloudy_weather					= get_post_meta($post->ID,'_wpcloudy_weather',true);
   $wpcloudy_wind 					= get_post_meta($post->ID,'_wpcloudy_wind',true);
   $wpcloudy_humidity 				= get_post_meta($post->ID,'_wpcloudy_humidity',true);
   $wpcloudy_pressure				= get_post_meta($post->ID,'_wpcloudy_pressure',true);
@@ -117,12 +119,24 @@ function wpcloudy_basic($post){
   $wpcloudy_meta_txt_color			= get_post_meta($post->ID,'_wpcloudy_meta_txt_color',true);
   $wpcloudy_meta_border_color		= get_post_meta($post->ID,'_wpcloudy_meta_border_color',true);
   $wpcloudy_size 					= get_post_meta($post->ID,'_wpcloudy_size',true);
+  $wpcloudy_map 					= get_post_meta($post->ID,'_wpcloudy_map',true);
+  $wpcloudy_map_height				= get_post_meta($post->ID,'_wpcloudy_map_height',true);
+  $wpcloudy_map_opacity				= get_post_meta($post->ID,'_wpcloudy_map_opacity',true);
+  $wpcloudy_map_zoom				= get_post_meta($post->ID,'_wpcloudy_map_zoom',true);
+  $wpcloudy_map_stations			= get_post_meta($post->ID,'_wpcloudy_map_stations',true);
+  $wpcloudy_map_clouds				= get_post_meta($post->ID,'_wpcloudy_map_clouds',true);
+  $wpcloudy_map_precipitation		= get_post_meta($post->ID,'_wpcloudy_map_precipitation',true);
+  $wpcloudy_map_snow				= get_post_meta($post->ID,'_wpcloudy_map_snow',true);
+  $wpcloudy_map_wind				= get_post_meta($post->ID,'_wpcloudy_map_wind',true);
+  $wpcloudy_map_temperature			= get_post_meta($post->ID,'_wpcloudy_map_temperature',true);
+  $wpcloudy_map_pressure			= get_post_meta($post->ID,'_wpcloudy_map_pressure',true);
   
   echo '<div id="wpcloudy-tabs">
 			<ul>
 				<li><a href="#tabs-1">'. __( 'Basic settings', 'wpcloudy' ) .'</a></li>
 				<li><a href="#tabs-2">'. __( 'Display', 'wpcloudy' ) .'</a></li>
 				<li><a href="#tabs-3">'. __( 'Advanced', 'wpcloudy' ) .'</a></li>
+				<li><a href="#tabs-4">'. __( 'Map', 'wpcloudy' ) .'</a></li>
 			</ul>
 			
 			<div id="tabs-1">
@@ -147,6 +161,18 @@ function wpcloudy_basic($post){
 				</p>
 			</div>
 			<div id="tabs-2">
+				<p>				
+					<label for="wpcloudy_current_weather_meta">
+						<input type="checkbox" name="wpcloudy_current_weather" id="wpcloudy_current_weather_meta" value="yes" '. checked( $wpcloudy_current_weather, 'yes', false ) .' />
+							'. __( 'Current weather?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_weather_meta">
+						<input type="checkbox" name="wpcloudy_weather" id="wpcloudy_weather_meta" value="yes" '. checked( $wpcloudy_weather, 'yes', false ) .' />
+							'. __( 'Short condition?', 'wpcloudy' ) .'
+					</label>
+				</p>
 				<p>				
 					<label for="wpcloudy_wind_meta">
 						<input type="checkbox" name="wpcloudy_wind" id="wpcloudy_wind_meta" value="yes" '. checked( $wpcloudy_wind, 'yes', false ) .' />
@@ -212,6 +238,102 @@ function wpcloudy_basic($post){
 					</select>
 				</p>
 			</div>
+			<div id="tabs-4">
+				<p>				
+					<label for="wpcloudy_map_meta">
+						<input type="checkbox" name="wpcloudy_map" id="wpcloudy_map_meta" value="yes" '. checked( $wpcloudy_map, 'yes', false ) .' />
+							'. __( 'Display map?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>
+					<label for="wpcloudy_map_height_meta">'. __( 'Map height (in px)', 'wpcloudy' ) .'</label>
+					<input id="wpcloudy_map_height_meta" type="text" name="wpcloudy_map_height" value="'.$wpcloudy_map_height.'" />
+				</p>
+				<p>
+					<label for="wpcloudy_map_opacity_meta">'. __( 'Layers opacity', 'wpcloudy' ) .'</label>
+					<select name="wpcloudy_map_opacity">
+						<option ' . selected( '0', $wpcloudy_map_opacity, false ) . ' value="0">0%</option>
+						<option ' . selected( '0.1', $wpcloudy_map_opacity, false ) . ' value="0.1">10%</option>
+						<option ' . selected( '0.2', $wpcloudy_map_opacity, false ) . ' value="0.2">20%</option>
+						<option ' . selected( '0.3', $wpcloudy_map_opacity, false ) . ' value="0.3">30%</option>
+						<option ' . selected( '0.4', $wpcloudy_map_opacity, false ) . ' value="0.4">40%</option>
+						<option ' . selected( '0.5', $wpcloudy_map_opacity, false ) . ' value="0.5">50%</option>
+						<option ' . selected( '0.6', $wpcloudy_map_opacity, false ) . ' value="0.6">60%</option>
+						<option ' . selected( '0.7', $wpcloudy_map_opacity, false ) . ' value="0.7">70%</option>
+						<option ' . selected( '0.8', $wpcloudy_map_opacity, false ) . ' value="0.8">80%</option>
+						<option ' . selected( '0.9', $wpcloudy_map_opacity, false ) . ' value="0.9">90%</option>
+						<option ' . selected( '1', $wpcloudy_map_opacity, false ) . ' value="1">100%</option>
+					</select>
+				</p>
+				<p>
+					<label for="wpcloudy_map_zoom_meta">'. __( 'Zoom', 'wpcloudy' ) .'</label>
+					<select name="wpcloudy_map_zoom">
+						<option ' . selected( '1', $wpcloudy_map_zoom, false ) . ' value="1">1</option>
+						<option ' . selected( '2', $wpcloudy_map_zoom, false ) . ' value="2">2</option>
+						<option ' . selected( '3', $wpcloudy_map_zoom, false ) . ' value="3">3</option>
+						<option ' . selected( '4', $wpcloudy_map_zoom, false ) . ' value="4">4</option>
+						<option ' . selected( '5', $wpcloudy_map_zoom, false ) . ' value="5">5</option>
+						<option ' . selected( '6', $wpcloudy_map_zoom, false ) . ' value="6">6</option>
+						<option ' . selected( '7', $wpcloudy_map_zoom, false ) . ' value="7">7</option>
+						<option ' . selected( '8', $wpcloudy_map_zoom, false ) . ' value="8">8</option>
+						<option ' . selected( '9', $wpcloudy_map_zoom, false ) . ' value="9">9</option>
+						<option ' . selected( '10', $wpcloudy_map_zoom, false ) . ' value="10">10</option>
+						<option ' . selected( '11', $wpcloudy_map_zoom, false ) . ' value="11">11</option>
+						<option ' . selected( '12', $wpcloudy_map_zoom, false ) . ' value="12">12</option>
+						<option ' . selected( '13', $wpcloudy_map_zoom, false ) . ' value="13">13</option>
+						<option ' . selected( '14', $wpcloudy_map_zoom, false ) . ' value="14">14</option>
+						<option ' . selected( '15', $wpcloudy_map_zoom, false ) . ' value="15">15</option>
+						<option ' . selected( '16', $wpcloudy_map_zoom, false ) . ' value="16">16</option>
+						<option ' . selected( '17', $wpcloudy_map_zoom, false ) . ' value="17">17</option>
+						<option ' . selected( '18', $wpcloudy_map_zoom, false ) . ' value="18">18</option>
+					</select>
+				</p>
+				<p class="subsection-title">
+					'. __( 'Layers', 'wpcloudy' ) .'
+				</p>
+				<p>				
+					<label for="wpcloudy_map_stations_meta">
+						<input type="checkbox" name="wpcloudy_map_stations" id="wpcloudy_map_stations_meta" value="yes" '. checked( $wpcloudy_map_stations, 'yes', false ) .' />
+							'. __( 'Display stations?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_map_clouds_meta">
+						<input type="checkbox" name="wpcloudy_map_clouds" id="wpcloudy_map_clouds_meta" value="yes" '. checked( $wpcloudy_map_clouds, 'yes', false ) .' />
+							'. __( 'Display clouds?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_map_precipitation_meta">
+						<input type="checkbox" name="wpcloudy_map_precipitation" id="wpcloudy_map_precipitation_meta" value="yes" '. checked( $wpcloudy_map_precipitation, 'yes', false ) .' />
+							'. __( 'Display precipitation?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_map_snow_meta">
+						<input type="checkbox" name="wpcloudy_map_snow" id="wpcloudy_map_snow_meta" value="yes" '. checked( $wpcloudy_map_snow, 'yes', false ) .' />
+							'. __( 'Display snow?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_map_wind_meta">
+						<input type="checkbox" name="wpcloudy_map_wind" id="wpcloudy_map_wind_meta" value="yes" '. checked( $wpcloudy_map_wind, 'yes', false ) .' />
+							'. __( 'Display wind?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_map_temperature_meta">
+						<input type="checkbox" name="wpcloudy_map_temperature" id="wpcloudy_map_temperature_meta" value="yes" '. checked( $wpcloudy_map_temperature, 'yes', false ) .' />
+							'. __( 'Display temperature?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>				
+					<label for="wpcloudy_map_pressure_meta">
+						<input type="checkbox" name="wpcloudy_map_pressure" id="wpcloudy_map_pressure_meta" value="yes" '. checked( $wpcloudy_map_pressure, 'yes', false ) .' />
+							'. __( 'Display pressure?', 'wpcloudy' ) .'
+					</label>
+				</p>
+			</div>
 	</div>
   ';  
 }
@@ -229,6 +351,16 @@ function save_metabox($post_id){
 	}
 	if(isset($_POST['wpcloudy_lang'])){
 	  update_post_meta($post_id, '_wpcloudy_lang', esc_html($_POST['wpcloudy_lang']));
+	}
+	if( isset( $_POST[ 'wpcloudy_current_weather' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_current_weather', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_current_weather', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_weather' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_weather', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_weather', '' );
 	}
 	if( isset( $_POST[ 'wpcloudy_wind' ] ) ) {
 		update_post_meta( $post_id, '_wpcloudy_wind', 'yes' );
@@ -277,6 +409,55 @@ function save_metabox($post_id){
 	if(isset($_POST['wpcloudy_size'])) {
 	  update_post_meta($post_id, '_wpcloudy_size', $_POST['wpcloudy_size']);
 	}
+	if( isset( $_POST[ 'wpcloudy_map' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map', '' );
+	}
+	if(isset($_POST['wpcloudy_map_height'])){
+	  update_post_meta($post_id, '_wpcloudy_map_height', esc_html($_POST['wpcloudy_map_height']));
+	}
+	if(isset($_POST['wpcloudy_map_opacity'])) {
+	  update_post_meta($post_id, '_wpcloudy_map_opacity', $_POST['wpcloudy_map_opacity']);
+	}
+	if(isset($_POST['wpcloudy_map_zoom'])) {
+	  update_post_meta($post_id, '_wpcloudy_map_zoom', $_POST['wpcloudy_map_zoom']);
+	}
+	if( isset( $_POST[ 'wpcloudy_map_stations' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_stations', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_stations', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_map_clouds' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_clouds', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_clouds', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_map_precipitation' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_precipitation', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_precipitation', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_map_snow' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_snow', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_snow', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_map_wind' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_wind', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_wind', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_map_temperature' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_temperature', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_temperature', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_map_pressure' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_map_pressure', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_map_pressure', '' );
+	}
 }
 
 
@@ -298,6 +479,16 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_country_code		= get_post_meta($id,'_wpcloudy_country_code',true);
 			$wpcloudy_unit 				= get_post_meta($id,'_wpcloudy_unit',true);
 			$wpcloudy_lang 				= get_post_meta($id,'_wpcloudy_lang',true);
+			$wpcloudy_map_height		= get_post_meta($id,'_wpcloudy_map_height',true);
+			$wpcloudy_map_opacity		= get_post_meta($id,'_wpcloudy_map_opacity',true);
+			$wpcloudy_map_zoom			= get_post_meta($id,'_wpcloudy_map_zoom',true);
+			$wpcloudy_map_stations		= get_post_meta($id,'_wpcloudy_map_stations',true);
+			$wpcloudy_map_clouds		= get_post_meta($id,'_wpcloudy_map_clouds',true);
+			$wpcloudy_map_precipitation	= get_post_meta($id,'_wpcloudy_map_precipitation',true);
+			$wpcloudy_map_snow			= get_post_meta($id,'_wpcloudy_map_snow',true);
+			$wpcloudy_map_wind			= get_post_meta($id,'_wpcloudy_map_wind',true);
+			$wpcloudy_map_temperature	= get_post_meta($id,'_wpcloudy_map_temperature',true);
+			$wpcloudy_map_pressure		= get_post_meta($id,'_wpcloudy_map_pressure',true);
 			
 			$wpcloudy_meta_border_color	= get_post_meta($id,'_wpcloudy_meta_border_color',true);
 			
@@ -387,13 +578,16 @@ function wpcloudy_display_weather($attr,$content) {
 			$display_now = '
 				<div class="now">
 					<div class="location_name">'. $location_name .'</div>		
-					<div class="time_symbol climacon w'. $time_symbol_number .'"><span>'. $time_symbol .'</span></div>
-					<div class="time_temperature">'. $time_temperature .'°</div>
+					<div class="time_symbol climacon w'. $time_symbol_number .'"></div>
+					<div class="time_temperature">'. $time_temperature .'&deg;</div>
 				</div>
+			';
+			$display_weather = '
+				<div class="short_condition">'. $time_symbol .'</div>
 			';
 			$display_today = '
 				<div class="today">	
-					<div class="day"><span class="highlight">'. $today_day .'</span> Today</div>
+					<div class="day"><span class="highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
 					<div class="time_temperature_min">'. $time_temperature_min .'</div>
 					<div class="time_temperature_max"><span class="highlight">'. $time_temperature_max .'</span></div>
 				</div>		
@@ -486,7 +680,186 @@ function wpcloudy_display_weather($attr,$content) {
 					</div>
 				</div>
 			';
+			if( $wpcloudy_map_stations ) {
+				$display_map_stations					= 'var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");';
+				$display_map_stations_layers			= 'stations,';
+			}
+			else {
+				$display_map_stations					= '';
+				$display_map_stations_layers	 		= '';
+			};
+			if( $wpcloudy_map_clouds ) {
+				$display_map_clouds					= 'var layer_cloud = new OpenLayers.Layer.XYZ(
+															"clouds",
+																"http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+																{
+																	isBaseLayer: false,
+																	opacity: '. $wpcloudy_map_opacity .',
+																	sphericalMercator: true
+																}
+															);
+														';
+				$display_map_clouds_layers				= 'layer_cloud,';
+			}
+			else {
+				$display_map_clouds						= '';
+				$display_map_clouds_layers		 		= '';
+			};
+			if( $wpcloudy_map_precipitation ) {
+				$display_map_precipitation				= 'var layer_precipitation = new OpenLayers.Layer.XYZ(
+															"precipitation",
+																"http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+																{
+																	isBaseLayer: false,
+																	opacity: '. $wpcloudy_map_opacity .',
+																	sphericalMercator: true
+																}
+															);
+														';
+				$display_map_precipitation_layers		= 'layer_precipitation,';
+			}
+			else {
+				$display_map_precipitation				= '';
+				$display_map_precipitation_layers 		= '';
+			};
+			if( $wpcloudy_map_snow ) {
+				$display_map_snow						= 'var layer_snow = new OpenLayers.Layer.XYZ(
+															"snow",
+																"http://${s}.tile.openweathermap.org/map/snow/${z}/${x}/${y}.png", 
+																{
+																	isBaseLayer: false,
+																	opacity: '. $wpcloudy_map_opacity .',
+																	sphericalMercator: true
+																}
+															);
+														';
+				$display_map_snow_layers				= 'layer_snow,';
+			}
+			else {
+				$display_map_snow						= '';
+				$display_map_snow_layers		 		= '';
+			};
+			if( $wpcloudy_map_wind ) {
+				$display_map_wind 						= 'var layer_wind = new OpenLayers.Layer.XYZ(
+															"wind",
+																"http://${s}.tile.openweathermap.org/map/wind/${z}/${x}/${y}.png",
+																{
+																	isBaseLayer: false,
+																	opacity: '. $wpcloudy_map_opacity .',
+																	sphericalMercator: true
+																}
+															);
+														';
+				$display_map_wind_layers				= 'layer_wind,';
+			}
+			else {
+				$display_map_wind						= '';
+				$display_map_wind_layers		 		= '';
+			};
+			if( $wpcloudy_map_temperature ) {
+				$display_map_temperature				= 'var layer_temp = new OpenLayers.Layer.XYZ(
+															"temp",
+																"http://${s}.tile.openweathermap.org/map/temp/${z}/${x}/${y}.png",
+																{
+																	isBaseLayer: false,
+																	opacity: '. $wpcloudy_map_opacity .',
+																	sphericalMercator: true
+																}
+															);
+														';
+				$display_map_temperature_layers			= 'layer_temp,';
+			}
+			else {
+				$display_map_temperature				= '';
+				$display_map_temperature_layers 		= '';
+			};
+			if( $wpcloudy_map_pressure ) {
+				$display_map_pressure					= 'var layer_pressure = new OpenLayers.Layer.XYZ(
+															"pressure",
+																"http://${s}.tile.openweathermap.org/map/pressure/${z}/${x}/${y}.png",
+																{
+																	isBaseLayer: false,
+																	opacity: '. $wpcloudy_map_opacity .',
+																	sphericalMercator: true
+																}
+															);
+														';
+				$display_map_pressure_layers			= 'layer_pressure,';
+			}
+			else {
+				$display_map_pressure 					= '';
+				$display_map_pressure_layers 			= '';
+			};
+					
+			$display_map = '
+				'. wp_enqueue_script( "openlayers js", "http://openlayers.org/api/OpenLayers.js", array(), "1.0", true) .'
+				'. wp_enqueue_script( "owm js", "http://openweathermap.org/js/OWM.OpenLayers.1.3.4.js", array(), "1.0", true) .'
+				'. wp_register_style("openlayers css", "http://openlayers.org/api/theme/default/style.css", array(), "1.0", true) .'
+				'. wp_enqueue_style("openlayers css") .'
+				<script type="text/javascript"
+					src="http://maps.google.com/maps/api/js?sensor=true">
+				</script>				
+				<div id="wpc-map-container">	
+					<div id="wpc-map" style="height: '. $wpcloudy_map_height .'px"></div>
+				</div>
+				<script type="text/javascript">
+					window.onload = function init() {
+						//Center of map
+						var lat = '. $location_latitude .'; 
+						var lon = '. $location_longitude .';
+						var lonlat = new OpenLayers.LonLat(lon, lat);
+							var map = new OpenLayers.Map("wpc-map");
+						// Create overlays
+						//  OSM
+							var mapnik = new OpenLayers.Layer.OSM();
+						
+						// Stations
+						'. $display_map_stations .'
+
+						// Current weather
+						var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
+						
+						// Clouds
+						'. $display_map_clouds .'
+						
+						// Precipitation
+						'. $display_map_precipitation .'
+						
+						// Snow
+						'. $display_map_snow .'
+						
+						// Wind
+						'. $display_map_wind .'
+						
+						// Temperature
+						'. $display_map_temperature .'
+						
+						// Pressure
+						'. $display_map_pressure .'
+						
+						//Addind maps
+						map.addLayers([
+						mapnik, 
+						'. $display_map_stations_layers .' 
+						'. $display_map_clouds_layers .' 
+						'. $display_map_precipitation_layers .' 
+						'. $display_map_snow_layers .' 
+						'. $display_map_wind_layers .' 
+						'. $display_map_temperature_layers .' 
+						'. $display_map_pressure_layers .' 
+						city]);
+						map.setCenter(
+							new OpenLayers.LonLat(lon, lat).transform(
+								new OpenLayers.Projection("EPSG:4326"),
+								map.getProjectionObject()
+							), '. $wpcloudy_map_zoom .'
+						);    
+					}
+				</script>
+			';
 			
+			$wpcloudy_current_weather		= 	get_post_meta($id,'_wpcloudy_current_weather',true);
+			$wpcloudy_weather				= 	get_post_meta($id,'_wpcloudy_weather',true);
 			$wpcloudy_wind 					= 	get_post_meta($id,'_wpcloudy_wind',true);
 			$wpcloudy_humidity				= 	get_post_meta($id,'_wpcloudy_humidity',true);
 			$wpcloudy_pressure				= 	get_post_meta($id,'_wpcloudy_pressure',true);
@@ -497,10 +870,17 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_meta_bg_color			=	get_post_meta($id,'_wpcloudy_meta_bg_color',true);
 			$wpcloudy_meta_txt_color		=	get_post_meta($id,'_wpcloudy_meta_txt_color',true);
 			$wpcloudy_size					=	get_post_meta($id,'_wpcloudy_size',true);
+			$wpcloudy_map 					= 	get_post_meta($id,'_wpcloudy_map',true);
 			
 			 echo '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="background:'. $wpcloudy_meta_bg_color .';color:'. $wpcloudy_meta_txt_color .';">';
-
-				echo $display_now;
+				
+				if( $wpcloudy_current_weather ) {
+					echo $display_now;
+				}
+				
+				if( $wpcloudy_weather ) {
+					echo $display_weather;
+				}
 				
 				if( $wpcloudy_temperature_min_max ) {
 					echo $display_today;
@@ -536,6 +916,10 @@ function wpcloudy_display_weather($attr,$content) {
 
 				if( $wpcloudy_forecast ) {
 				   echo $display_forecast;
+				}
+				
+				if( $wpcloudy_map ) {
+				   echo $display_map;
 				}
 
 			 echo '</div>';

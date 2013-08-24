@@ -54,6 +54,13 @@
     font-size: 34px;
     margin: 0;
 }
+#wpc-weather .short_condition {
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px 0;
+    text-align: center;
+    width: 100%;
+}
 #wpc-weather .infos {
     display: inline-block;
     width: 100%;
@@ -84,13 +91,14 @@
 #wpc-weather .today, #wpc-weather .forecast {
     display: inline-block;
     padding: 0 5%;
-    width: 90%;
+    width: 100%;
 }
 #wpc-weather .hours {
     border-bottom-style: solid;
     border-top-style: solid;
     border-width: 1px;
     display: inline-block;
+    margin-bottom: 10px;
     text-align: center;
     width: 100%;
 }
@@ -173,6 +181,13 @@
 	display: block;
     text-align: center;
 	-webkit-font-smoothing: antialiased;
+}
+#wpc-weather #wpc-map-container {
+    width: 100%;
+}
+#wpc-weather #wpc-map {
+	width:100%;
+	height:300px;
 }
 /*************************************************************************************************/
 /* Clouds																						 */

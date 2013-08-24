@@ -40,7 +40,12 @@
     z-index: 60;
 	cursor:pointer;
 }
-#wpcloudy_basic #tabs-1 label, #wpcloudy_basic #tabs-3 label {
+#wpcloudy_basic #tabs-1 label, 
+#wpcloudy_basic #tabs-3 label, 
+#wpcloudy_basic .subsection-title, 
+#wpcloudy_basic label[for=wpcloudy_map_height_meta], 
+#wpcloudy_basic label[for=wpcloudy_map_zoom_meta],
+#wpcloudy_basic label[for=wpcloudy_map_opacity_meta] {
     border-bottom: 1px solid #DDDDDD;
     display: block;
     margin: 20px 0 5px;
@@ -48,11 +53,27 @@
 #wpcloudy_basic .wp-color-result {
 	margin:0;
 }
-#wpcloudy_basic #tabs-1 input {
+#wpcloudy_basic #tabs-1 input, 
+#wpcloudy_basic #wpcloudy_map_height_meta, 
+#wpcloudy_basic #wpcloudy_map_opacity_meta {
 	width:300px;
 }
 #wpcloudy_basic select {
 	width:300px;
+}
+
+/*************************************************************************************************/
+/* Admin - Infobox 																				 */
+/*************************************************************************************************/
+#wpcloudy_shortcode .shortcode {
+	margin:20px 0;
+}
+#wpcloudy_shortcode .shortcode-php {
+	margin:0 0 20px 0;
+}
+#wpcloudy_shortcode .shortcode-php .highlight {
+	display:block;
+	margin:20px 0 0 0;
 }
 /*************************************************************************************************/
 /* Admin - Tabs 																				 */
