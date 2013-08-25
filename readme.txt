@@ -52,7 +52,10 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 == Screenshots ==
 
 1. Create your weather
-2. WP Cloudy in action
+2. Display options
+3. Advanced options
+4. Map options
+5. WP Cloudy in action
 
 == Changelog ==
 = 2.0 =
