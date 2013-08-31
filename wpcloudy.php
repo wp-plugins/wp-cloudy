@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.0
+Version: 2.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -118,6 +118,7 @@ function wpcloudy_basic($post){
   $wpcloudy_meta_bg_color			= get_post_meta($post->ID,'_wpcloudy_meta_bg_color',true);
   $wpcloudy_meta_txt_color			= get_post_meta($post->ID,'_wpcloudy_meta_txt_color',true);
   $wpcloudy_meta_border_color		= get_post_meta($post->ID,'_wpcloudy_meta_border_color',true);
+  $wpcloudy_custom_css				= get_post_meta($post->ID,'_wpcloudy_custom_css',true);
   $wpcloudy_size 					= get_post_meta($post->ID,'_wpcloudy_size',true);
   $wpcloudy_map 					= get_post_meta($post->ID,'_wpcloudy_map',true);
   $wpcloudy_map_height				= get_post_meta($post->ID,'_wpcloudy_map_height',true);
@@ -228,6 +229,10 @@ function wpcloudy_basic($post){
 				<p>
 					<label for="wpcloudy_meta_border_color2">'. __( 'Border color', 'wpcloudy' ) .'</label>
 					<input name="wpcloudy_meta_border_color" type="text" value="'. $wpcloudy_meta_border_color .'" class="wpcloudy_meta_border_color_picker" />
+				</p>
+				<p>
+					<label for="wpcloudy_custom_css_meta">'. __( 'Custom CSS', 'wpcloudy' ) .'</label>
+					<textarea id="wpcloudy_custom_css_meta" name="wpcloudy_custom_css">'.$wpcloudy_custom_css.'</textarea>
 				</p>
 				<p>
 					<label for="size_meta">'. __( 'Weather size?', 'wpcloudy' ) .'</label>
@@ -406,6 +411,9 @@ function save_metabox($post_id){
 	if( isset( $_POST[ 'wpcloudy_meta_border_color' ] ) ) {
 	  update_post_meta( $post_id, '_wpcloudy_meta_border_color', $_POST[ 'wpcloudy_meta_border_color' ] );
 	}
+	if(isset($_POST['wpcloudy_custom_css'])){
+	  update_post_meta($post_id, '_wpcloudy_custom_css', esc_html($_POST['wpcloudy_custom_css']));
+	}
 	if(isset($_POST['wpcloudy_size'])) {
 	  update_post_meta($post_id, '_wpcloudy_size', $_POST['wpcloudy_size']);
 	}
@@ -574,6 +582,13 @@ function wpcloudy_display_weather($attr,$content) {
 			$forecast_temp_min_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['min']));
 			$forecast_temp_max_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['max']));			
 		
+			$wpcloudy_custom_css	= get_post_meta($id,'_wpcloudy_custom_css',true);
+			
+			$display_custom_css 	= '
+				<style>
+					'. $wpcloudy_custom_css .'
+				</style>
+			';
 		
 			$display_now = '
 				<div class="now">
@@ -872,6 +887,8 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_size					=	get_post_meta($id,'_wpcloudy_size',true);
 			$wpcloudy_map 					= 	get_post_meta($id,'_wpcloudy_map',true);
 			
+			echo $display_custom_css;
+			
 			 echo '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="background:'. $wpcloudy_meta_bg_color .';color:'. $wpcloudy_meta_txt_color .';">';
 				
 				if( $wpcloudy_current_weather ) {
@@ -923,6 +940,8 @@ function wpcloudy_display_weather($attr,$content) {
 				}
 
 			 echo '</div>';
+			
+			 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1021,5 +1040,6 @@ function set_messages($messages) {
 }
 
 add_filter('post_updated_messages', 'set_messages' );
+
 
 ?>

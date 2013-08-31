@@ -61,6 +61,10 @@
 #wpcloudy_basic select {
 	width:300px;
 }
+#wpcloudy_basic #wpcloudy_custom_css_meta {
+	width:100%;
+	height:250px;
+}
 
 /*************************************************************************************************/
 /* Admin - Infobox 																				 */

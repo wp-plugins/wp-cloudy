@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 2.0
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 5. WP Cloudy in action
 
 == Changelog ==
+= 2.1 =
+* NEW Add custom CSS field
 = 2.0 =
 * NEW Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
 * NEW Display/hide current weather 
