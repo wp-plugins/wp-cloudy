@@ -120,8 +120,3 @@
 #wpcloudy_basic .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
 #wpcloudy_basic .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
 #wpcloudy_basic .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
-
-/*************************************************************************************************/
-/* Admin - Options panel 																				 */
-/*************************************************************************************************/
-.wpcloudy-settings label {margin: 0 0 0 10px;}
