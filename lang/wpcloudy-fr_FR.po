@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Cloudy\n"
-"POT-Creation-Date: 2013-08-31 15:43+0100\n"
-"PO-Revision-Date: 2013-08-31 15:43+0100\n"
+"POT-Creation-Date: 2013-09-29 18:15+0100\n"
+"PO-Revision-Date: 2013-09-29 18:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: Benjamin DENIS <contact@wpcloudy.com>\n"
 "MIME-Version: 1.0\n"
@@ -13,13 +13,261 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../wpcloudy.php:91
+#: ../wpcloudy-admin.php:52
+msgid "WP Cloudy settings"
+msgstr "Paramètres de WP Cloudy"
+
+#: ../wpcloudy-admin.php:82 ../wpcloudy.php:164
+msgid "Basic settings"
+msgstr "Base"
+
+#: ../wpcloudy-admin.php:89
+msgid "Bypass unit?"
+msgstr "Bypasser l'unité ?"
+
+#: ../wpcloudy-admin.php:97
+msgid "Unit"
+msgstr "Unité"
+
+#: ../wpcloudy-admin.php:106
+msgid "Display settings"
+msgstr "Paramètres d'affichage"
+
+#: ../wpcloudy-admin.php:113 ../wpcloudy.php:195
+msgid "Current weather?"
+msgstr "Temps actuel ?"
+
+#: ../wpcloudy-admin.php:121 ../wpcloudy.php:201
+msgid "Short condition?"
+msgstr "Conditions météo en texte ?"
+
+#: ../wpcloudy-admin.php:129 ../wpcloudy-admin.php:321 ../wpcloudy.php:207
+msgid "Wind?"
+msgstr "Vent ?"
+
+#: ../wpcloudy-admin.php:137 ../wpcloudy.php:213
+msgid "Humidity?"
+msgstr "Humidité"
+
+#: ../wpcloudy-admin.php:145 ../wpcloudy-admin.php:337 ../wpcloudy.php:219
+msgid "Pressure?"
+msgstr "Pression atmosphérique ?"
+
+#: ../wpcloudy-admin.php:153 ../wpcloudy.php:225
+msgid "Cloudiness?"
+msgstr "Couverture nuageuse ?"
+
+#: ../wpcloudy-admin.php:161
+msgid "Hour forecast?"
+msgstr "Prévisions heure par heure ?"
+
+#: ../wpcloudy-admin.php:169
+msgid "Today date + Min-Max temperatures"
+msgstr "Date du jour + Températures mini-maxi"
+
+#: ../wpcloudy-admin.php:177
+msgid "7-Day Forecast"
+msgstr "Prévisions à 7 jours"
+
+#: ../wpcloudy-admin.php:186
+msgid "Advanced settings"
+msgstr "Paramètres avancés"
+
+#: ../wpcloudy-admin.php:193 ../wpcloudy.php:249
+msgid "Background color"
+msgstr "Couleur d'arrière plan"
+
+#: ../wpcloudy-admin.php:201 ../wpcloudy.php:253
+msgid "Text color"
+msgstr "Couleur du texte"
+
+#: ../wpcloudy-admin.php:209 ../wpcloudy.php:257
+msgid "Border color"
+msgstr "Couleur des bordures"
+
+#: ../wpcloudy-admin.php:217
+msgid "Bypass size?"
+msgstr "Bypasser la taille ?"
+
+#: ../wpcloudy-admin.php:225
+msgid "Size"
+msgstr "Taille"
+
+#: ../wpcloudy-admin.php:234
+msgid "Map settings"
+msgstr "Paramètres de la carte"
+
+#: ../wpcloudy-admin.php:241
+msgid "Map?"
+msgstr "Carte ?"
+
+#: ../wpcloudy-admin.php:249
+msgid "Map height"
+msgstr "Hauteur de la carte (en px)"
+
+#: ../wpcloudy-admin.php:257
+msgid "Bypass layers opacity?"
+msgstr "Bypasser l'opacité des calques ?"
+
+#: ../wpcloudy-admin.php:265 ../wpcloudy.php:285
+msgid "Layers opacity"
+msgstr "Opacité des calques"
+
+#: ../wpcloudy-admin.php:273
+msgid "Bypass zoom?"
+msgstr "Bypasser le zoom ?"
+
+#: ../wpcloudy-admin.php:281 ../wpcloudy.php:301
+msgid "Zoom"
+msgstr "Zoom"
+
+#: ../wpcloudy-admin.php:289
+msgid "Stations?"
+msgstr "Stations ?"
+
+#: ../wpcloudy-admin.php:297
+msgid "Clouds?"
+msgstr "Couverture nuageuse ?"
+
+#: ../wpcloudy-admin.php:305
+msgid "Precipitations?"
+msgstr "Précipitations ?"
+
+#: ../wpcloudy-admin.php:313
+msgid "Snow?"
+msgstr "Neige ?"
+
+#: ../wpcloudy-admin.php:329
+msgid "Temperatures?"
+msgstr "Températures ?"
+
+#: ../wpcloudy-admin.php:373
+msgid "Basic settings to bypass:"
+msgstr "Paramètres de base à bypasser:"
+
+#: ../wpcloudy-admin.php:378
+msgid "Display settings to bypass:"
+msgstr "Paramètres d'affichage à bypasser :"
+
+#: ../wpcloudy-admin.php:383
+msgid "Advanced settings to bypass:"
+msgstr "Paramètres avancés à bypasser :"
+
+#: ../wpcloudy-admin.php:388
+msgid "Map settings to bypass:"
+msgstr "Paramètres de la carte à bypasser :"
+
+#: ../wpcloudy-admin.php:403
+msgid "Enable bypass unit on all weather?"
+msgstr "Activer le bypass de l'unité sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:416 ../wpcloudy.php:182
+msgid "Imperial"
+msgstr "Impérial"
+
+#: ../wpcloudy-admin.php:419 ../wpcloudy.php:183
+msgid "Metric"
+msgstr "Métrique"
+
+#: ../wpcloudy-admin.php:432
+msgid "Display current weather on all weather?"
+msgstr "Afficher le temps actuel sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:445
+msgid "Display short condition on all weather?"
+msgstr "Afficher les conditions météo en texte ?"
+
+#: ../wpcloudy-admin.php:458
+msgid "Display wind on all weather?"
+msgstr "Afficher le vent sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:471
+msgid "Display humidity on all weather?"
+msgstr "Afficher l'humidité sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:484
+msgid "Display pressure on all weather?"
+msgstr "Afficher la pression atmosphérique sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:497
+msgid "Display cloudiness on all weather?"
+msgstr "Afficher les nuages sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:510
+msgid "Display hour forecast on all weather?"
+msgstr "Afficher les prévisions heure par heure pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:523
+msgid "Display Today date + Min-Max temperatures on all weather?"
+msgstr "Date du jour + Températures mini-maxi sur toutes les météos ?"
+
+#: ../wpcloudy-admin.php:536
+msgid "Display 7-day Forecast on all weather?"
+msgstr "Afficher les prévisions à 7 jours pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:577
+msgid "Enable bypass size on all weather?"
+msgstr "Activer le bypass de la taile pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:590 ../wpcloudy.php:267
+msgid "Small"
+msgstr "Petite"
+
+#: ../wpcloudy-admin.php:593 ../wpcloudy.php:268
+msgid "Medium"
+msgstr "Moyenne"
+
+#: ../wpcloudy-admin.php:596 ../wpcloudy.php:269
+msgid "Large"
+msgstr "Grande"
+
+#: ../wpcloudy-admin.php:609
+msgid "Enable map on all weather?"
+msgstr "Activer la carte pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:631
+msgid "Enable bypass map opacity on all weather?"
+msgstr "Activer le bypass de l'opacité des calques pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:687
+msgid "Enable bypass map zoom on all weather?"
+msgstr "Activer le bypass du zoom des cartes pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:764
+msgid "Display stations on all weather maps?"
+msgstr "Afficher le calque des stations pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:777
+msgid "Display clouds on all weather maps?"
+msgstr "Afficher le calque des nuages pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:790
+msgid "Display precipitations on all weather maps?"
+msgstr "Afficher le calque des précipitations pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:803
+msgid "Display snow on all weather maps?"
+msgstr "Afficher le calque neige pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:816
+msgid "Display wind on all weather maps?"
+msgstr "Afficher le calque vent pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:829
+msgid "Display temperatures on all weather maps?"
+msgstr "Afficher le calque des températures pour toutes les météos ?"
+
+#: ../wpcloudy-admin.php:842
+msgid "Display pressure on all weather maps?"
+msgstr "Afficher le calque pression atmosphérique pour toutes les météos ?"
+
+#: ../wpcloudy.php:118
 msgid "Copy and paste this shortcode anywhere in posts, pages, text widgets: "
 msgstr ""
 "Copier puis coller ce bout de code n'importe où dans vos articles, pages, "
 "widgets textes :"
 
-#: ../wpcloudy.php:99
+#: ../wpcloudy.php:126
 msgid ""
 "If you need to display this weather anywhere in your theme, simply copy and "
 "paste this code snippet in your PHP file like sidebar.php: "
@@ -28,27 +276,23 @@ msgstr ""
 "puis coller simplement ce bout de code dans votre fichier PHP de votre choix "
 "comme sidebar.php"
 
-#: ../wpcloudy.php:137
-msgid "Basic settings"
-msgstr "Base"
-
-#: ../wpcloudy.php:138
+#: ../wpcloudy.php:165
 msgid "Display"
 msgstr "Affichage"
 
-#: ../wpcloudy.php:139
+#: ../wpcloudy.php:166
 msgid "Advanced"
 msgstr "Avancé"
 
-#: ../wpcloudy.php:140
+#: ../wpcloudy.php:167
 msgid "Map"
 msgstr "Carte"
 
-#: ../wpcloudy.php:145
+#: ../wpcloudy.php:172
 msgid "City"
 msgstr "Ville"
 
-#: ../wpcloudy.php:149
+#: ../wpcloudy.php:176
 msgid ""
 "Country? (you can enter your country code as well as the country, in your "
 "own language, eg: \"fr\" or \"france\" or \"francia\"...)"
@@ -56,256 +300,192 @@ msgstr ""
 "Pays ? (vous pouvez saisir aussi bien votre code pays que le pays, dans "
 "votre propre langue, ex: \"fr\" ou \"france\" ou \"francia\"...)"
 
-#: ../wpcloudy.php:153
+#: ../wpcloudy.php:180
 msgid "Imperial or metric units?"
 msgstr "Système métrique ou impérial ?"
 
-#: ../wpcloudy.php:155
-msgid "Imperial"
-msgstr "Impérial"
-
-#: ../wpcloudy.php:156
-msgid "Metric"
-msgstr "Métrique"
-
-#: ../wpcloudy.php:160
+#: ../wpcloudy.php:187
 msgid "Display language: english, french, spanish, german etc. "
 msgstr "Langue d'affichage : english, french, spanish, german"
 
-#: ../wpcloudy.php:168
-msgid "Current weather?"
-msgstr "Temps actuel ?"
-
-#: ../wpcloudy.php:174
-msgid "Short condition?"
-msgstr "Conditions météo en texte ?"
-
-#: ../wpcloudy.php:180
-msgid "Wind?"
-msgstr "Vent ?"
-
-#: ../wpcloudy.php:186
-msgid "Humidity?"
-msgstr "Humidité"
-
-#: ../wpcloudy.php:192
-msgid "Pressure?"
-msgstr "Pression atmosphérique ?"
-
-#: ../wpcloudy.php:198
-msgid "Cloudiness?"
-msgstr "Couverture nuageuse ?"
-
-#: ../wpcloudy.php:204
+#: ../wpcloudy.php:231
 msgid "Hour Forecast?"
 msgstr "Prévisions heure par heure ?"
 
-#: ../wpcloudy.php:210
+#: ../wpcloudy.php:237
 msgid "Today date + Min-Max Temperatures?"
 msgstr "Date du jour + Températures mini-maxi ?"
 
-#: ../wpcloudy.php:216
+#: ../wpcloudy.php:243
 msgid "7-Day Forecast?"
 msgstr "Prévisions à 7 jours ?"
 
-#: ../wpcloudy.php:222
-msgid "Background color"
-msgstr "Couleur d'arrière plan"
-
-#: ../wpcloudy.php:226
-msgid "Text color"
-msgstr "Couleur du texte"
-
-#: ../wpcloudy.php:230
-msgid "Border color"
-msgstr "Couleur des bordures"
-
-#: ../wpcloudy.php:234
+#: ../wpcloudy.php:261
 msgid "Custom CSS"
 msgstr "CSS personnalisée"
 
-#: ../wpcloudy.php:238
+#: ../wpcloudy.php:265
 msgid "Weather size?"
 msgstr "Taille de la météo ?"
 
-#: ../wpcloudy.php:240
-msgid "Small"
-msgstr "Petite"
-
-#: ../wpcloudy.php:241
-msgid "Medium"
-msgstr "Moyenne"
-
-#: ../wpcloudy.php:242
-msgid "Large"
-msgstr "Grande"
-
-#: ../wpcloudy.php:250
+#: ../wpcloudy.php:277
 msgid "Display map?"
 msgstr "Afficher la carte ?"
 
-#: ../wpcloudy.php:254
+#: ../wpcloudy.php:281
 msgid "Map height (in px)"
 msgstr "Hauteur de la carte (en px)"
 
-#: ../wpcloudy.php:258
-msgid "Layers opacity"
-msgstr "Opacité des calques"
-
-#: ../wpcloudy.php:274
-msgid "Zoom"
-msgstr "Zoom"
-
-#: ../wpcloudy.php:297
+#: ../wpcloudy.php:324
 msgid "Layers"
 msgstr "Calques"
 
-#: ../wpcloudy.php:302
+#: ../wpcloudy.php:329
 msgid "Display stations?"
 msgstr "Afficher les stations ?"
 
-#: ../wpcloudy.php:308
+#: ../wpcloudy.php:335
 msgid "Display clouds?"
 msgstr "Afficher les nuages ?"
 
-#: ../wpcloudy.php:314
+#: ../wpcloudy.php:341
 msgid "Display precipitation?"
 msgstr "Afficher les précipitations ?"
 
-#: ../wpcloudy.php:320
+#: ../wpcloudy.php:347
 msgid "Display snow?"
 msgstr "Afficher la neige ?"
 
-#: ../wpcloudy.php:326
+#: ../wpcloudy.php:353
 msgid "Display wind?"
 msgstr "Afficher le vent ?"
 
-#: ../wpcloudy.php:332
+#: ../wpcloudy.php:359
 msgid "Display temperature?"
 msgstr "Afficher les températures ?"
 
-#: ../wpcloudy.php:338
+#: ../wpcloudy.php:365
 msgid "Display pressure?"
 msgstr "Afficher la pression atmosphérique ?"
 
-#: ../wpcloudy.php:605
+#: ../wpcloudy.php:1325
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: ../wpcloudy.php:612
+#: ../wpcloudy.php:1332
 msgid "Wind"
 msgstr "Vent"
 
-#: ../wpcloudy.php:616
+#: ../wpcloudy.php:1336
 msgid "Humidity"
 msgstr "Humidité"
 
-#: ../wpcloudy.php:619
+#: ../wpcloudy.php:1339
 msgid "Pressure"
 msgstr "Pression"
 
-#: ../wpcloudy.php:622
+#: ../wpcloudy.php:1342
 msgid "Cloudiness"
 msgstr "Nuages"
 
-#: ../wpcloudy.php:627
+#: ../wpcloudy.php:1347
 msgid "Now"
 msgstr "Maintenant"
 
-#: ../wpcloudy.php:956
+#: ../wpcloudy.php:1675
 msgid "Shortcode"
 msgstr "Bout de code"
 
-#: ../wpcloudy.php:978 ../wpcloudy.php:979 ../wpcloudy.php:980
+#: ../wpcloudy.php:1697 ../wpcloudy.php:1698 ../wpcloudy.php:1699
 msgid "Weather"
 msgstr "Météo"
 
-#: ../wpcloudy.php:981
+#: ../wpcloudy.php:1700
 msgid "Parent Weather:"
 msgstr "Météo parent:"
 
-#: ../wpcloudy.php:982
+#: ../wpcloudy.php:1701
 msgid "All Weather"
 msgstr "Toutes les météos"
 
-#: ../wpcloudy.php:983
+#: ../wpcloudy.php:1702
 msgid "View Weather"
 msgstr "Voir la météo"
 
-#: ../wpcloudy.php:984
+#: ../wpcloudy.php:1703
 msgid "Add New Weather"
 msgstr "Ajouter une nouvelle météo"
 
-#: ../wpcloudy.php:985
+#: ../wpcloudy.php:1704
 msgid "New Weather"
 msgstr "Nouvelle météo"
 
-#: ../wpcloudy.php:986
+#: ../wpcloudy.php:1705
 msgid "Edit Weather"
 msgstr "Editer météo"
 
-#: ../wpcloudy.php:987
+#: ../wpcloudy.php:1706
 msgid "Update Weather"
 msgstr "Mettre à jour la météo"
 
-#: ../wpcloudy.php:988
+#: ../wpcloudy.php:1707
 msgid "Search Weather"
 msgstr "Rechercher une météo"
 
-#: ../wpcloudy.php:989
+#: ../wpcloudy.php:1708
 msgid "No weather found"
 msgstr "Aucune météo trouvée"
 
-#: ../wpcloudy.php:990
+#: ../wpcloudy.php:1709
 msgid "No weather found in Trash"
 msgstr "Aucune météo trouvée dans la corbeille"
 
-#: ../wpcloudy.php:994
+#: ../wpcloudy.php:1713
 msgid "weather"
 msgstr "météo"
 
-#: ../wpcloudy.php:995
+#: ../wpcloudy.php:1714
 msgid "Listing weather"
 msgstr "Liste des météos"
 
-#: ../wpcloudy.php:1028 ../wpcloudy.php:1031
+#: ../wpcloudy.php:1747 ../wpcloudy.php:1750
 msgid " updated."
 msgstr "mis à jour."
 
-#: ../wpcloudy.php:1029
+#: ../wpcloudy.php:1748
 msgid "Custom field updated."
 msgstr "Champ personnalisé mis à jour."
 
-#: ../wpcloudy.php:1030
+#: ../wpcloudy.php:1749
 msgid "Custom field deleted."
 msgstr "Champ personnalisé supprimé."
 
-#: ../wpcloudy.php:1032
+#: ../wpcloudy.php:1751
 #, php-format
 msgid " restored to revision from %s"
 msgstr "restauré de la révision du %s"
 
-#: ../wpcloudy.php:1033
+#: ../wpcloudy.php:1752
 msgid " published."
 msgstr "publiée."
 
-#: ../wpcloudy.php:1034
+#: ../wpcloudy.php:1753
 msgid "Page saved."
 msgstr "Page sauvegardée."
 
-#: ../wpcloudy.php:1035
+#: ../wpcloudy.php:1754
 msgid " submitted."
 msgstr "soumis."
 
-#: ../wpcloudy.php:1036
+#: ../wpcloudy.php:1755
 #, php-format
 msgid " scheduled for: <strong>%1$s</strong>. "
 msgstr "programmé pour: <strong>%1$s</strong>. "
 
-#: ../wpcloudy.php:1036
+#: ../wpcloudy.php:1755
 msgid "M j, Y @ G:i"
 msgstr "M j, Y @ G:i"
 
-#: ../wpcloudy.php:1037
+#: ../wpcloudy.php:1756
 msgid " draft updated."
 msgstr "brouillon mis à jour."
