@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.2
+Version: 2.2.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -1192,6 +1192,27 @@ function get_bypass_map_layers_pressure($attr,$content) {
 		return get_map_layers_pressure($attr,$content);
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Styles CSS
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function wpc_css_background($wpcloudy_meta_bg_color) {
+	if( $wpcloudy_meta_bg_color ) {
+			return 'background:'. $wpcloudy_meta_bg_color;
+	}
+}
+function wpc_css_text_color($wpcloudy_meta_text_color) {
+	if( $wpcloudy_meta_text_color ) {
+			return 'color:'. $wpcloudy_meta_text_color;
+	}
+}
+function wpc_css_border($wpcloudy_meta_border_color) {
+	if( $wpcloudy_meta_border_color ) {
+			return 'border:1px solid '. $wpcloudy_meta_border_color;
+	}
+}
+			
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add shortcode Weather
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1605,26 +1626,10 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_size					=	get_bypass_size($attr,$content);
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);
 			
-			//Styles
 			if ($display_custom_css) {
 				echo $display_custom_css;
 			}			
-			function wpc_css_background($wpcloudy_meta_bg_color) {
-				if( $wpcloudy_meta_bg_color ) {
-						return 'background:'. $wpcloudy_meta_bg_color;
-				}
-			}
-			function wpc_css_text_color($wpcloudy_meta_text_color) {
-				if( $wpcloudy_meta_text_color ) {
-						return 'color:'. $wpcloudy_meta_text_color;
-				}
-			}
-			function wpc_css_border($wpcloudy_meta_border_color) {
-				if( $wpcloudy_meta_border_color ) {
-						return 'border:1px solid '. $wpcloudy_meta_border_color;
-				}
-			}
-			//
+
 				
 			echo '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .';'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
 				
