@@ -2,9 +2,9 @@
 Contributors: rainbowgeek
 Donate link: http://wpcloudy.com/
 Tags: weather, forecast
-Requires at least: 3.4
+Requires at least: 3.5.1
 Tested up to: 3.6
-Stable tag: 2.1
+Stable tag: 2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,7 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
+* NEW! Adding an options panel to bypass options for individual weather
 * NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
 
 * 70 000 cities listed (thanks to OpenWeatherMap)
@@ -55,9 +56,13 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 2. Display options
 3. Advanced options
 4. Map options
-5. WP Cloudy in action
+5. Options panel
+6. WP Cloudy in action
 
 == Changelog ==
+= 2.2 =
+* NEW Add option panel to bypass options for individual weather
+* FIX "Cannot modify header information - headers already sent" bug
 = 2.1 =
 * NEW Add custom CSS field
 = 2.0 =

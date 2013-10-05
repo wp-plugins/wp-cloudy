@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 /*
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.1
+Version: 2.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -41,6 +41,34 @@ register_deactivation_hook(__FILE__, 'weather_deactivation');
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+//Shortcut settings page
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+add_filter('plugin_action_links', 'wpc_plugin_action_links', 10, 2);
+
+function wpc_plugin_action_links($links, $file) {
+    static $this_plugin;
+
+    if (!$this_plugin) {
+        $this_plugin = plugin_basename(__FILE__);
+    }
+
+    if ($file == $this_plugin) {
+        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=wpc-settings-admin">Settings</a>';
+        array_unshift($links, $settings_link);
+    }
+
+    return $links;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Admin panel
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+if ( is_admin() )
+	require_once dirname( __FILE__ ) . '/wpcloudy-admin.php';
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 //Translation
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,8 +95,7 @@ function wpcloudy_styles() {
 add_action( 'admin_enqueue_scripts', 'wpcloudy_admin_enqueue' );
 
 function wpcloudy_admin_enqueue() {
-    global $typenow;
-    if( $typenow == 'wpc-weather' ) {
+	if(is_admin()){
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
 		wp_register_style('wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
@@ -468,7 +495,703 @@ function save_metabox($post_id){
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//WPC Options Panel
+///////////////////////////////////////////////////////////////////////////////////////////////////		
 
+//Bypass Unit
+function get_admin_bypass_unit() {
+	$wpc_admin_bypass_unit_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_unit_option ) ) {
+		foreach ($wpc_admin_bypass_unit_option as $key => $wpc_admin_bypass_unit_value)
+			$options[$key] = $wpc_admin_bypass_unit_value;
+		return $wpc_admin_bypass_unit_option['wpc_basic_bypass_unit'];
+	}
+};
+
+function get_admin_unit() {
+	$wpc_admin_unit_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_unit_option ) ) {
+		foreach ($wpc_admin_unit_option as $key => $wpc_admin_unit_value)
+			$options[$key] = $wpc_admin_unit_value;
+		return $wpc_admin_unit_option['wpc_basic_unit'];
+	}
+};
+
+function get_unit($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_unit_value = get_post_meta($id,'_wpcloudy_meta_unit',true);
+		return $wpc_unit_value;
+};
+
+function get_bypass_unit($attr,$content) {
+	if (get_admin_unit() && (get_admin_bypass_unit())) {
+		return get_admin_unit(); 
+	}
+	else {
+		return get_unit($attr,$content);
+	}
+}	
+
+//Bypass Background Color
+	
+function get_admin_color_background() {
+	$wpc_admin_bg_color_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_bg_color_option ) ) {
+		foreach ($wpc_admin_bg_color_option as $key => $wpc_admin_bg_color_value)
+			$options[$key] = $wpc_admin_bg_color_value;
+		return $wpc_admin_bg_color_option['wpc_advanced_bg_color'];
+	}
+};
+
+function get_color_background($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_bg_color_value = get_post_meta($id,'_wpcloudy_meta_bg_color',true);
+		return $wpc_bg_color_value;
+};
+
+function get_bypass_color_background($attr,$content) {
+	if (get_admin_color_background()) {
+		return get_admin_color_background(); 
+	}
+	else {
+		return get_color_background($attr,$content);
+	}
+}
+
+//Bypass Text Color
+
+function get_admin_color_text() {
+	$wpc_admin_text_color_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_text_color_option ) ) {
+		foreach ($wpc_admin_text_color_option as $key => $wpc_admin_text_color_value)
+			$options[$key] = $wpc_admin_text_color_value;
+		return $wpc_admin_text_color_option['wpc_advanced_text_color'];
+	}
+};
+
+function get_color_text($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_text_color_value = get_post_meta($id,'_wpcloudy_meta_txt_color',true);
+		return $wpc_text_color_value;
+};
+
+function get_bypass_color_text($attr,$content) {
+	if (get_admin_color_text()) {
+		return get_admin_color_text(); 
+	}
+	else {
+		return get_color_text($attr,$content);
+	}
+}
+
+//Bypass Border Color
+
+function get_admin_color_border() {
+	$wpc_admin_color_border_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_color_border_option ) ) {
+		foreach ($wpc_admin_color_border_option as $key => $wpc_admin_color_border_value)
+			$options[$key] = $wpc_admin_color_border_value;
+		return $wpc_admin_color_border_option['wpc_advanced_border_color'];
+	}
+};
+
+function get_color_border($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_color_border_value = get_post_meta($id,'_wpcloudy_meta_border_color',true);
+		return $wpc_color_border_value;
+};
+
+function get_bypass_color_border($attr,$content) {
+	if (get_admin_color_border()) {
+		return get_admin_color_border(); 
+	}
+	else {
+		return get_color_border($attr,$content);
+	}
+}
+
+//Bypass Current weather
+
+function get_admin_display_current_weather() {
+	$wpc_admin_display_current_weather_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_current_weather_option ) ) {
+		foreach ($wpc_admin_display_current_weather_option as $key => $wpc_admin_display_current_weather_value)
+			$options[$key] = $wpc_admin_display_current_weather_value;
+		return $wpc_admin_display_current_weather_option['wpc_display_current_weather'];
+	}
+};
+
+function get_display_current_weather($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_current_weather_value = get_post_meta($id,'_wpcloudy_current_weather',true);
+		return $wpc_display_current_weather_value;
+};
+
+function get_bypass_display_current_weather($attr,$content) {
+	if (get_admin_display_current_weather()) {
+		return get_admin_display_current_weather(); 
+	}
+	else {
+		return get_display_current_weather($attr,$content);
+	}
+}
+
+//Bypass Short condition
+
+function get_admin_display_weather() {
+	$wpc_admin_display_weather_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_weather_option ) ) {
+		foreach ($wpc_admin_display_weather_option as $key => $wpc_admin_display_weather_value)
+			$options[$key] = $wpc_admin_display_weather_value;
+		return $wpc_admin_display_weather_option['wpc_display_weather'];
+	}
+};
+
+function get_display_weather($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_weather_value = get_post_meta($id,'_wpcloudy_weather',true);
+		return $wpc_display_weather_value;
+};
+
+function get_bypass_display_weather($attr,$content) {
+	if (get_admin_display_weather()) {
+		return get_admin_display_weather(); 
+	}
+	else {
+		return get_display_weather($attr,$content);
+	}
+}
+
+//Bypass Wind
+
+function get_admin_display_wind() {
+	$wpc_admin_display_wind_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_wind_option ) ) {
+		foreach ($wpc_admin_display_wind_option as $key => $wpc_admin_display_wind_value)
+			$options[$key] = $wpc_admin_display_wind_value;
+		return $wpc_admin_display_wind_option['wpc_display_wind'];
+	}
+};
+
+function get_display_wind($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_wind_value = get_post_meta($id,'_wpcloudy_wind',true);
+		return $wpc_display_wind_value;
+};
+
+function get_bypass_display_wind($attr,$content) {
+	if (get_admin_display_wind()) {
+		return get_admin_display_wind(); 
+	}
+	else {
+		return get_display_wind($attr,$content);
+	}
+}
+//Bypass Humidity
+
+function get_admin_display_humidity() {
+	$wpc_admin_display_humidity_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_humidity_option ) ) {
+		foreach ($wpc_admin_display_humidity_option as $key => $wpc_admin_display_humidity_value)
+			$options[$key] = $wpc_admin_display_humidity_value;
+		return $wpc_admin_display_humidity_option['wpc_display_current_weather'];
+	}
+};
+
+function get_display_humidity($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_humidity_value = get_post_meta($id,'_wpcloudy_humidity',true);
+		return $wpc_display_humidity_value;
+};
+
+function get_bypass_display_humidity($attr,$content) {
+	if (get_admin_display_humidity()) {
+		return get_admin_display_humidity(); 
+	}
+	else {
+		return get_display_humidity($attr,$content);
+	}
+}
+//Bypass Pressure
+
+function get_admin_display_pressure() {
+	$wpc_admin_display_pressure_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_pressure_option ) ) {
+		foreach ($wpc_admin_display_pressure_option as $key => $wpc_admin_display_pressure_value)
+			$options[$key] = $wpc_admin_display_pressure_value;
+		return $wpc_admin_display_pressure_option['wpc_display_pressure'];
+	}
+};
+
+function get_display_pressure($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_pressure_value = get_post_meta($id,'_wpcloudy_pressure',true);
+		return $wpc_display_pressure_value;
+};
+
+function get_bypass_display_pressure($attr,$content) {
+	if (get_admin_display_pressure()) {
+		return get_admin_display_pressure(); 
+	}
+	else {
+		return get_display_pressure($attr,$content);
+	}
+}
+//Bypass Cloudiness
+
+function get_admin_display_cloudiness() {
+	$wpc_admin_display_cloudiness_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_cloudiness_option ) ) {
+		foreach ($wpc_admin_display_cloudiness_option as $key => $wpc_admin_display_cloudiness_value)
+			$options[$key] = $wpc_admin_display_cloudiness_value;
+		return $wpc_admin_display_cloudiness_option['wpc_display_cloudiness'];
+	}
+};
+
+function get_display_cloudiness($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_cloudiness_value = get_post_meta($id,'_wpcloudy_cloudiness',true);
+		return $wpc_display_cloudiness_value;
+};
+
+function get_bypass_display_cloudiness($attr,$content) {
+	if (get_admin_display_cloudiness()) {
+		return get_admin_display_cloudiness(); 
+	}
+	else {
+		return get_display_cloudiness($attr,$content);
+	}
+}
+
+//Bypass Hour Forecast
+
+function get_admin_display_hour_forecast() {
+	$wpc_admin_display_hour_forecast_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_hour_forecast_option ) ) {
+		foreach ($wpc_admin_display_hour_forecast_option as $key => $wpc_admin_display_hour_forecast_value)
+			$options[$key] = $wpc_admin_display_hour_forecast_value;
+		return $wpc_admin_display_hour_forecast_option['wpc_display_hour_forecast'];
+	}
+};
+
+function get_display_hour_forecast($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_hour_forecast_value = get_post_meta($id,'_wpcloudy_hour_forecast',true);
+		return $wpc_display_hour_forecast_value;
+};
+
+function get_bypass_display_hour_forecast($attr,$content) {
+	if (get_admin_display_hour_forecast()) {
+		return get_admin_display_hour_forecast(); 
+	}
+	else {
+		return get_display_hour_forecast($attr,$content);
+	}
+}
+
+//Bypass Today Date + Min-Max Temp
+
+function get_admin_display_temperature_min_max() {
+	$wpc_admin_display_temperature_min_max_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_temperature_min_max_option ) ) {
+		foreach ($wpc_admin_display_temperature_min_max_option as $key => $wpc_admin_display_temperature_min_max_value)
+			$options[$key] = $wpc_admin_display_temperature_min_max_value;
+		return $wpc_admin_display_temperature_min_max_option['wpc_display_temperature_min_max'];
+	}
+};
+
+function get_display_temperature_min_max($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_temperature_min_max_value = get_post_meta($id,'_wpcloudy_temperature_min_max',true);
+		return $wpc_display_temperature_min_max_value;
+};
+
+function get_bypass_display_temperature_min_max($attr,$content) {
+	if (get_admin_display_temperature_min_max()) {
+		return get_admin_display_temperature_min_max(); 
+	}
+	else {
+		return get_display_temperature_min_max($attr,$content);
+	}
+}
+
+//Bypass Forecast
+
+function get_admin_display_forecast() {
+	$wpc_admin_display_forecast_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_forecast_option ) ) {
+		foreach ($wpc_admin_display_forecast_option as $key => $wpc_admin_display_forecast_value)
+			$options[$key] = $wpc_admin_display_forecast_value;
+		return $wpc_admin_display_forecast_option['wpc_display_forecast'];
+	}
+};
+
+function get_display_forecast($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_forecast_value = get_post_meta($id,'_wpcloudy_forecast',true);
+		return $wpc_display_forecast_value;
+};
+
+function get_bypass_display_forecast($attr,$content) {
+	if (get_admin_display_forecast()) {
+		return get_admin_display_forecast(); 
+	}
+	else {
+		return get_display_forecast($attr,$content);
+	}
+}
+
+//Bypass Weather Size
+
+function get_admin_bypass_size() {
+	$wpc_admin_bypass_size_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_size_option ) ) {
+		foreach ($wpc_admin_bypass_size_option as $key => $wpc_admin_bypass_size_value)
+			$options[$key] = $wpc_admin_bypass_size_value;
+		return $wpc_admin_bypass_size_option['wpc_advanced_bypass_size'];
+	}
+};
+
+function get_admin_size() {
+	$wpc_admin_size_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_size_option ) ) {
+		foreach ($wpc_admin_size_option as $key => $wpc_admin_size_value)
+			$options[$key] = $wpc_admin_size_value;
+		return $wpc_admin_size_option['wpc_advanced_size'];
+	}
+};
+
+function get_size($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_size_value = get_post_meta($id,'_wpcloudy_meta_size',true);
+		return $wpc_size_value;
+};
+
+function get_bypass_size($attr,$content) {
+	if (get_admin_unit() && (get_admin_bypass_size())) {
+		return get_admin_size(); 
+	}
+	else {
+		return get_size($attr,$content);
+	}
+}
+
+//Bypass Map
+function get_admin_bypass_map() {
+	$wpc_admin_bypass_map_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_map_option ) ) {
+		foreach ($wpc_admin_bypass_map_option as $key => $wpc_admin_bypass_map_value)
+			$options[$key] = $wpc_admin_bypass_map_value;
+		return $wpc_admin_bypass_map_option['wpc_map_display'];
+	}
+};
+
+function get_map($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_value = get_post_meta($id,'_wpcloudy_map',true);
+		return $wpc_map_value;
+};
+
+function get_bypass_map($attr,$content) {
+	if (get_admin_bypass_map()) {
+		return get_admin_bypass_map(); 
+	}
+	else {
+		return get_map($attr,$content);
+	}
+}
+
+//Bypass Map Height
+function get_admin_bypass_map_height() {
+	$wpc_admin_bypass_map_height_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_map_height_option ) ) {
+		foreach ($wpc_admin_bypass_map_height_option as $key => $wpc_admin_bypass_map_height_value)
+			$options[$key] = $wpc_admin_bypass_map_height_value;
+		return $wpc_admin_bypass_map_height_option['wpc_map_height'];
+	}
+};
+
+function get_map_height($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_height_value = get_post_meta($id,'_wpcloudy_map_height',true);
+		return $wpc_map_height_value;
+};
+
+function get_bypass_map_height($attr,$content) {
+	if (get_admin_bypass_map_height()) {
+		return get_admin_bypass_map_height(); 
+	}
+	else {
+		return get_map_height($attr,$content);
+	}
+}
+
+//Bypass Layers opacity
+function get_admin_bypass_map_opacity() {
+	$wpc_admin_bypass_map_opacity_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_map_opacity_option ) ) {
+		foreach ($wpc_admin_bypass_map_opacity_option as $key => $wpc_admin_bypass_map_opacity_value)
+			$options[$key] = $wpc_admin_bypass_map_opacity_value;
+		return $wpc_admin_bypass_map_opacity_option['wpc_map_bypass_opacity'];
+	}
+};
+
+function get_admin_map_opacity() {
+	$wpc_admin_map_opacity_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_opacity_option ) ) {
+		foreach ($wpc_admin_map_opacity_option as $key => $wpc_admin_map_opacity_value)
+			$options[$key] = $wpc_admin_map_opacity_value;
+		return $wpc_admin_map_opacity_option['wpc_map_opacity'];
+	}
+};
+
+function get_map_opacity($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_opacity_value = get_post_meta($id,'_wpcloudy_map_opacity',true);
+		return $wpc_map_opacity_value;
+};
+
+function get_bypass_map_opacity($attr,$content) {
+	if (get_admin_map_opacity() && (get_admin_bypass_map_opacity())) {
+		return get_admin_map_opacity(); 
+	}
+	else {
+		return get_map_opacity($attr,$content);
+	}
+}
+
+//Bypass Zoom Map
+function get_admin_bypass_map_zoom() {
+	$wpc_admin_bypass_map_zoom_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_map_zoom_option ) ) {
+		foreach ($wpc_admin_bypass_map_zoom_option as $key => $wpc_admin_bypass_map_zoom_value)
+			$options[$key] = $wpc_admin_bypass_map_zoom_value;
+		return $wpc_admin_bypass_map_zoom_option['wpc_map_zoom'];
+	}
+};
+
+function get_admin_map_zoom() {
+	$wpc_admin_map_zoom_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_zoom_option ) ) {
+		foreach ($wpc_admin_map_zoom_option as $key => $wpc_admin_map_zoom_value)
+			$options[$key] = $wpc_admin_map_zoom_value;
+		return $wpc_admin_map_zoom_option['wpc_map_zoom'];
+	}
+};
+
+function get_map_zoom($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_zoom_value = get_post_meta($id,'_wpcloudy_map_zoom',true);
+		return $wpc_map_zoom_value;
+};
+
+function get_bypass_map_zoom($attr,$content) {
+	if (get_admin_map_zoom() && (get_admin_bypass_map_zoom())) {
+		return get_admin_map_zoom(); 
+	}
+	else {
+		return get_map_zoom($attr,$content);
+	}
+}
+
+//Bypass Layers stations
+function get_admin_map_layers_stations() {
+	$wpc_admin_map_layers_stations_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_stations_option ) ) {
+		foreach ($wpc_admin_map_layers_stations_option as $key => $wpc_admin_map_layers_stations_value)
+			$options[$key] = $wpc_admin_map_layers_stations_value;
+		return $wpc_admin_map_layers_stations_option['wpc_map_layers_stations'];
+	}
+};
+
+function get_map_layers_stations($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_stations_value = get_post_meta($id,'_wpcloudy_map_stations',true);
+		return $wpc_map_layers_stations_value;
+};
+
+function get_bypass_map_layers_stations($attr,$content) {
+	if (get_admin_map_layers_stations()) {
+		return get_admin_map_layers_stations(); 
+	}
+	else {
+		return get_map_layers_stations($attr,$content);
+	}
+}
+
+//Bypass Layers clouds
+function get_admin_map_layers_clouds() {
+	$wpc_admin_map_layers_clouds_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_clouds_option ) ) {
+		foreach ($wpc_admin_map_layers_clouds_option as $key => $wpc_admin_map_layers_clouds_value)
+			$options[$key] = $wpc_admin_map_layers_clouds_value;
+		return $wpc_admin_map_layers_clouds_option['wpc_map_layers_clouds'];
+	}
+};
+
+function get_map_layers_clouds($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_clouds_value = get_post_meta($id,'_wpcloudy_map_clouds',true);
+		return $wpc_map_layers_clouds_value;
+};
+
+function get_bypass_map_layers_clouds($attr,$content) {
+	if (get_admin_map_layers_clouds()) {
+		return get_admin_map_layers_clouds(); 
+	}
+	else {
+		return get_map_layers_clouds($attr,$content);
+	}
+}
+
+//Bypass Layers precipitations
+function get_admin_map_layers_precipitation() {
+	$wpc_admin_map_layers_precipitation_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_precipitation_option ) ) {
+		foreach ($wpc_admin_map_layers_precipitation_option as $key => $wpc_admin_map_layers_precipitation_value)
+			$options[$key] = $wpc_admin_map_layers_precipitation_value;
+		return $wpc_admin_map_layers_precipitation_option['wpc_map_layers_precipitation'];
+	}
+};
+
+function get_map_layers_precipitation($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_precipitation_value = get_post_meta($id,'_wpcloudy_map_precipitation',true);
+		return $wpc_map_layers_precipitation_value;
+};
+
+function get_bypass_map_layers_precipitation($attr,$content) {
+	if (get_admin_map_layers_precipitation()) {
+		return get_admin_map_layers_precipitation(); 
+	}
+	else {
+		return get_map_layers_precipitation($attr,$content);
+	}
+}	
+
+//Bypass Layers snow
+function get_admin_map_layers_snow() {
+	$wpc_admin_map_layers_snow_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_snow_option ) ) {
+		foreach ($wpc_admin_map_layers_snow_option as $key => $wpc_admin_map_layers_snow_value)
+			$options[$key] = $wpc_admin_map_layers_snow_value;
+		return $wpc_admin_map_layers_snow_option['wpc_map_layers_snow'];
+	}
+};
+
+function get_map_layers_snow($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_snow_value = get_post_meta($id,'_wpcloudy_map_snow',true);
+		return $wpc_map_layers_snow_value;
+};
+
+function get_bypass_map_layers_snow($attr,$content) {
+	if (get_admin_map_layers_snow()) {
+		return get_admin_map_layers_snow(); 
+	}
+	else {
+		return get_map_layers_snow($attr,$content);
+	}
+}
+
+//Bypass Layers wind
+function get_admin_map_layers_wind() {
+	$wpc_admin_map_layers_wind_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_wind_option ) ) {
+		foreach ($wpc_admin_map_layers_wind_option as $key => $wpc_admin_map_layers_wind_value)
+			$options[$key] = $wpc_admin_map_layers_wind_value;
+		return $wpc_admin_map_layers_wind_option['wpc_map_layers_wind'];
+	}
+};
+
+function get_map_layers_wind($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_wind_value = get_post_meta($id,'_wpcloudy_map_wind',true);
+		return $wpc_map_layers_wind_value;
+};
+
+function get_bypass_map_layers_wind($attr,$content) {
+	if (get_admin_map_layers_wind()) {
+		return get_admin_map_layers_wind(); 
+	}
+	else {
+		return get_map_layers_wind($attr,$content);
+	}
+}
+
+//Bypass Layers temperature
+function get_admin_map_layers_temperature() {
+	$wpc_admin_map_layers_temperature_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_temperature_option ) ) {
+		foreach ($wpc_admin_map_layers_temperature_option as $key => $wpc_admin_map_layers_temperature_value)
+			$options[$key] = $wpc_admin_map_layers_temperature_value;
+		return $wpc_admin_map_layers_temperature_option['wpc_map_layers_temperature'];
+	}
+};
+
+function get_map_layers_temperature($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_temperature_value = get_post_meta($id,'_wpcloudy_map_temperature',true);
+		return $wpc_map_layers_temperature_value;
+};
+
+function get_bypass_map_layers_temperature($attr,$content) {
+	if (get_admin_map_layers_temperature()) {
+		return get_admin_map_layers_temperature(); 
+	}
+	else {
+		return get_map_layers_temperature($attr,$content);
+	}
+}
+
+//Bypass Layers pressure
+function get_admin_map_layers_pressure() {
+	$wpc_admin_map_layers_pressure_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_map_layers_pressure_option ) ) {
+		foreach ($wpc_admin_map_layers_pressure_option as $key => $wpc_admin_map_layers_pressure_value)
+			$options[$key] = $wpc_admin_map_layers_pressure_value;
+		return $wpc_admin_map_layers_pressure_option['wpc_map_layers_pressure'];
+	}
+};
+
+function get_map_layers_pressure($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_map_layers_pressure_value = get_post_meta($id,'_wpcloudy_map_pressure',true);
+		return $wpc_map_layers_pressure_value;
+};
+
+function get_bypass_map_layers_pressure($attr,$content) {
+	if (get_admin_map_layers_pressure()) {
+		return get_admin_map_layers_pressure(); 
+	}
+	else {
+		return get_map_layers_pressure($attr,$content);
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add shortcode Weather
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,28 +1200,25 @@ add_shortcode("wpc-weather", "wpcloudy_display_weather");
 
 function wpcloudy_display_weather($attr,$content) {
 
-    extract(shortcode_atts(array(
-
-               'id' => ''
-
-                   ), $attr));
+		extract(shortcode_atts(array( 'id' => ''), $attr));
 
 			$wpcloudy_city 				= get_post_meta($id,'_wpcloudy_city',true);
 			$wpcloudy_country_code		= get_post_meta($id,'_wpcloudy_country_code',true);
-			$wpcloudy_unit 				= get_post_meta($id,'_wpcloudy_unit',true);
+			$wpcloudy_unit 				= get_bypass_unit($attr,$content);
 			$wpcloudy_lang 				= get_post_meta($id,'_wpcloudy_lang',true);
-			$wpcloudy_map_height		= get_post_meta($id,'_wpcloudy_map_height',true);
-			$wpcloudy_map_opacity		= get_post_meta($id,'_wpcloudy_map_opacity',true);
-			$wpcloudy_map_zoom			= get_post_meta($id,'_wpcloudy_map_zoom',true);
-			$wpcloudy_map_stations		= get_post_meta($id,'_wpcloudy_map_stations',true);
-			$wpcloudy_map_clouds		= get_post_meta($id,'_wpcloudy_map_clouds',true);
-			$wpcloudy_map_precipitation	= get_post_meta($id,'_wpcloudy_map_precipitation',true);
-			$wpcloudy_map_snow			= get_post_meta($id,'_wpcloudy_map_snow',true);
-			$wpcloudy_map_wind			= get_post_meta($id,'_wpcloudy_map_wind',true);
-			$wpcloudy_map_temperature	= get_post_meta($id,'_wpcloudy_map_temperature',true);
-			$wpcloudy_map_pressure		= get_post_meta($id,'_wpcloudy_map_pressure',true);
-			
-			$wpcloudy_meta_border_color	= get_post_meta($id,'_wpcloudy_meta_border_color',true);
+			$wpcloudy_map_height		= get_bypass_map_height($attr,$content);
+			$wpcloudy_map_opacity		= get_bypass_map_opacity($attr,$content);
+			$wpcloudy_map_zoom			= get_bypass_map_zoom($attr,$content);
+			$wpcloudy_map_stations		= get_bypass_map_layers_stations($attr,$content);
+			$wpcloudy_map_clouds		= get_bypass_map_layers_clouds($attr,$content);
+			$wpcloudy_map_precipitation	= get_bypass_map_layers_precipitation($attr,$content);
+			$wpcloudy_map_snow			= get_bypass_map_layers_snow($attr,$content);
+			$wpcloudy_map_wind			= get_bypass_map_layers_wind($attr,$content);
+			$wpcloudy_map_temperature	= get_bypass_map_layers_temperature($attr,$content);
+			$wpcloudy_map_pressure		= get_bypass_map_layers_pressure($attr,$content);
+			$wpcloudy_meta_border_color	= get_bypass_color_border($attr,$content);
+			$wpcloudy_meta_bg_color		= get_bypass_color_background($attr,$content);
+			$wpcloudy_meta_text_color	= get_bypass_color_text($attr,$content);
 			
 			$myweather 				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035");
 			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035");
@@ -873,23 +1593,40 @@ function wpcloudy_display_weather($attr,$content) {
 				</script>
 			';
 			
-			$wpcloudy_current_weather		= 	get_post_meta($id,'_wpcloudy_current_weather',true);
-			$wpcloudy_weather				= 	get_post_meta($id,'_wpcloudy_weather',true);
-			$wpcloudy_wind 					= 	get_post_meta($id,'_wpcloudy_wind',true);
-			$wpcloudy_humidity				= 	get_post_meta($id,'_wpcloudy_humidity',true);
-			$wpcloudy_pressure				= 	get_post_meta($id,'_wpcloudy_pressure',true);
-			$wpcloudy_cloudiness			= 	get_post_meta($id,'_wpcloudy_cloudiness',true);
-			$wpcloudy_temperature_min_max	=	get_post_meta($id,'_wpcloudy_temperature_min_max',true);
-			$wpcloudy_hour_forecast			=	get_post_meta($id,'_wpcloudy_hour_forecast',true);
-			$wpcloudy_forecast				=	get_post_meta($id,'_wpcloudy_forecast',true);
-			$wpcloudy_meta_bg_color			=	get_post_meta($id,'_wpcloudy_meta_bg_color',true);
-			$wpcloudy_meta_txt_color		=	get_post_meta($id,'_wpcloudy_meta_txt_color',true);
-			$wpcloudy_size					=	get_post_meta($id,'_wpcloudy_size',true);
-			$wpcloudy_map 					= 	get_post_meta($id,'_wpcloudy_map',true);
+			$wpcloudy_current_weather		= 	get_bypass_display_current_weather($attr,$content);
+			$wpcloudy_weather				= 	get_bypass_display_weather($attr,$content);
+			$wpcloudy_wind 					= 	get_bypass_display_wind($attr,$content);
+			$wpcloudy_humidity				= 	get_bypass_display_humidity($attr,$content);
+			$wpcloudy_pressure				= 	get_bypass_display_pressure($attr,$content);
+			$wpcloudy_cloudiness			= 	get_bypass_display_cloudiness($attr,$content);
+			$wpcloudy_temperature_min_max	=	get_bypass_display_temperature_min_max($attr,$content);
+			$wpcloudy_hour_forecast			=	get_bypass_display_hour_forecast($attr,$content);
+			$wpcloudy_forecast				=	get_bypass_display_forecast($attr,$content);
+			$wpcloudy_size					=	get_bypass_size($attr,$content);
+			$wpcloudy_map 					= 	get_bypass_map($attr,$content);
 			
-			echo $display_custom_css;
-			
-			 echo '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="background:'. $wpcloudy_meta_bg_color .';color:'. $wpcloudy_meta_txt_color .';">';
+			//Styles
+			if ($display_custom_css) {
+				echo $display_custom_css;
+			}			
+			function wpc_css_background($wpcloudy_meta_bg_color) {
+				if( $wpcloudy_meta_bg_color ) {
+						return 'background:'. $wpcloudy_meta_bg_color;
+				}
+			}
+			function wpc_css_text_color($wpcloudy_meta_text_color) {
+				if( $wpcloudy_meta_text_color ) {
+						return 'color:'. $wpcloudy_meta_text_color;
+				}
+			}
+			function wpc_css_border($wpcloudy_meta_border_color) {
+				if( $wpcloudy_meta_border_color ) {
+						return 'border:1px solid '. $wpcloudy_meta_border_color;
+				}
+			}
+			//
+				
+			echo '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .';'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
 				
 				if( $wpcloudy_current_weather ) {
 					echo $display_now;
@@ -940,7 +1677,6 @@ function wpcloudy_display_weather($attr,$content) {
 				}
 
 			 echo '</div>';
-			
 			 
 }
 
