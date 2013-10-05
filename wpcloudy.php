@@ -878,7 +878,7 @@ function get_admin_size() {
 
 function get_size($attr,$content) {
 		extract(shortcode_atts(array( 'id' => ''), $attr));
-		$wpc_size_value = get_post_meta($id,'_wpcloudy_meta_size',true);
+		$wpc_size_value = get_post_meta($id,'_wpcloudy_size',true);
 		return $wpc_size_value;
 };
 
