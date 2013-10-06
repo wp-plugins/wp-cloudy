@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.2.2
+Version: 2.2.3
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -521,7 +521,7 @@ function get_admin_unit() {
 
 function get_unit($attr,$content) {
 		extract(shortcode_atts(array( 'id' => ''), $attr));
-		$wpc_unit_value = get_post_meta($id,'_wpcloudy_meta_unit',true);
+		$wpc_unit_value = get_post_meta($id,'_wpcloudy_unit',true);
 		return $wpc_unit_value;
 };
 
@@ -1624,66 +1624,66 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_hour_forecast			=	get_bypass_display_hour_forecast($attr,$content);
 			$wpcloudy_forecast				=	get_bypass_display_forecast($attr,$content);
 			$wpcloudy_size					=	get_bypass_size($attr,$content);
-			$wpcloudy_map 					= 	get_bypass_map($attr,$content);
+			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
+
+			$html = '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .';'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
 			
+			if( $wpcloudy_current_weather ) {
+				$html .= $display_now;
+			}
+			
+			if( $wpcloudy_weather ) {
+				$html .= $display_weather;
+			}
+			
+			if( $wpcloudy_temperature_min_max ) {
+				$html .= $display_today;
+			}						
+			 
+			if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
+				$html .= '<div class="infos">';
+			}
+			
+			if( $wpcloudy_wind ) {
+				$html .= $display_wind;
+			}
+			
+			if( $wpcloudy_humidity ) {
+				$html .= $display_humidity;
+			} 
+			
+			if( $wpcloudy_pressure ) {
+				$html .= $display_pressure;
+			} 
+			
+			if( $wpcloudy_cloudiness ) {
+				$html .= $display_cloudiness;
+			} 
+			
+			if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
+				$html .= '</div>';
+			}
+			
+			if( $wpcloudy_hour_forecast ) {
+				$html .= $display_hours;
+			} 
+
+			if( $wpcloudy_forecast ) {
+				$html .= $display_forecast;
+			}
+			
+			if( $wpcloudy_map ) {
+				$html .= $display_map;
+			}
 			if ($display_custom_css) {
-				echo $display_custom_css;
-			}			
+				$html .= $display_custom_css;
+			}
 
-				
-			echo '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .';'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
-				
-				if( $wpcloudy_current_weather ) {
-					echo $display_now;
-				}
-				
-				if( $wpcloudy_weather ) {
-					echo $display_weather;
-				}
-				
-				if( $wpcloudy_temperature_min_max ) {
-					echo $display_today;
-				}
-				 
-				if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
-					echo '<div class="infos">';
-				}
-				
-				if( $wpcloudy_wind ) {
-				   echo $display_wind;
-				}
-				
-				if( $wpcloudy_humidity ) {
-				   echo $display_humidity;
-				} 
-				
-				if( $wpcloudy_pressure ) {
-				   echo $display_pressure;
-				} 
-				
-				if( $wpcloudy_cloudiness ) {
-				   echo $display_cloudiness;
-				} 
-				
-				if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
-					echo '</div>';
-				}
-				
-				if( $wpcloudy_hour_forecast ) {
-				   echo $display_hours;
-				} 
-
-				if( $wpcloudy_forecast ) {
-				   echo $display_forecast;
-				}
-				
-				if( $wpcloudy_map ) {
-				   echo $display_map;
-				}
-
-			 echo '</div>';
+		 $html .= '</div>';
+		 return $html;
 			 
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Fix shortcode bug in widget text
 ///////////////////////////////////////////////////////////////////////////////////////////////////
