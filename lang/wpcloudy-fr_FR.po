@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Cloudy\n"
-"POT-Creation-Date: 2013-09-29 18:15+0100\n"
-"PO-Revision-Date: 2013-09-29 18:27+0100\n"
+"POT-Creation-Date: 2013-10-13 11:01+0100\n"
+"PO-Revision-Date: 2013-10-13 11:01+0100\n"
 "Last-Translator: \n"
 "Language-Team: Benjamin DENIS <contact@wpcloudy.com>\n"
 "MIME-Version: 1.0\n"
@@ -305,8 +305,10 @@ msgid "Imperial or metric units?"
 msgstr "Système métrique ou impérial ?"
 
 #: ../wpcloudy.php:187
-msgid "Display language: english, french, spanish, german etc. "
-msgstr "Langue d'affichage : english, french, spanish, german"
+msgid ""
+"Display language: en (english), fr (french), sp (spanish), de (german)... "
+msgstr ""
+"Langue d'affichage : en (english), fr (french), sp (spanish), de (german)..."
 
 #: ../wpcloudy.php:231
 msgid "Hour Forecast?"
@@ -368,124 +370,124 @@ msgstr "Afficher les températures ?"
 msgid "Display pressure?"
 msgstr "Afficher la pression atmosphérique ?"
 
-#: ../wpcloudy.php:1325
+#: ../wpcloudy.php:1346
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: ../wpcloudy.php:1332
+#: ../wpcloudy.php:1353
 msgid "Wind"
 msgstr "Vent"
 
-#: ../wpcloudy.php:1336
+#: ../wpcloudy.php:1357
 msgid "Humidity"
 msgstr "Humidité"
 
-#: ../wpcloudy.php:1339
+#: ../wpcloudy.php:1360
 msgid "Pressure"
 msgstr "Pression"
 
-#: ../wpcloudy.php:1342
+#: ../wpcloudy.php:1363
 msgid "Cloudiness"
 msgstr "Nuages"
 
-#: ../wpcloudy.php:1347
+#: ../wpcloudy.php:1368
 msgid "Now"
 msgstr "Maintenant"
 
-#: ../wpcloudy.php:1675
+#: ../wpcloudy.php:1702
 msgid "Shortcode"
 msgstr "Bout de code"
 
-#: ../wpcloudy.php:1697 ../wpcloudy.php:1698 ../wpcloudy.php:1699
+#: ../wpcloudy.php:1724 ../wpcloudy.php:1725 ../wpcloudy.php:1726
 msgid "Weather"
 msgstr "Météo"
 
-#: ../wpcloudy.php:1700
+#: ../wpcloudy.php:1727
 msgid "Parent Weather:"
 msgstr "Météo parent:"
 
-#: ../wpcloudy.php:1701
+#: ../wpcloudy.php:1728
 msgid "All Weather"
 msgstr "Toutes les météos"
 
-#: ../wpcloudy.php:1702
+#: ../wpcloudy.php:1729
 msgid "View Weather"
 msgstr "Voir la météo"
 
-#: ../wpcloudy.php:1703
+#: ../wpcloudy.php:1730
 msgid "Add New Weather"
 msgstr "Ajouter une nouvelle météo"
 
-#: ../wpcloudy.php:1704
+#: ../wpcloudy.php:1731
 msgid "New Weather"
 msgstr "Nouvelle météo"
 
-#: ../wpcloudy.php:1705
+#: ../wpcloudy.php:1732
 msgid "Edit Weather"
 msgstr "Editer météo"
 
-#: ../wpcloudy.php:1706
+#: ../wpcloudy.php:1733
 msgid "Update Weather"
 msgstr "Mettre à jour la météo"
 
-#: ../wpcloudy.php:1707
+#: ../wpcloudy.php:1734
 msgid "Search Weather"
 msgstr "Rechercher une météo"
 
-#: ../wpcloudy.php:1708
+#: ../wpcloudy.php:1735
 msgid "No weather found"
 msgstr "Aucune météo trouvée"
 
-#: ../wpcloudy.php:1709
+#: ../wpcloudy.php:1736
 msgid "No weather found in Trash"
 msgstr "Aucune météo trouvée dans la corbeille"
 
-#: ../wpcloudy.php:1713
+#: ../wpcloudy.php:1740
 msgid "weather"
 msgstr "météo"
 
-#: ../wpcloudy.php:1714
+#: ../wpcloudy.php:1741
 msgid "Listing weather"
 msgstr "Liste des météos"
 
-#: ../wpcloudy.php:1747 ../wpcloudy.php:1750
+#: ../wpcloudy.php:1774 ../wpcloudy.php:1777
 msgid " updated."
 msgstr "mis à jour."
 
-#: ../wpcloudy.php:1748
+#: ../wpcloudy.php:1775
 msgid "Custom field updated."
 msgstr "Champ personnalisé mis à jour."
 
-#: ../wpcloudy.php:1749
+#: ../wpcloudy.php:1776
 msgid "Custom field deleted."
 msgstr "Champ personnalisé supprimé."
 
-#: ../wpcloudy.php:1751
+#: ../wpcloudy.php:1778
 #, php-format
 msgid " restored to revision from %s"
 msgstr "restauré de la révision du %s"
 
-#: ../wpcloudy.php:1752
+#: ../wpcloudy.php:1779
 msgid " published."
 msgstr "publiée."
 
-#: ../wpcloudy.php:1753
+#: ../wpcloudy.php:1780
 msgid "Page saved."
 msgstr "Page sauvegardée."
 
-#: ../wpcloudy.php:1754
+#: ../wpcloudy.php:1781
 msgid " submitted."
 msgstr "soumis."
 
-#: ../wpcloudy.php:1755
+#: ../wpcloudy.php:1782
 #, php-format
 msgid " scheduled for: <strong>%1$s</strong>. "
 msgstr "programmé pour: <strong>%1$s</strong>. "
 
-#: ../wpcloudy.php:1755
+#: ../wpcloudy.php:1782
 msgid "M j, Y @ G:i"
 msgstr "M j, Y @ G:i"
 
-#: ../wpcloudy.php:1756
+#: ../wpcloudy.php:1783
 msgid " draft updated."
 msgstr "brouillon mis à jour."

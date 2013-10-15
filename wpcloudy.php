@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.2.3
+Version: 2.2.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -98,11 +98,26 @@ function wpcloudy_admin_enqueue() {
 	if(is_admin()){
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
-		wp_register_style('wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
-		wp_enqueue_style( 'wpcloudy-admin' );
 		wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
     }
+
 } 
+
+function add_admin_scripts( $hook ) {
+
+    global $post;
+
+    if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
+        if ( 'wpc-weather' === $post->post_type ) {     
+            wp_enqueue_script( 'qtip', plugins_url( 'js/jquery.qtip.js', __FILE__ ), array('jquery'), false, true);
+			wp_enqueue_script('qtipCall', plugins_url( 'js/qtipcall.js', __FILE__ ), array('jquery', 'qtip'), false, true);
+			wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
+			wp_enqueue_style( 'wpcloudy-admin' );
+        }
+    }
+}
+add_action( 'admin_enqueue_scripts', 'add_admin_scripts', 10, 1 );
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Display metabox in Weather Custom Post Type
@@ -159,6 +174,7 @@ function wpcloudy_basic($post){
   $wpcloudy_map_temperature			= get_post_meta($post->ID,'_wpcloudy_map_temperature',true);
   $wpcloudy_map_pressure			= get_post_meta($post->ID,'_wpcloudy_map_pressure',true);
   
+  
   echo '<div id="wpcloudy-tabs">
 			<ul>
 				<li><a href="#tabs-1">'. __( 'Basic settings', 'wpcloudy' ) .'</a></li>
@@ -184,7 +200,8 @@ function wpcloudy_basic($post){
 					</select>
 				</p>
 				<p>
-					<label for="wpcloudy_lang_meta">'. __( 'Display language: english, french, spanish, german etc. ', 'wpcloudy' ) .'</label>
+					<label for="wpcloudy_lang_meta">'. __( 'Display language?', 'wpcloudy' ) .'</label>
+					<img src="'. plugins_url( 'wp-cloudy/img/icon-admin-wpc-help.png' , dirname(__FILE__) ) .'" class="wpc_help" alt="'. __( 'Available languages:<br /> <strong>en</strong> (english), <br /> <strong>fr</strong> (french), <br /> <strong>sp</strong> (spanish), <br /> <strong>de</strong> (german), <br /> <strong>ru</strong> (russian), <br /> <strong>it</strong> (italian), <br /> <strong>ua</strong> (ukrainian), <br /> <strong>pt</strong> (portuguese), <br /> <strong>ro</strong> (romanian), <br /> <strong>pl</strong> (polish), <br /> <strong>fi</strong> (finnish), <br /> <strong>bg</strong> (bulgarian), <br /> <strong>se</strong> (swedish), <br /> <strong>zh_tw</strong> (chinese traditional), <br /> <strong>zh_cn</strong> (chinese simplified), <br /> <strong>tr</strong> (turkish) ', 'wpcloudy' ) .'" />
 					<input id="wpcloudy_lang_meta" type="text" name="wpcloudy_lang" value="'.$wpcloudy_lang.'" />
 				</p>
 			</div>
@@ -193,7 +210,7 @@ function wpcloudy_basic($post){
 					<label for="wpcloudy_current_weather_meta">
 						<input type="checkbox" name="wpcloudy_current_weather" id="wpcloudy_current_weather_meta" value="yes" '. checked( $wpcloudy_current_weather, 'yes', false ) .' />
 							'. __( 'Current weather?', 'wpcloudy' ) .'
-					</label>
+					</label>			
 				</p>
 				<p>				
 					<label for="wpcloudy_weather_meta">
@@ -1241,8 +1258,8 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_meta_bg_color		= get_bypass_color_background($attr,$content);
 			$wpcloudy_meta_text_color	= get_bypass_color_text($attr,$content);
 			
-			$myweather 				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035");
-			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035");
+			$myweather 				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang");
+			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang");
 			
 			setlocale(LC_TIME, "$wpcloudy_lang");
 			

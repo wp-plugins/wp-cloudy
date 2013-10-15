@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Cloudy\n"
-"POT-Creation-Date: 2013-09-29 18:15+0100\n"
-"PO-Revision-Date: 2013-09-29 18:15+0100\n"
+"POT-Creation-Date: 2013-10-13 11:01+0100\n"
+"PO-Revision-Date: 2013-10-13 11:01+0100\n"
 "Last-Translator: \n"
 "Language-Team: Benjamin DENIS <contact@wpcloudy.com>\n"
 "Language: en\n"
@@ -299,7 +299,8 @@ msgid "Imperial or metric units?"
 msgstr ""
 
 #: ../wpcloudy.php:187
-msgid "Display language: english, french, spanish, german etc. "
+msgid ""
+"Display language: en (english), fr (french), sp (spanish), de (german)... "
 msgstr ""
 
 #: ../wpcloudy.php:231
@@ -362,124 +363,124 @@ msgstr ""
 msgid "Display pressure?"
 msgstr ""
 
-#: ../wpcloudy.php:1325
+#: ../wpcloudy.php:1346
 msgid "Today"
 msgstr ""
 
-#: ../wpcloudy.php:1332
+#: ../wpcloudy.php:1353
 msgid "Wind"
 msgstr ""
 
-#: ../wpcloudy.php:1336
+#: ../wpcloudy.php:1357
 msgid "Humidity"
 msgstr ""
 
-#: ../wpcloudy.php:1339
+#: ../wpcloudy.php:1360
 msgid "Pressure"
 msgstr ""
 
-#: ../wpcloudy.php:1342
+#: ../wpcloudy.php:1363
 msgid "Cloudiness"
 msgstr ""
 
-#: ../wpcloudy.php:1347
+#: ../wpcloudy.php:1368
 msgid "Now"
 msgstr ""
 
-#: ../wpcloudy.php:1675
+#: ../wpcloudy.php:1702
 msgid "Shortcode"
 msgstr ""
 
-#: ../wpcloudy.php:1697 ../wpcloudy.php:1698 ../wpcloudy.php:1699
+#: ../wpcloudy.php:1724 ../wpcloudy.php:1725 ../wpcloudy.php:1726
 msgid "Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1700
+#: ../wpcloudy.php:1727
 msgid "Parent Weather:"
 msgstr ""
 
-#: ../wpcloudy.php:1701
+#: ../wpcloudy.php:1728
 msgid "All Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1702
+#: ../wpcloudy.php:1729
 msgid "View Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1703
+#: ../wpcloudy.php:1730
 msgid "Add New Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1704
+#: ../wpcloudy.php:1731
 msgid "New Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1705
+#: ../wpcloudy.php:1732
 msgid "Edit Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1706
+#: ../wpcloudy.php:1733
 msgid "Update Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1707
+#: ../wpcloudy.php:1734
 msgid "Search Weather"
 msgstr ""
 
-#: ../wpcloudy.php:1708
+#: ../wpcloudy.php:1735
 msgid "No weather found"
 msgstr ""
 
-#: ../wpcloudy.php:1709
+#: ../wpcloudy.php:1736
 msgid "No weather found in Trash"
 msgstr ""
 
-#: ../wpcloudy.php:1713
+#: ../wpcloudy.php:1740
 msgid "weather"
 msgstr ""
 
-#: ../wpcloudy.php:1714
+#: ../wpcloudy.php:1741
 msgid "Listing weather"
 msgstr ""
 
-#: ../wpcloudy.php:1747 ../wpcloudy.php:1750
+#: ../wpcloudy.php:1774 ../wpcloudy.php:1777
 msgid " updated."
 msgstr ""
 
-#: ../wpcloudy.php:1748
+#: ../wpcloudy.php:1775
 msgid "Custom field updated."
 msgstr ""
 
-#: ../wpcloudy.php:1749
+#: ../wpcloudy.php:1776
 msgid "Custom field deleted."
 msgstr ""
 
-#: ../wpcloudy.php:1751
+#: ../wpcloudy.php:1778
 #, php-format
 msgid " restored to revision from %s"
 msgstr ""
 
-#: ../wpcloudy.php:1752
+#: ../wpcloudy.php:1779
 msgid " published."
 msgstr ""
 
-#: ../wpcloudy.php:1753
+#: ../wpcloudy.php:1780
 msgid "Page saved."
 msgstr ""
 
-#: ../wpcloudy.php:1754
+#: ../wpcloudy.php:1781
 msgid " submitted."
 msgstr ""
 
-#: ../wpcloudy.php:1755
+#: ../wpcloudy.php:1782
 #, php-format
 msgid " scheduled for: <strong>%1$s</strong>. "
 msgstr ""
 
-#: ../wpcloudy.php:1755
+#: ../wpcloudy.php:1782
 msgid "M j, Y @ G:i"
 msgstr ""
 
-#: ../wpcloudy.php:1756
+#: ../wpcloudy.php:1783
 msgid " draft updated."
 msgstr ""
