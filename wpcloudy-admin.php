@@ -100,6 +100,22 @@ class wpc_options
             'wpc_setting_section_basic' // Section           
         );
 		
+		add_settings_field(
+            'wpc_advanced_bypass_lang', // ID
+           __("Bypass language?","wpcloudy"), // Title
+            array( $this, 'wpc_basic_bypass_lang_callback' ), // Callback
+            'wpc-settings-admin', // Page
+            'wpc_setting_section_basic' // Section           
+        );
+		
+		add_settings_field(
+            'wpc_advanced_lang', // ID
+            __("Language","wpcloudy"), // Title 
+            array( $this, 'wpc_basic_lang_callback' ), // Callback
+            'wpc-settings-admin', // Page
+            'wpc_setting_section_basic' // Section           
+        );
+		
 		//DISPLAY SECTION==========================================================================
         add_settings_section( 
             'wpc_setting_section_display', // ID
@@ -419,6 +435,98 @@ class wpc_options
 		echo ' value="metric">'. __( 'Metric', 'wpcloudy' ) .'</option>';
 		echo '</select>';
 		esc_attr( $this->options['wpc_basic_unit']);
+	}
+	
+	public function wpc_basic_bypass_lang_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$check = $options['wpc_basic_bypass_lang'];
+		
+        echo '<input id="wpc_basic_bypass_lang" name="wpc_option_name[wpc_basic_bypass_lang]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_basic_bypass_lang">'. __( 'Enable bypass language on all weather?', 'wpcloudy' ) .'</label>';
+
+		esc_attr( $this->options['wpc_basic_bypass_lang']);
+    }
+	
+	public function wpc_basic_lang_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$selected = $options['wpc_basic_lang'];
+		
+		echo ' <select id="wpc_basic_lang" name="wpc_option_name[wpc_basic_lang]"> ';
+		
+			echo ' <option '; 
+			if ('fr' == $selected) echo 'selected="selected"'; 
+			echo ' value="fr">'. __( 'French', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('en' == $selected) echo 'selected="selected"'; 
+			echo ' value="en">'. __( 'English', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('ru' == $selected) echo 'selected="selected"'; 
+			echo ' value="ru">'. __( 'Russian', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('it' == $selected) echo 'selected="selected"'; 
+			echo ' value="it">'. __( 'Italian', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('sp' == $selected) echo 'selected="selected"'; 
+			echo ' value="sp">'. __( 'Spanish', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('ua' == $selected) echo 'selected="selected"'; 
+			echo ' value="ua">'. __( 'Ukrainian', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('de' == $selected) echo 'selected="selected"'; 
+			echo ' value="de">'. __( 'German', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('pt' == $selected) echo 'selected="selected"'; 
+			echo ' value="pt">'. __( 'Portuguese', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('ro' == $selected) echo 'selected="selected"'; 
+			echo ' value="ro">'. __( 'Romanian', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('pl' == $selected) echo 'selected="selected"'; 
+			echo ' value="pl">'. __( 'Polish', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('fi' == $selected) echo 'selected="selected"'; 
+			echo ' value="fi">'. __( 'Finnish', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('nl' == $selected) echo 'selected="selected"'; 
+			echo ' value="nl">'. __( 'Dutch', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('bg' == $selected) echo 'selected="selected"'; 
+			echo ' value="bg">'. __( 'Bulgarian', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('se' == $selected) echo 'selected="selected"'; 
+			echo ' value="se">'. __( 'Swedish', 'wpcloudy' ) .'</option>';
+					
+			echo '<option '; 
+			if ('zh_tw' == $selected) echo 'selected="selected"'; 
+			echo ' value="zh_tw">'. __( 'Chinese Traditional', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('zh_cn' == $selected) echo 'selected="selected"'; 
+			echo ' value="zh_cn">'. __( 'Chinese Simplified', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('tr' == $selected) echo 'selected="selected"'; 
+			echo ' value="tr">'. __( 'Turkish', 'wpcloudy' ) .'</option>';
+			
+		echo '</select>';
+		esc_attr( $this->options['wpc_basic_lang']);
 	}
 
 	public function wpc_display_current_weather_callback()

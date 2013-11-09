@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.2.4
+Version: 2.2.5
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -201,9 +201,26 @@ function wpcloudy_basic($post){
 				</p>
 				<p>
 					<label for="wpcloudy_lang_meta">'. __( 'Display language?', 'wpcloudy' ) .'</label>
-					<img src="'. plugins_url( 'wp-cloudy/img/icon-admin-wpc-help.png' , dirname(__FILE__) ) .'" class="wpc_help" alt="'. __( 'Available languages:<br /> <strong>en</strong> (english), <br /> <strong>fr</strong> (french), <br /> <strong>sp</strong> (spanish), <br /> <strong>de</strong> (german), <br /> <strong>ru</strong> (russian), <br /> <strong>it</strong> (italian), <br /> <strong>ua</strong> (ukrainian), <br /> <strong>pt</strong> (portuguese), <br /> <strong>ro</strong> (romanian), <br /> <strong>pl</strong> (polish), <br /> <strong>fi</strong> (finnish), <br /> <strong>bg</strong> (bulgarian), <br /> <strong>se</strong> (swedish), <br /> <strong>zh_tw</strong> (chinese traditional), <br /> <strong>zh_cn</strong> (chinese simplified), <br /> <strong>tr</strong> (turkish) ', 'wpcloudy' ) .'" />
-					<input id="wpcloudy_lang_meta" type="text" name="wpcloudy_lang" value="'.$wpcloudy_lang.'" />
-				</p>
+					<select name="wpcloudy_lang">
+						<option ' . selected( 'fr', $wpcloudy_lang, false ) . ' value="fr">'. __( 'French', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'en', $wpcloudy_lang, false ) . ' value="en">'. __( 'English', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'ru', $wpcloudy_lang, false ) . ' value="ru">'. __( 'Russian', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'it', $wpcloudy_lang, false ) . ' value="it">'. __( 'Italian', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'sp', $wpcloudy_lang, false ) . ' value="sp">'. __( 'Spanish', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'ua', $wpcloudy_lang, false ) . ' value="ua">'. __( 'Ukrainian', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'de', $wpcloudy_lang, false ) . ' value="de">'. __( 'German', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'pt', $wpcloudy_lang, false ) . ' value="pt">'. __( 'Portuguese', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'ro', $wpcloudy_lang, false ) . ' value="ro">'. __( 'Romanian', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'pl', $wpcloudy_lang, false ) . ' value="pl">'. __( 'Polish', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'fi', $wpcloudy_lang, false ) . ' value="fi">'. __( 'Finnish', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'nl', $wpcloudy_lang, false ) . ' value="nl">'. __( 'Dutch', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'bg', $wpcloudy_lang, false ) . ' value="bg">'. __( 'Bulgarian', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'se', $wpcloudy_lang, false ) . ' value="se">'. __( 'Swedish', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'zh_tw', $wpcloudy_lang, false ) . ' value="zh_tw">'. __( 'Chinese Traditional', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'zh_cn', $wpcloudy_lang, false ) . ' value="zh_cn">'. __( 'Chinese Simplified', 'wpcloudy' ) .'</option>
+						<option ' . selected( 'tr', $wpcloudy_lang, false ) . ' value="tr">'. __( 'Turkish', 'wpcloudy' ) .'</option>
+					</select>
+				</p>		
 			</div>
 			<div id="tabs-2">
 				<p>				
@@ -511,6 +528,45 @@ function save_metabox($post_id){
 		update_post_meta( $post_id, '_wpcloudy_map_pressure', '' );
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//WPC Languages
+///////////////////////////////////////////////////////////////////////////////////////////////////		
+
+//Bypass Lang
+function get_admin_bypass_lang() {
+	$wpc_admin_bypass_lang_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_lang_option ) ) {
+		foreach ($wpc_admin_bypass_lang_option as $key => $wpc_admin_bypass_lang_value)
+			$options[$key] = $wpc_admin_bypass_lang_value;
+		return $wpc_admin_bypass_lang_option['wpc_basic_bypass_lang'];
+	}
+};
+
+function get_admin_lang() {
+	$wpc_admin_lang_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_lang_option ) ) {
+		foreach ($wpc_admin_lang_option as $key => $wpc_admin_lang_value)
+			$options[$key] = $wpc_admin_lang_value;
+		return $wpc_admin_lang_option['wpc_basic_lang'];
+	}
+};
+
+function get_lang($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_lang_value = get_post_meta($id,'_wpcloudy_lang',true);
+		return $wpc_lang_value;
+};
+
+function get_bypass_lang($attr,$content) {
+	if (get_admin_lang() && (get_admin_bypass_lang())) {
+		return get_admin_lang(); 
+	}
+	else {
+		return get_lang($attr,$content);
+	}
+}	
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //WPC Options Panel
@@ -1243,7 +1299,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_city 				= get_post_meta($id,'_wpcloudy_city',true);
 			$wpcloudy_country_code		= get_post_meta($id,'_wpcloudy_country_code',true);
 			$wpcloudy_unit 				= get_bypass_unit($attr,$content);
-			$wpcloudy_lang 				= get_post_meta($id,'_wpcloudy_lang',true);
+			$wpcloudy_lang				= get_bypass_lang($attr,$content);
 			$wpcloudy_map_height		= get_bypass_map_height($attr,$content);
 			$wpcloudy_map_opacity		= get_bypass_map_opacity($attr,$content);
 			$wpcloudy_map_zoom			= get_bypass_map_zoom($attr,$content);
@@ -1258,10 +1314,83 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_meta_bg_color		= get_bypass_color_background($attr,$content);
 			$wpcloudy_meta_text_color	= get_bypass_color_text($attr,$content);
 			
-			$myweather 				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang");
-			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang");
+			switch ($wpcloudy_lang) {
+				case "fr":
+					$wpcloudy_lang_owm = 'fr';
+					$wpcloudy_lang_host = 'french';
+					break;
+				case "en":
+					$wpcloudy_lang_owm = 'en';
+					$wpcloudy_lang_host = 'english';
+					break;
+				case "ru":
+					$wpcloudy_lang_owm = 'ru';
+					$wpcloudy_lang_host = 'russian';
+					break;
+				case "it":
+					$wpcloudy_lang_owm = 'it';
+					$wpcloudy_lang_host = 'italian';
+					break;
+				case "sp":
+					$wpcloudy_lang_owm = 'sp';
+					$wpcloudy_lang_host = 'spanish';
+					break;
+				case "ua":
+					$wpcloudy_lang_owm = 'ua';
+					$wpcloudy_lang_host = 'ukrainian';
+					break;
+				case "de":
+					$wpcloudy_lang_owm = 'de';
+					$wpcloudy_lang_host = 'german';
+					break;
+				case "pt":
+					$wpcloudy_lang_owm = 'pt';
+					$wpcloudy_lang_host = 'portuguese';
+					break;
+				case "ro":
+					$wpcloudy_lang_owm = 'ro';
+					$wpcloudy_lang_host = 'romanian';
+					break;
+				case "pl":
+					$wpcloudy_lang_owm = 'pl';
+					$wpcloudy_lang_host = 'polish';
+					break;
+				case "fi":
+					$wpcloudy_lang_owm = 'fi';
+					$wpcloudy_lang_host = 'finnish';
+					break;
+				case "nl":
+					$wpcloudy_lang_owm = 'nl';
+					$wpcloudy_lang_host = 'dutch';
+					break;
+				case "bg":
+					$wpcloudy_lang_owm = 'bg';
+					$wpcloudy_lang_host = 'bulgarian';
+					break;
+				case "se":
+					$wpcloudy_lang_owm = 'se';
+					$wpcloudy_lang_host = 'swedish';
+					break;
+				case "zh_tw":
+					$wpcloudy_lang_owm = 'zh_tw';
+					$wpcloudy_lang_host = 'chinese_china';
+					break;
+				case "zh_cn":
+					$wpcloudy_lang_owm = 'zh_cn';
+					$wpcloudy_lang_host = 'chinese_taiwan';
+					break;
+				case "tr":
+					$wpcloudy_lang_owm = 'tr';
+					$wpcloudy_lang_host = 'turkish';
+					break;
+			}
 			
-			setlocale(LC_TIME, "$wpcloudy_lang");
+			
+			
+			$myweather 				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+			
+			setlocale(LC_TIME, "$wpcloudy_lang_host");
 			
 			$location_name 			= $myweather->location[0]->name;	
 			$location_latitude 		= $myweather->location[0]->location[0]['latitude'];
@@ -1279,7 +1408,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$sun_rise 				= date("h:m", strtotime($myweather->sun[0]['rise']));
 			$sun_set 				= date("h:m", strtotime($myweather->sun[0]['set']));		
 			
-			$today_day				= date("l", strtotime($myweather->meta[0]->lastupdate));
+			$today_day				= strftime("%A", strtotime($myweather->meta[0]->lastupdate));
 			
 			$hour_temp_0			= (round($myweather->forecast[0]->time[0]->temperature[0]['value']));
 			$hour_symbol_0			= $myweather->forecast[0]->time[0]->symbol[0]['name'];
