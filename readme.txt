@@ -22,7 +22,7 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
-* NEW! Now with SVG animated icons (thanks to Noah Blon => http://codepen.io/noahblon)
+* NEW! Now with SVG animated icons (thanks to Noah Blon => http://codepen.io/noahblon )
 * NEW! Adding an options panel to bypass options for individual weather
 * NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
 
