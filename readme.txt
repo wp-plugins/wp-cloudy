@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.5.1
 Tested up to: 3.7.1
-Stable tag: 2.2.5
+Stable tag: 2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,14 +22,16 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
+* NEW! Now with SVG animated icons (thanks to Noah Blon => http://codepen.io/noahblon)
 * NEW! Adding an options panel to bypass options for individual weather
 * NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
 
+* Retina ready (SVG + CSS3)
 * 70 000 cities listed (thanks to OpenWeatherMap)
 * Current weather
 * Hourly forecasts
 * Week forecasts
-* Temperatures (current, min and max)
+* Temperatures (current, average, min and max)
 * Speed and Wind direction
 * Humidity
 * Atmospheric pressure
@@ -60,6 +62,10 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.3 =
+* NEW Add SVG animated icons to current weather
+* NEW Add average temperature
+* INFO Optimizing performance in the backend
 = 2.2.5 =
 * FIX Language
 = 2.2.4 =

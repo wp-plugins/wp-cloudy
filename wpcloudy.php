@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.2.5
+Version: 2.3
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -67,6 +67,13 @@ function wpc_plugin_action_links($links, $file) {
 
 if ( is_admin() )
 	require_once dirname( __FILE__ ) . '/wpcloudy-admin.php';
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//SVG animations
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+if ( !is_admin() )
+	require_once dirname( __FILE__ ) . '/wpcloudy-anim.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Translation
@@ -87,36 +94,51 @@ function wpcloudy_styles() {
 
     wp_register_style('wpcloudy', plugins_url('css/wpcloudy.css', __FILE__));
     wp_enqueue_style('wpcloudy');
+	
+	wp_register_style('wpcloudy-anim', plugins_url('css/wpcloudy-anim.css', __FILE__));
+    wp_enqueue_style('wpcloudy-anim');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Loads the JS/CSS in admin
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-add_action( 'admin_enqueue_scripts', 'wpcloudy_admin_enqueue' );
 
-function wpcloudy_admin_enqueue() {
-	if(is_admin()){
-        wp_enqueue_style( 'wp-color-picker' );
-        wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
-		wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
-    }
-
-} 
 
 function add_admin_scripts( $hook ) {
 
-    global $post;
-
-    if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-        if ( 'wpc-weather' === $post->post_type ) {     
-            wp_enqueue_script( 'qtip', plugins_url( 'js/jquery.qtip.js', __FILE__ ), array('jquery'), false, true);
-			wp_enqueue_script('qtipCall', plugins_url( 'js/qtipcall.js', __FILE__ ), array('jquery', 'qtip'), false, true);
+global $post;
+    
+	if ( $hook == 'post-new.php' || $hook == 'post.php') {
+        if ( 'wpc-weather' === $post->post_type) { 
+     
+            //wp_enqueue_script( 'qtip', plugins_url( 'js/jquery.qtip.js', __FILE__ ), array('jquery'), false, true);
+			//wp_enqueue_script('qtipCall', plugins_url( 'js/qtipcall.js', __FILE__ ), array('jquery', 'qtip'), false, true);
 			wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
 			wp_enqueue_style( 'wpcloudy-admin' );
-        }
-    }
+			
+			wp_enqueue_style( 'wp-color-picker' );
+			wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
+			wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
+		}
+	}
 }
-add_action( 'admin_enqueue_scripts', 'add_admin_scripts', 10, 1 );
+add_action( 'admin_enqueue_scripts', add_admin_scripts, 10, 1 );
+
+function add_admin_options_scripts() {
+
+
+			wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
+			wp_enqueue_style( 'wpcloudy-admin' );
+			
+			wp_enqueue_style( 'wp-color-picker' );
+			wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
+			wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
+}
+
+if (isset($_GET['page']) && ($_GET['page'] == 'wpc-settings-admin')) { 
+
+	add_action('admin_enqueue_scripts', add_admin_options_scripts, 10, 1);
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,11 +287,23 @@ function wpcloudy_basic($post){
 							'. __( 'Hour Forecast?', 'wpcloudy' ) .'
 					</label>
 				</p>
+				<p class="temperatures">
+					'. __( 'Temperatures', 'wpcloudy' ) .'
+				</p>
 				<p>
 					<label for="wpcloudy_temperature_min_max_meta">
-						<input type="checkbox" name="wpcloudy_temperature_min_max" id="wpcloudy_temperature_min_max_meta" value="yes" '. checked( $wpcloudy_temperature_min_max, 'yes', false ) .' />
+						<input type="radio" name="wpcloudy_temperature_min_max" id="wpcloudy_temperature_min_max_meta" value="yes" '. checked( $wpcloudy_temperature_min_max, 'yes', false ) .' />
 							'. __( 'Today date + Min-Max Temperatures?', 'wpcloudy' ) .'
 					</label>
+				</p>
+				<p>
+					<label for="wpcloudy_temperature_average_meta">
+						<input type="radio" name="wpcloudy_temperature_min_max" id="wpcloudy_temperature_average_meta" value="no" '. checked( $wpcloudy_temperature_min_max, 'no', false ) .' />
+							'. __( 'Today date + Average Temperature?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p class="forecast">
+					'. __( '7-Day Forecast', 'wpcloudy' ) .'
 				</p>
 				<p>
 					<label for="wpcloudy_forecast_meta">
@@ -454,9 +488,7 @@ function save_metabox($post_id){
 		update_post_meta( $post_id, '_wpcloudy_hour_forecast', '' );
 	}
 	if( isset( $_POST[ 'wpcloudy_temperature_min_max' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_temperature_min_max', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_temperature_min_max', '' );
+		update_post_meta( $post_id, '_wpcloudy_temperature_min_max', $_POST[ 'wpcloudy_temperature_min_max' ] );
 	}
 	if( isset( $_POST[ 'wpcloudy_forecast' ] ) ) {
 		update_post_meta( $post_id, '_wpcloudy_forecast', 'yes' );
@@ -876,7 +908,16 @@ function get_bypass_display_hour_forecast($attr,$content) {
 
 //Bypass Today Date + Min-Max Temp
 
-function get_admin_display_temperature_min_max() {
+function get_admin_bypass_temp() {
+	$wpc_display_temperature_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_display_temperature_option ) ) {
+		foreach ($wpc_display_temperature_option as $key => $wpc_display_temperature_value)
+			$options[$key] = $wpc_display_temperature_value;
+		return $wpc_display_temperature_option['wpc_display_bypass_temperature'];
+	}
+};
+
+function get_admin_display_temp() {
 	$wpc_admin_display_temperature_min_max_option = get_option("wpc_option_name");
 
 	if ( ! empty ( $wpc_admin_display_temperature_min_max_option ) ) {
@@ -886,20 +927,20 @@ function get_admin_display_temperature_min_max() {
 	}
 };
 
-function get_display_temperature_min_max($attr,$content) {
+function get_display_temp($attr,$content) {
 		extract(shortcode_atts(array( 'id' => ''), $attr));
 		$wpc_display_temperature_min_max_value = get_post_meta($id,'_wpcloudy_temperature_min_max',true);
 		return $wpc_display_temperature_min_max_value;
 };
 
-function get_bypass_display_temperature_min_max($attr,$content) {
-	if (get_admin_display_temperature_min_max()) {
-		return get_admin_display_temperature_min_max(); 
+function get_bypass_temp($attr,$content) {
+	if (get_admin_display_temp() && (get_admin_bypass_temp())) {
+		return get_admin_display_temp(); 
 	}
 	else {
-		return get_display_temperature_min_max($attr,$content);
+		return get_display_temp($attr,$content);
 	}
-}
+};
 
 //Bypass Forecast
 
@@ -926,7 +967,7 @@ function get_bypass_display_forecast($attr,$content) {
 	else {
 		return get_display_forecast($attr,$content);
 	}
-}
+};
 
 //Bypass Weather Size
 
@@ -962,7 +1003,7 @@ function get_bypass_size($attr,$content) {
 	else {
 		return get_size($attr,$content);
 	}
-}
+};
 
 //Bypass Map
 function get_admin_bypass_map() {
@@ -987,7 +1028,7 @@ function get_bypass_map($attr,$content) {
 	else {
 		return get_map($attr,$content);
 	}
-}
+};
 
 //Bypass Map Height
 function get_admin_bypass_map_height() {
@@ -1012,7 +1053,7 @@ function get_bypass_map_height($attr,$content) {
 	else {
 		return get_map_height($attr,$content);
 	}
-}
+};
 
 //Bypass Layers opacity
 function get_admin_bypass_map_opacity() {
@@ -1047,7 +1088,7 @@ function get_bypass_map_opacity($attr,$content) {
 	else {
 		return get_map_opacity($attr,$content);
 	}
-}
+};
 
 //Bypass Zoom Map
 function get_admin_bypass_map_zoom() {
@@ -1082,7 +1123,7 @@ function get_bypass_map_zoom($attr,$content) {
 	else {
 		return get_map_zoom($attr,$content);
 	}
-}
+};
 
 //Bypass Layers stations
 function get_admin_map_layers_stations() {
@@ -1108,7 +1149,7 @@ function get_bypass_map_layers_stations($attr,$content) {
 	else {
 		return get_map_layers_stations($attr,$content);
 	}
-}
+};
 
 //Bypass Layers clouds
 function get_admin_map_layers_clouds() {
@@ -1134,7 +1175,7 @@ function get_bypass_map_layers_clouds($attr,$content) {
 	else {
 		return get_map_layers_clouds($attr,$content);
 	}
-}
+};
 
 //Bypass Layers precipitations
 function get_admin_map_layers_precipitation() {
@@ -1160,7 +1201,7 @@ function get_bypass_map_layers_precipitation($attr,$content) {
 	else {
 		return get_map_layers_precipitation($attr,$content);
 	}
-}	
+};
 
 //Bypass Layers snow
 function get_admin_map_layers_snow() {
@@ -1186,7 +1227,7 @@ function get_bypass_map_layers_snow($attr,$content) {
 	else {
 		return get_map_layers_snow($attr,$content);
 	}
-}
+};
 
 //Bypass Layers wind
 function get_admin_map_layers_wind() {
@@ -1212,7 +1253,7 @@ function get_bypass_map_layers_wind($attr,$content) {
 	else {
 		return get_map_layers_wind($attr,$content);
 	}
-}
+};
 
 //Bypass Layers temperature
 function get_admin_map_layers_temperature() {
@@ -1238,7 +1279,7 @@ function get_bypass_map_layers_temperature($attr,$content) {
 	else {
 		return get_map_layers_temperature($attr,$content);
 	}
-}
+};
 
 //Bypass Layers pressure
 function get_admin_map_layers_pressure() {
@@ -1264,7 +1305,7 @@ function get_bypass_map_layers_pressure($attr,$content) {
 	else {
 		return get_map_layers_pressure($attr,$content);
 	}
-}
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Styles CSS
@@ -1274,17 +1315,17 @@ function wpc_css_background($wpcloudy_meta_bg_color) {
 	if( $wpcloudy_meta_bg_color ) {
 			return 'background:'. $wpcloudy_meta_bg_color;
 	}
-}
+};
 function wpc_css_text_color($wpcloudy_meta_text_color) {
 	if( $wpcloudy_meta_text_color ) {
 			return 'color:'. $wpcloudy_meta_text_color;
 	}
-}
+};
 function wpc_css_border($wpcloudy_meta_border_color) {
 	if( $wpcloudy_meta_border_color ) {
 			return 'border:1px solid '. $wpcloudy_meta_border_color;
 	}
-}
+};
 			
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add shortcode Weather
@@ -1405,6 +1446,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$time_temperature		= (round($myweather->forecast[0]->time[0]->temperature[0]['value']));
 			$time_temperature_min 	= (round($myweather->forecast[0]->time[0]->temperature[0]['min']));
 			$time_temperature_max 	= (round($myweather->forecast[0]->time[0]->temperature[0]['max']));
+
 			$sun_rise 				= date("h:m", strtotime($myweather->sun[0]['rise']));
 			$sun_set 				= date("h:m", strtotime($myweather->sun[0]['set']));		
 			
@@ -1467,7 +1509,139 @@ function wpcloudy_display_weather($attr,$content) {
 			$forecast_day_6			= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[6]['day']));
 			$forecast_number_6		= $myweather_sevendays->forecast[0]->time[6]->symbol[0]['number'];
 			$forecast_temp_min_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['min']));
-			$forecast_temp_max_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['max']));			
+			$forecast_temp_max_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['max']));	
+
+
+			$time_temperature_mid 	= $time_temperature_min + $time_temperature_max;
+			$time_temperature_ave 	= $time_temperature_mid / 2;
+			
+			switch ($time_symbol_number) {
+			
+				//sun
+				case "800":
+					$time_symbol_svg = sun();
+					break;
+				case "801":
+					$time_symbol_svg = cloudSun();
+					break;
+				case "802":
+					$time_symbol_svg = cloud();
+					break;
+				case "803":
+					$time_symbol_svg = cloudFill();
+					break;
+				case "804":
+					$time_symbol_svg = cloudFill();
+					break;
+					
+				//rain
+				case "500":
+					$time_symbol_svg = cloudDrizzleSun();
+					break;
+				case "501":
+					$time_symbol_svg = cloudDrizzleSun();
+					break;
+				case "502":
+					$time_symbol_svg = cloudDrizzle();
+					break;
+				case "503":
+					$time_symbol_svg = cloudDrizzleSunAlt();
+					break;
+				case "504":
+					$time_symbol_svg = cloudDrizzleAlt();
+					break;
+				case "511":
+					$time_symbol_svg = cloudRainSun();
+					break;
+				case "520":
+					$time_symbol_svg = cloudRain();
+					break;
+				case "521":
+					$time_symbol_svg = cloudSunRainAlt();
+					break;
+				case "522":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+					
+				//drizzle
+				case "300":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+				case "301":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+				case "302":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+				case "310":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+				case "311":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+				case "312":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+				case "321":
+					$time_symbol_svg = cloudRainAlt();
+					break;
+					
+				//snow
+				case "600":
+					$time_symbol_svg = cloudSnowSun();
+					break;
+				case "601":
+					$time_symbol_svg = cloudSnow();
+					break;
+				case "602":
+					$time_symbol_svg = cloudSnowSunAlt();
+					break;
+				case "611":
+					$time_symbol_svg = cloudSnow();
+					break;
+				case "621":
+					$time_symbol_svg = cloudSnowAlt();
+					break;
+					
+				//atmosphere
+				case "701":
+					$time_symbol_svg = cloudFogSunAlt();
+					break;
+				case "711":
+					$time_symbol_svg = cloudFogAlt();
+					break;
+				case "721":
+					$time_symbol_svg = cloudFogAlt();
+					break;
+				case "731":
+					$time_symbol_svg = cloudFogSun();
+					break;
+				case "741":
+					$time_symbol_svg = cloudFog();
+					break;
+					
+				//extreme
+				case "900":
+					$time_symbol_svg = tornado();
+					break;
+				case "901":
+					$time_symbol_svg = wind();
+					break;
+				case "902":
+					$time_symbol_svg = wind();
+					break;
+				case "905":
+					$time_symbol_svg = wind();
+					break;
+				case "906":
+					$time_symbol_svg = cloudHailAlt();
+					break;
+					
+				//thunderstorm
+				case "200":
+					$time_symbol_svg = cloudLightning();
+					break;
+			}
 		
 			$wpcloudy_custom_css	= get_post_meta($id,'_wpcloudy_custom_css',true);
 			
@@ -1480,19 +1654,25 @@ function wpcloudy_display_weather($attr,$content) {
 			$display_now = '
 				<div class="now">
 					<div class="location_name">'. $location_name .'</div>		
-					<div class="time_symbol climacon w'. $time_symbol_number .'"></div>
+					<div class="time_symbol climacon">'. $time_symbol_svg .'</div>
 					<div class="time_temperature">'. $time_temperature .'&deg;</div>
 				</div>
 			';
 			$display_weather = '
 				<div class="short_condition">'. $time_symbol .'</div>
 			';
-			$display_today = '
+			$display_today_min_max = '
 				<div class="today">	
 					<div class="day"><span class="highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
 					<div class="time_temperature_min">'. $time_temperature_min .'</div>
 					<div class="time_temperature_max"><span class="highlight">'. $time_temperature_max .'</span></div>
-				</div>		
+				</div>
+			';
+			$display_today_ave = '
+				<div class="today">	
+					<div class="day"><span class="highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
+					<div class="time_temperature_ave"><span class="highlight">'.round($time_temperature_ave).'</span></div>
+				</div>
 			';
 			$display_wind = '
 				<div class="wind">
@@ -1766,7 +1946,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_humidity				= 	get_bypass_display_humidity($attr,$content);
 			$wpcloudy_pressure				= 	get_bypass_display_pressure($attr,$content);
 			$wpcloudy_cloudiness			= 	get_bypass_display_cloudiness($attr,$content);
-			$wpcloudy_temperature_min_max	=	get_bypass_display_temperature_min_max($attr,$content);
+			$wpcloudy_temperature_min_max	=	get_bypass_temp($attr,$content);
 			$wpcloudy_hour_forecast			=	get_bypass_display_hour_forecast($attr,$content);
 			$wpcloudy_forecast				=	get_bypass_display_forecast($attr,$content);
 			$wpcloudy_size					=	get_bypass_size($attr,$content);
@@ -1782,9 +1962,13 @@ function wpcloudy_display_weather($attr,$content) {
 				$html .= $display_weather;
 			}
 			
-			if( $wpcloudy_temperature_min_max ) {
-				$html .= $display_today;
-			}						
+			if( $wpcloudy_temperature_min_max == yes ) {
+				$html .= $display_today_min_max;
+			}	
+
+			if( $wpcloudy_temperature_min_max == no ) {
+				$html .= $display_today_ave;
+			}				
 			 
 			if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
 				$html .= '<div class="infos">';

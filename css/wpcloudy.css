@@ -18,6 +18,11 @@
     padding: 20px 0;
     width: 100%;
 }
+#wpc-weather > div {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:    border-box;
+	box-sizing:         border-box;
+}
 #wpc-weather .highlight {
     display: block;
     font-weight: bold;
@@ -43,6 +48,24 @@
 }
 #wpc-weather.large .now .climacon:before {
 	font-size:200px;
+}
+#wpc-weather .now .time_symbol {
+	text-align:center;
+}
+#wpc-weather.small .now .time_symbol svg {
+	width:60px;
+	height:60px;
+	margin-bottom: 20px;
+}
+#wpc-weather.medium .now .time_symbol svg {
+	width:100px;
+	height:100px;
+	margin-bottom: 20px;
+}
+#wpc-weather.large .now .time_symbol svg {
+	width:200px;
+	height:200px;
+	margin-bottom: 20px;
 }
 #wpc-weather.small .now .time_temperature {
 	font-size:14px;
@@ -88,10 +111,15 @@
     text-align: right;
     width: 50px;
 }
+#wpc-weather .today .time_temperature_ave {
+	float:right;
+	text-align:right;
+	width:50px;
+}
 #wpc-weather .today, #wpc-weather .forecast {
     display: inline-block;
     padding: 0 5%;
-    width: 90%;
+    width: 100%;
 }
 #wpc-weather .hours {
     border-bottom-style: solid;
@@ -212,6 +240,7 @@
 /* overcast clouds */
 #wpc-weather .climacon.w804:before {
 	content: "\e000";
+	color:#B5B5B5;
 }
 /*************************************************************************************************/
 /* Rain																						 	 */

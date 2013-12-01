@@ -30,35 +30,33 @@ class wpc_options
     public function add_plugin_page()
     {
         // This page will be under "Settings"
-        add_options_page(
+    add_options_page(
             'Settings Admin', 
             'WP Cloudy', 
             'manage_options', 
             'wpc-settings-admin', 
             array( $this, 'create_admin_page' )
-        );
+        ); 
+
     }
+	
 
     /**
      * Options page callback
      */
     public function create_admin_page()
     {
+	
         // Set class property
         $this->options = get_option( 'wpc_option_name' );
         ?>
-        <div class="wrap">
             <?php screen_icon(); ?>
             <h2><?php _e( 'WP Cloudy settings', 'wpcloudy' ); ?></h2>           
             <form method="post" action="options.php" class="wpcloudy-settings">
-            <?php
-                // This prints out all hidden setting fields
-                settings_fields( 'wpc_cloudy_option_group' );   
-                do_settings_sections( 'wpc-settings-admin' );
-                submit_button(); 
-            ?>
+                <?php settings_fields( 'wpc_cloudy_option_group' ); ?>
+                <?php do_settings_sections( 'wpc-settings-admin' ); ?>
+				<?php submit_button(); ?>
             </form>
-        </div>
         <?php
     }
 
@@ -181,6 +179,14 @@ class wpc_options
         );
 		
 		add_settings_field(
+            'wpc_display_bypass_temperature', // ID
+            __("Bypass individual temperatures settings?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_bypass_temperature_callback' ), // Callback
+            'wpc-settings-admin', // Page
+            'wpc_setting_section_display' // Section           
+        );
+		
+		add_settings_field(
             'wpc_display_temperature_min_max', // ID
 			__("Today date + Min-Max temperatures","wpcloudy"), // Title
             array( $this, 'wpc_display_temperature_min_max_callback' ), // Callback
@@ -245,6 +251,7 @@ class wpc_options
         );
 		
 		//MAP SECTION =============================================================================
+
 		add_settings_section( 
             'wpc_setting_section_map', // ID
             __("Map settings","wpcloudy"), // Title
@@ -407,7 +414,7 @@ class wpc_options
     /** 
      * Get the settings option array and print one of its values
      */
-
+	
 	public function wpc_basic_bypass_unit_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
@@ -619,16 +626,35 @@ class wpc_options
 
 		esc_attr( $this->options['wpc_display_hour_forecast']);
     }
+
+	public function wpc_display_bypass_temperature_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$check = $options['wpc_display_bypass_temperature'];
+		
+        echo '<input id="wpc_display_bypass_temperature" name="wpc_option_name[wpc_display_bypass_temperature]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_bypass_temperature">'. __( 'Bypass temperatures settings on all weather?', 'wpcloudy' ) .'</label>';
+
+		esc_attr( $this->options['wpc_display_bypass_temperature']);
+    }
 	
 	public function wpc_display_temperature_min_max_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
 		$check = $options['wpc_display_temperature_min_max'];
 		
-        echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="checkbox"';
-		if ('1' == $check) echo 'checked="yes"'; 
-		echo ' value="1"/>';
+        echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
+		if ('yes' == $check) echo 'checked="yes"'; 
+		echo ' value="yes"/>';
 		echo '<label for="wpc_display_temperature_min_max">'. __( 'Display Today date + Min-Max temperatures on all weather?', 'wpcloudy' ) .'</label>';
+		
+		echo '<input id="wpc_display_temperature_average" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
+		if ('no' == $check) echo 'checked="yes"'; 
+		echo ' value="no"/>';
+		
+		echo '<label for="wpc_display_temperature_average">'. __( 'Display Today date + average temperature on all weather?', 'wpcloudy' ) .'</label>';
 
 		esc_attr( $this->options['wpc_display_temperature_min_max']);
     }
@@ -951,9 +977,9 @@ class wpc_options
 
 		esc_attr( $this->options['wpc_map_layers_pressure']);
     }
-
+	
 }
-
+	
 if( is_admin() )
     $my_settings_page = new wpc_options();
 	
