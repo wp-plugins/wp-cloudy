@@ -9,9 +9,7 @@ svg {
 }
 
 .climacon_component-stroke {
-  fill: #fff;
   stroke-width: 0px;
-  stroke: white;
 }
 
 .climacon_component-fill {
