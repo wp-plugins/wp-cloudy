@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.3.1
+Version: 2.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -167,6 +167,7 @@ function wpcloudy_shortcode($post){
 
 function wpcloudy_basic($post){
   $wpcloudy_city 					= get_post_meta($post->ID,'_wpcloudy_city',true);
+  $wpcloudy_city_name				= get_post_meta($post->ID,'_wpcloudy_city_name',true);
   $wpcloudy_country_code 			= get_post_meta($post->ID,'_wpcloudy_country_code',true);
   $wpcloudy_unit 					= get_post_meta($post->ID,'_wpcloudy_unit',true);
   $wpcloudy_lang 					= get_post_meta($post->ID,'_wpcloudy_lang',true);
@@ -209,6 +210,10 @@ function wpcloudy_basic($post){
 				<p>
 					<label for="wpcloudy_city_meta">'. __( 'City', 'wpcloudy' ) .'</label>
 					<input id="wpcloudy_city_meta" type="text" name="wpcloudy_city" value="'.$wpcloudy_city.'" />
+				</p>
+				<p>
+					<label for="wpcloudy_city_name_meta">'. __( 'Custom city title', 'wpcloudy' ) .'</label>
+					<input id="wpcloudy_city_name_meta" type="text" name="wpcloudy_city_name" value="'.$wpcloudy_city_name.'" />
 				</p>
 				<p>
 					<label for="wpcloudy_country_meta">'. __( 'Country? (you can enter your country code as well as the country, in your own language, eg: "fr" or "france" or "francia"...)', 'wpcloudy' ) .'</label>
@@ -442,6 +447,9 @@ add_action('save_post','save_metabox');
 function save_metabox($post_id){
 	if(isset($_POST['wpcloudy_city'])){
 	  update_post_meta($post_id, '_wpcloudy_city', esc_html($_POST['wpcloudy_city']));
+	}
+	if(isset($_POST['wpcloudy_city_name'])){
+	  update_post_meta($post_id, '_wpcloudy_city_name', esc_html($_POST['wpcloudy_city_name']));
 	}
 	if(isset($_POST['wpcloudy_country_code'])){
 	  update_post_meta($post_id, '_wpcloudy_country_code', esc_html($_POST['wpcloudy_country_code']));
@@ -1326,6 +1334,15 @@ function wpc_css_border($wpcloudy_meta_border_color) {
 			return 'border:1px solid '. $wpcloudy_meta_border_color;
 	}
 };
+
+function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city) {
+	if( $wpcloudy_city_name ) {
+			return $wpcloudy_city_name;
+	}
+	else {
+		return $wpcloudy_city;
+	}
+};
 			
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add shortcode Weather
@@ -1338,6 +1355,7 @@ function wpcloudy_display_weather($attr,$content) {
 		extract(shortcode_atts(array( 'id' => ''), $attr));
 
 			$wpcloudy_city 				= get_post_meta($id,'_wpcloudy_city',true);
+			$wpcloudy_city_name 		= get_post_meta($id,'_wpcloudy_city_name',true);
 			$wpcloudy_country_code		= get_post_meta($id,'_wpcloudy_country_code',true);
 			$wpcloudy_unit 				= get_bypass_unit($attr,$content);
 			$wpcloudy_lang				= get_bypass_lang($attr,$content);
@@ -1653,7 +1671,7 @@ function wpcloudy_display_weather($attr,$content) {
 		
 			$display_now = '
 				<div class="now">
-					<div class="location_name">'. $location_name .'</div>		
+					<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city) .'</div>		
 					<div class="time_symbol climacon" style="fill:'. wpc_css_text_color($wpcloudy_meta_text_color) .'">'. $time_symbol_svg .'</div>
 					<div class="time_temperature">'. $time_temperature .'&deg;</div>
 				</div>
