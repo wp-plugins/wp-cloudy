@@ -202,6 +202,22 @@ class wpc_options
             'wpc_setting_section_display' // Section           
         );
 		
+		add_settings_field(
+            'wpc_display_bypass_forecast_nd', // ID
+            __("Bypass number of days forecast settings?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_bypass_forecast_nd_callback' ), // Callback
+            'wpc-settings-admin', // Page
+            'wpc_setting_section_display' // Section           
+        );
+		
+		add_settings_field(
+            'wpc_display_forecast_nd', // ID
+            __("Number of days forecast","wpcloudy"), // Title 
+            array( $this, 'wpc_display_forecast_nd_callback' ), // Callback
+            'wpc-settings-admin', // Page
+            'wpc_setting_section_display' // Section           
+        );
+		
 		//ADVANCED SECTION=========================================================================
         add_settings_section( 
             'wpc_setting_section_advanced', // ID
@@ -672,6 +688,47 @@ class wpc_options
 		esc_attr( $this->options['wpc_display_forecast']);
     }
 
+	public function wpc_display_bypass_forecast_nd_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$check = $options['wpc_display_bypass_forecast_nd'];
+		
+        echo '<input id="wpc_display_bypass_forecast_nd" name="wpc_option_name[wpc_display_bypass_forecast_nd]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_bypass_forecast_nd">'. __( 'Enable bypass number of days forecast on all weather?', 'wpcloudy' ) .'</label>';
+
+		esc_attr( $this->options['wpc_display_bypass_forecast_nd']);
+    } 
+	 
+	public function wpc_display_forecast_nd_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$selected = $options['wpc_display_forecast_nd'];
+		
+		echo ' <select id="wpc_display_forecast_nd" name="wpc_option_name[wpc_display_forecast_nd]"> ';
+		echo ' <option '; 
+		if ('1' == $selected) echo 'selected="selected"'; 
+		echo ' value="1">'. __( '1 day', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('2' == $selected) echo 'selected="selected"'; 
+		echo ' value="2">'. __( '2 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('3' == $selected) echo 'selected="selected"'; 
+		echo ' value="3">'. __( '3 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('4' == $selected) echo 'selected="selected"'; 
+		echo ' value="4">'. __( '4 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('5' == $selected) echo 'selected="selected"'; 
+		echo ' value="5">'. __( '5 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('6' == $selected) echo 'selected="selected"'; 
+		echo ' value="6">'. __( '6 days', 'wpcloudy' ) .'</option>';
+		echo '</select>';
+		esc_attr( $this->options['wpc_display_forecast_nd']);
+	}
+	
     public function wpc_advanced_bg_color_callback()
     {
         printf(

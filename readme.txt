@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.5.1
 Tested up to: 3.7.1
-Stable tag: 2.4
+Stable tag: 2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,11 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.5 =
+* NEW Choose the number of days forecast
+* FIX Zoom map
+* FIX SVG icon map
+* INFO Optimizing map performance by loading JS/CSS only if map is enabled
 = 2.4 =
 * NEW Add custom city title
 = 2.3.1 =
