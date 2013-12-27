@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.5
+Version: 2.5.5
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -62,12 +62,13 @@ function wpc_plugin_action_links($links, $file) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//Admin panel
+//Admin panel + Dashboard widget
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 if ( is_admin() )
 	require_once dirname( __FILE__ ) . '/wpcloudy-admin.php';
-	
+    require_once dirname( __FILE__ ) . '/wpcloudy-widget.php';
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //SVG animations
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,32 +89,46 @@ add_action('plugins_loaded', 'wpcloudy_init');
 //Enqueue styles Front-end
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-add_action('wp_enqueue_scripts', 'wpcloudy_styles');
-
 function wpcloudy_styles() {
+	global $post;
+	if( has_shortcode( $post->post_content, 'wpc-weather') ) {
 
-    wp_register_style('wpcloudy', plugins_url('css/wpcloudy.css', __FILE__));
-    wp_enqueue_style('wpcloudy');
-	
-	wp_register_style('wpcloudy-anim', plugins_url('css/wpcloudy-anim.css', __FILE__));
-    wp_enqueue_style('wpcloudy-anim');
+		wp_register_style('wpcloudy', plugins_url('css/wpcloudy.css', __FILE__));
+		wp_enqueue_style('wpcloudy');
+		
+		wp_register_style('wpcloudy-anim', plugins_url('css/wpcloudy-anim.css', __FILE__));
+		wp_enqueue_style('wpcloudy-anim');
+	}
 
 }
+add_action('wp_enqueue_scripts', 'wpcloudy_styles');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Loads the JS/CSS in admin
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Dashboard
+function add_dashboard_scripts() {
+	wp_register_style('wpcloudy', plugins_url('css/wpcloudy.css', __FILE__));
+	wp_enqueue_style('wpcloudy');
+	
+	wp_register_style('wpcloudy-anim', plugins_url('css/wpcloudy-anim.css', __FILE__));
+	wp_enqueue_style('wpcloudy-anim');
+	
+	require_once dirname( __FILE__ ) . '/wpcloudy-anim.php';
+}
+add_action('admin_head-index.php', 'add_dashboard_scripts');
 
+//Admin + Custom Post Type (new, listing)
 function add_admin_scripts( $hook ) {
 
 global $post;
     
 	if ( $hook == 'post-new.php' || $hook == 'post.php') {
+		
+		wp_enqueue_script( 'wpc-tinymce-js', plugins_url('js/wpc-tinymce.js', __FILE__), array( 'wpc-tinymce' ) );
+		
         if ( 'wpc-weather' === $post->post_type) { 
-     
-            //wp_enqueue_script( 'qtip', plugins_url( 'js/jquery.qtip.js', __FILE__ ), array('jquery'), false, true);
-			//wp_enqueue_script('qtipCall', plugins_url( 'js/qtipcall.js', __FILE__ ), array('jquery', 'qtip'), false, true);
 			wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
 			wp_enqueue_style( 'wpcloudy-admin' );
 			
@@ -122,12 +137,14 @@ global $post;
 			wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
 		}
 	}
+	
+	wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
+	wp_enqueue_style( 'wpcloudy-admin' );
 }
 add_action( 'admin_enqueue_scripts', add_admin_scripts, 10, 1 );
 
+//WP Cloudy Options page
 function add_admin_options_scripts() {
-
-
 			wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
 			wp_enqueue_style( 'wpcloudy-admin' );
 			
@@ -141,6 +158,38 @@ if (isset($_GET['page']) && ($_GET['page'] == 'wpc-settings-admin')) {
 	add_action('admin_enqueue_scripts', add_admin_options_scripts, 10, 1);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Add weather button in tinymce editor
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// init process for registering our button
+ add_action('init', 'wpc_shortcode_button_init');
+ function wpc_shortcode_button_init() {
+
+      //Abort early if the user will never see TinyMCE
+      if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') && get_user_option('rich_editing') == 'true')
+           return;
+
+      //Add a callback to regiser our tinymce plugin   
+      add_filter("mce_external_plugins", "wpc_register_tinymce_plugin"); 
+
+      // Add a callback to add our button to the TinyMCE toolbar
+      add_filter('mce_buttons', 'wpc_add_tinymce_button');
+}
+
+
+//This callback registers our plug-in
+function wpc_register_tinymce_plugin($plugin_array) {
+    $plugin_array['wpc_button'] = plugins_url( 'js/wpc-tinymce.js', __FILE__ );
+    return $plugin_array;
+}
+
+//This callback adds our button to the toolbar
+function wpc_add_tinymce_button($buttons) {
+            //Add the button ID to the $button array
+    $buttons[] = "wpc_button";
+    return $buttons;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Display metabox in Weather Custom Post Type
@@ -155,14 +204,14 @@ function init_metabox(){
 function wpcloudy_shortcode($post){
 	_e( 'Copy and paste this shortcode anywhere in posts, pages, text widgets: ', 'wpcloudy' );
 	echo "<div class='shortcode'>";
-	echo "[wpc-weather id=\"";
+	echo "<span class='wpc-highlight'>[wpc-weather id=\"";
 	echo get_the_ID();
-	echo "\"/]";
+	echo "\"/]</span>";
 	echo "</div>";
 	
 	echo '<div class="shortcode-php">';
 	_e( 'If you need to display this weather anywhere in your theme, simply copy and paste this code snippet in your PHP file like sidebar.php: ', 'wpcloudy' );
-	echo "<span class='highlight'>echo do_shortcode('[wpc-weather id=\"YOUR_ID\"]');</span>";
+	echo "<span class='wpc-highlight'>echo do_shortcode('[wpc-weather id=\"YOUR_ID\"]');</span>";
 	echo "</div>";
 }
 
@@ -1493,11 +1542,24 @@ function wpcloudy_display_weather($attr,$content) {
 					$wpcloudy_lang_host = 'turkish';
 					break;
 			}
+
+
+//			$myweather = get_transient( 'myweather' );
+//	
+//			if ( false === $myweather || '' === $myweather ){
+//				
+//				$myweather		= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm.xml");
+//				set_transient( 'myweather', $myweather, 60*60*12 );
+//			}
+	
+	
+	
+			$myweather			= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			
-			
-			
-			$myweather 				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+	
+
+
 			
 			setlocale(LC_TIME, "$wpcloudy_lang_host");
 			
@@ -1713,11 +1775,13 @@ function wpcloudy_display_weather($attr,$content) {
 		
 			$wpcloudy_custom_css	= get_post_meta($id,'_wpcloudy_custom_css',true);
 			
-			$display_custom_css 	= '
-				<style>
-					'. $wpcloudy_custom_css .'
-				</style>
-			';
+			if ($wpcloudy_custom_css) {
+				$display_custom_css 	= '
+					<style>
+						'. $wpcloudy_custom_css .'
+					</style>
+				';
+			}
 		
 			$display_now = '
 				<div class="now">
@@ -1731,37 +1795,35 @@ function wpcloudy_display_weather($attr,$content) {
 			';
 			$display_today_min_max = '
 				<div class="today">	
-					<div class="day"><span class="highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
+					<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
 					<div class="time_temperature_min">'. $time_temperature_min .'</div>
-					<div class="time_temperature_max"><span class="highlight">'. $time_temperature_max .'</span></div>
+					<div class="time_temperature_max"><span class="wpc-highlight">'. $time_temperature_max .'</span></div>
 				</div>
 			';
 			$display_today_ave = '
 				<div class="today">	
-					<div class="day"><span class="highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
-					<div class="time_temperature_ave"><span class="highlight">'.round($time_temperature_ave).'</span></div>
+					<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
+					<div class="time_temperature_ave"><span class="wpc-highlight">'.round($time_temperature_ave).'</span></div>
 				</div>
 			';
 			$display_wind = '
-				<div class="wind">
-					<div class="wind-direction">'. __( 'Wind', 'wpcloudy' ) .'<span class="highlight">'. $time_wind_direction .' '. $time_wind_speed .'</span></div>
-				</div>
+				<div class="wind">'. __( 'Wind', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_wind_direction .' '. $time_wind_speed .'</span></div>
 			';
 			$display_humidity = '
-				<div class="humidity">'. __( 'Humidity', 'wpcloudy' ) .'<span class="highlight">'. $time_humidity .' %</span></div>
+				<div class="humidity">'. __( 'Humidity', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_humidity .' %</span></div>
 			';
 			$display_pressure = '
-				<div class="pressure">'. __( 'Pressure', 'wpcloudy' ) .'<span class="highlight">'. $time_pressure .' hPa</span></div>
+				<div class="pressure">'. __( 'Pressure', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_pressure .' hPa</span></div>
 			';
 			$display_cloudiness = '
-				<div class="cloudiness">'. __( 'Cloudiness', 'wpcloudy' ) .'<span class="highlight">'. $time_cloudiness .' %</span></div>
+				<div class="cloudiness">'. __( 'Cloudiness', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_cloudiness .' %</span></div>
 			';			
 			$display_hours = '
 				<div class="hours" style="border-color:'. $wpcloudy_meta_border_color .';">	
 					<div class="first">
-						<div class="hour"><span class="highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
+						<div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
 						<div class="symbol climacon w'. $hour_symbol_number_0 .'"><span>'. $hour_symbol_0 .'</span></div>
-						<div class="temperature"><span class="highlight">'. $hour_temp_0 .'</span></div>
+						<div class="temperature"><span class="wpc-highlight">'. $hour_temp_0 .'</span></div>
 					</div>
 					<div class="second">
 						<div class="hour">'. $hour_time_1 .'</div>
@@ -1796,7 +1858,7 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="day">'. $forecast_day_1 .'</div>
 					<div class="symbol climacon w'. $forecast_number_1 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_1 .'</div>
-					<div class="temp_max"><span class="highlight">'. $forecast_temp_max_1 .'</span></div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_1 .'</span></div>
 				</div>
 			';
 			$display_forecast_2 = '	
@@ -1804,7 +1866,7 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="day">'. $forecast_day_2 .'</div>
 					<div class="symbol climacon w'. $forecast_number_2 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_2 .'</div>
-					<div class="temp_max"><span class="highlight">'. $forecast_temp_max_2 .'</span></div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_2 .'</span></div>
 				</div>
 			';
 			$display_forecast_3 = '	
@@ -1812,7 +1874,7 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="day">'. $forecast_day_3 .'</div>
 					<div class="symbol climacon w'. $forecast_number_3 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_3 .'</div>
-					<div class="temp_max"><span class="highlight">'. $forecast_temp_max_3 .'</span></div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_3 .'</span></div>
 				</div>
 			';
 			$display_forecast_4 = '	
@@ -1820,7 +1882,7 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="day">'. $forecast_day_4 .'</div>
 					<div class="symbol climacon w'. $forecast_number_4 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_4 .'</div>
-					<div class="temp_max"><span class="highlight">'. $forecast_temp_max_4 .'</span></div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_4 .'</span></div>
 				</div>
 			';
 			$display_forecast_5 = '	
@@ -1828,7 +1890,7 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="day">'. $forecast_day_5 .'</div>
 					<div class="symbol climacon w'. $forecast_number_5 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_5 .'</div>
-					<div class="temp_max"><span class="highlight">'. $forecast_temp_max_5 .'</span></div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_5 .'</span></div>
 				</div>
 			';
 			$display_forecast_6 = '	
@@ -1836,7 +1898,7 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="day">'. $forecast_day_6 .'</div>
 					<div class="symbol climacon w'. $forecast_number_6 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_6 .'</div>
-					<div class="temp_max"><span class="highlight">'. $forecast_temp_max_6 .'</span></div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_6 .'</span></div>
 				</div>
 			';
 
@@ -2026,9 +2088,9 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_forecast_nd			=	get_bypass_forecast_nd($attr,$content);
 			$wpcloudy_size					=	get_bypass_size($attr,$content);
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
+			$wpcloudy_skin 				    =   get_post_meta($id,'_wpcloudy_skin',true);
 			
-			
-			$html = '<div id="wpc-weather" class="'. $wpcloudy_size .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
+			$html = '<div id="wpc-weather" class="'. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
 			
 			if( $wpcloudy_current_weather ) {
 				$html .= $display_now;
@@ -2124,6 +2186,7 @@ function wpcloudy_display_weather($attr,$content) {
 add_filter( 'widget_text', 'shortcode_unautop');
 add_filter( 'widget_text', 'do_shortcode', 11);
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Display shortcode in listing view
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2143,7 +2206,7 @@ function custom_wpc_weather_column($column, $post_id) {
 
     switch ($column) {
         case 'wpc-weather':
-            echo "[wpc-weather id='$post_id' /]";
+            echo "[wpc-weather id=\"$post_id\" /]";
             break;
     }
 }
@@ -2174,7 +2237,7 @@ function wpcloudy_weather() {
 		'label'               => __( 'weather', 'wpcloudy' ),
 		'description'         => __( 'Listing weather', 'wpcloudy' ),
 		'labels'              => $labels,
-		'supports'            => array( 'title', ),
+		'supports'            => array( 'title' ),
 		'hierarchical'        => false,
 		'public'              => false,
 		'show_ui'             => true,
@@ -2182,7 +2245,6 @@ function wpcloudy_weather() {
 		'show_in_nav_menus'   => true,
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 20,
-		'menu_icon' 		  => plugins_url( 'wp-cloudy/img/icon-admin-wpc.png' , dirname(__FILE__) ),
 		'can_export'          => true,
 		'has_archive'         => false,
 		'exclude_from_search' => true,
@@ -2195,6 +2257,10 @@ function wpcloudy_weather() {
 
 // Hook into the 'init' action
 add_action( 'init', 'wpcloudy_weather', 0 );
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Weather Custom Post Type Messages
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function set_messages($messages) {
 	global $post, $post_ID;

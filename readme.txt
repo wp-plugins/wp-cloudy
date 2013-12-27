@@ -3,8 +3,8 @@ Contributors: rainbowgeek
 Donate link: http://wpcloudy.com/
 Tags: weather, forecast
 Requires at least: 3.5.1
-Tested up to: 3.7.1
-Stable tag: 2.5
+Tested up to: 3.8
+Stable tag: 2.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,8 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
+* NEW! Add WP Cloudy widget dashboard 
+* NEW! Add a button to integrate the weather shortcode in tinymce editor more easily
 * NEW! Now with SVG animated icons (thanks to Noah Blon => http://codepen.io/noahblon )
 * NEW! Adding an options panel to bypass options for individual weather
 * NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure) 
@@ -62,6 +64,12 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.5.5 =
+* NEW Add WP Cloudy widget dashboard 
+* NEW Add a button to integrate the weather shortcode in tinymce editor more easily
+* FIX Empty tag <style>
+* INFO Optimizing performance in admin and Front-end
+* INFO Now fully compatible with WordPress 3.8
 = 2.5 =
 * NEW Choose the number of days forecast
 * FIX Zoom map

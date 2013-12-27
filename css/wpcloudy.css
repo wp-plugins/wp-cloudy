@@ -15,15 +15,16 @@
     font-family: helvetica neue,segoe ui,arial;
     font-size: 14px;
     margin: 10px 0;
-    padding: 20px 0;
+    padding: 5px 0;
     width: 100%;
+	line-height: 24px;
 }
-#wpc-weather > div {
+#wpc-weather > div, #wpc-weather > div div, #wpc-weather > div div div {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing:    border-box;
 	box-sizing:         border-box;
 }
-#wpc-weather .highlight {
+#wpc-weather .wpc-highlight {
     display: block;
     font-weight: bold;
 }

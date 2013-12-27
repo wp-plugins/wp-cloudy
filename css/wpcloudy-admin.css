@@ -1,12 +1,23 @@
 /*************************************************************************************************/
 /* Admin - Base																					 */
 /*************************************************************************************************/
-.menu-icon-wpc-weather .wp-menu-image {
-    background-image: url("../img/icon-admin-wpc.png");
-    background-position: -193px 8px;
+@font-face {
+	font-family: 'Climacons-Font';
+	src:url('climacons-webfont.eot');
+	src:url('climacons-webfont.eot?#iefix') format('embedded-opentype'),
+		url('climacons-webfont.svg#Climacons-Font') format('svg'),
+		url('climacons-webfont.woff') format('woff'),
+		url('climacons-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
-.menu-icon-wpc-weather .wp-menu-image img {
-	display:none;
+#menu-posts-wpc-weather .wp-menu-image:before {
+    content: "\e000" !important;
+    font: 700 26px/18px Climacons-Font !important;
+}
+.mceIcon.mce_wpc_button:before {
+	content: "\e000" !important;
+    font: 700 26px/18px Climacons-Font !important;
 }
 #wpcloudy_basic .ui-tabs .ui-tabs-nav {
     display: inline-block;
@@ -77,9 +88,13 @@
 #wpcloudy_shortcode .shortcode-php {
 	margin:0 0 20px 0;
 }
-#wpcloudy_shortcode .shortcode-php .highlight {
-	display:block;
-	margin:20px 0 0 0;
+#wpcloudy_shortcode .shortcode-php .wpc-highlight,
+#wpcloudy_shortcode .shortcode .wpc-highlight {
+    background: none repeat scroll 0 0 #222222;
+    color: #FFFFFF;
+    display: block;
+    margin: 20px 0 0;
+    padding: 5px;
 }
 /*************************************************************************************************/
 /* Admin - Tabs 																				 */
@@ -127,189 +142,3 @@
 /* Admin - Options panel 																		 */
 /*************************************************************************************************/
 .wpcloudy-settings label {margin: 0 0 0 10px;}
-
-/*************************************************************************************************/
-/* Admin - Tooltip		 																		 */
-/*************************************************************************************************/
-.wpc_help {
-	float:right;
-	margin:0 0 0 20px;
-	cursor:pointer;
-}
-.wpc_help:hover {
-	opacity:0.8;
-}
-.tooltiptext{
-    display: none;
-}
-.qtip{
-	position: absolute;
-	left: -28000px;
-	top: -28000px;
-	display: none;
-
-	max-width: 280px;
-	min-width: 50px;
-	
-	font-size: 10.5px;
-	line-height: 12px;
-
-	direction: ltr;
-
-	box-shadow: none;
-	padding: 0;
-}
-
-.qtip-content{
-	position: relative;
-	padding: 5px 10px;
-	overflow: hidden;
-	font-size: 12px;
-	text-align: left;
-	word-wrap: break-word;
-	line-height: 18px;
-}
-
-.qtip-titlebar{
-	position: relative;
-	padding: 5px 35px 5px 10px;
-	overflow: hidden;
-
-	border-width: 0 0 1px;
-	font-weight: bold;
-}
-
-.qtip-titlebar + .qtip-content{ border-top-width: 0 !important; }
-
-/* Default close button class */
-.qtip-close{
-	position: absolute;
-	right: -9px; top: -9px;
-
-	cursor: pointer;
-	outline: medium none;
-
-	border-width: 1px;
-	border-style: solid;
-	border-color: transparent;
-}
-
-.qtip-titlebar .qtip-close{
-	right: 4px; top: 50%;
-	margin-top: -9px;
-}
-
-* html .qtip-titlebar .qtip-close{ top: 16px; } /* IE fix */
-
-.qtip-titlebar .ui-icon,
-.qtip-icon .ui-icon{
-	display: block;
-	text-indent: -1000em;
-	direction: ltr;
-}
-
-.qtip-icon, .qtip-icon .ui-icon{
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	text-decoration: none;
-}
-
-.qtip-icon .ui-icon{
-	width: 18px;
-	height: 14px;
-
-	line-height: 14px;
-	text-align: center;
-	text-indent: 0;
-	font: normal bold 10px/13px Tahoma,sans-serif;
-
-	color: inherit;
-	background: transparent none no-repeat -100em -100em;
-}
-
-/* Applied to 'focused' tooltips e.g. most recently displayed/interacted with */
-.qtip-focus{}
-
-/* Applied on hover of tooltips i.e. added/removed on mouseenter/mouseleave respectively */
-.qtip-hover{}
-
-/* Default tooltip style */
-.qtip-default{
-	border-width: 2px;
-	border-style: solid;
-	border-color: #F1D031;
-
-	background-color: #FFFFA3;
-	color: #555;
-}
-
-.qtip-default .qtip-titlebar{
-	background-color: #FFEF93;
-}
-
-.qtip-default .qtip-icon{
-	border-color: #CCC;
-	background: #F1F1F1;
-	color: #777;
-}
-
-.qtip-default .qtip-titlebar .qtip-close{
-	border-color: #AAA;
-	color: #111;
-}
-
-/*! Light tooltip style */
-.qtip-light{
-	background-color: white;
-	border-color: #E2E2E2;
-	color: #454545;
-}
-
-.qtip-light .qtip-titlebar{
-	background-color: #f1f1f1;
-}
-
-
-/*! Blue tooltip style */
-.qtip-blue{
-	background-color: #E5F6FE;
-	border-color: #ADD9ED;
-	color: #5E99BD;
-}
-
-.qtip-blue .qtip-titlebar{
-	background-color: #D0E9F5;
-}
-
-.qtip-blue .qtip-close .qtip-icon{
-	background-position: -2px 0;
-}
-
-.qtip-shadow{
-	-webkit-box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
-	-moz-box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
-	box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
-}
-
-/* Add rounded corners to your tooltips in: FF3+, Chrome 2+, Opera 10.6+, IE9+, Safari 2+ */
-.qtip-rounded,
-.qtip-tipsy,
-.qtip-bootstrap{
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-}
-
-.qtip-rounded .qtip-titlebar{
-	-moz-border-radius: 4px 4px 0 0;
-	-webkit-border-radius: 4px 4px 0 0;
-	border-radius: 4px 4px 0 0;
-}
-
-/* IE9 fix - removes all filters */
-.qtip:not(.ie9haxors) div.qtip-content,
-.qtip:not(.ie9haxors) div.qtip-titlebar{
-	filter: none;
-	-ms-filter: none;
-}
