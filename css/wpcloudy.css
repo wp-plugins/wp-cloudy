@@ -98,9 +98,10 @@
     width: 25%;
 }
 #wpc-weather .today .day {
-    float: left;
-    text-align: left;
-    width: 50%;
+	float: left;
+	text-align: left;
+	min-width: 88px;
+	width:20%;
 }
 #wpc-weather .today .time_temperature_max {
     float: right;
@@ -114,13 +115,31 @@
     width: 50px;
 }
 #wpc-weather .today .time_temperature_ave {
-	float:right;
-	text-align:right;
-	width:50px;
+	float: right;
+	text-align: right;
+	width: 50px;
+}
+#wpc-weather .today .sun_hours {
+	min-width: 150px;
+	width:30%;
+	float: left;
+	text-align: center;
+}
+#wpc-weather .today .sun_hours .sunrise:before,
+#wpc-weather .today .sun_hours .sunset:before {
+	font-size:30px;
+	font-family: 'Climacons-Font';
+	vertical-align: middle;
+	padding-right: 5%;
+}
+#wpc-weather .today .sun_hours .sunrise:before {
+	content:"\e02a";
+}
+#wpc-weather .today .sun_hours .sunset:before {
+	content:"\e029";
 }
 #wpc-weather .today, #wpc-weather .forecast {
     display: inline-block;
-    padding: 0 5%;
     width: 100%;
 }
 #wpc-weather .hours {
@@ -152,7 +171,7 @@
 #wpc-weather .hours .first {
 	margin: 0 6%;
 }
-#wpc-weather .forecast .first, #wpc-weather .forecast .second, #wpc-weather .forecast .third, #wpc-weather .forecast .fourth, #wpc-weather .forecast .fifth, #wpc-weather .forecast .sixth {
+#wpc-weather .forecast .first, #wpc-weather .forecast .second, #wpc-weather .forecast .third, #wpc-weather .forecast .fourth, #wpc-weather .forecast .fifth, #wpc-weather .forecast .sixth, #wpc-weather .forecast .seventh, #wpc-weather .forecast .eighth, #wpc-weather .forecast .ninth, #wpc-weather .forecast .tenth, #wpc-weather .forecast .eleventh, #wpc-weather .forecast .twelfth, #wpc-weather .forecast .thirteenth {
 	display:inline-block;
 	width: 100%;
 }

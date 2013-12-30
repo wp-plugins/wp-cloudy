@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.5.6
+Version: 2.5.7
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -220,6 +220,7 @@ function wpcloudy_basic($post){
   $wpcloudy_current_weather			= get_post_meta($post->ID,'_wpcloudy_current_weather',true);
   $wpcloudy_date_temp				= get_post_meta($post->ID,'_wpcloudy_date_temp',true);
   $wpcloudy_weather					= get_post_meta($post->ID,'_wpcloudy_weather',true);
+  $wpcloudy_sunrise_sunset 			= get_post_meta($post->ID,'_wpcloudy_sunrise_sunset',true);
   $wpcloudy_wind 					= get_post_meta($post->ID,'_wpcloudy_wind',true);
   $wpcloudy_humidity 				= get_post_meta($post->ID,'_wpcloudy_humidity',true);
   $wpcloudy_pressure				= get_post_meta($post->ID,'_wpcloudy_pressure',true);
@@ -316,6 +317,12 @@ function wpcloudy_basic($post){
 							'. __( 'Date + temperatures?', 'wpcloudy' ) .'
 					</label>
 				</p>
+				<p>
+					<label for="wpcloudy_sunrise_sunset_meta">
+						<input type="checkbox" name="wpcloudy_sunrise_sunset" id="wpcloudy_sunrise_sunset_meta" value="yes" '. checked( $wpcloudy_sunrise_sunset, 'yes', false ) .' />
+							'. __( 'Sunrise + sunset? appears only if date + temperatures is checked', 'wpcloudy' ) .'
+					</label>
+				</p>
 				<p>				
 					<label for="wpcloudy_wind_meta">
 						<input type="checkbox" name="wpcloudy_wind" id="wpcloudy_wind_meta" value="yes" '. checked( $wpcloudy_wind, 'yes', false ) .' />
@@ -362,12 +369,12 @@ function wpcloudy_basic($post){
 					</label>
 				</p>
 				<p class="forecast">
-					'. __( '7-Day Forecast', 'wpcloudy' ) .'
+					'. __( '14-Day Forecast', 'wpcloudy' ) .'
 				</p>
 				<p>
 					<label for="wpcloudy_forecast_meta">
 						<input type="checkbox" name="wpcloudy_forecast" id="wpcloudy_forecast_meta" value="yes" '. checked( $wpcloudy_forecast, 'yes', false ) .' />
-							'. __( '7-Day Forecast?', 'wpcloudy' ) .'
+							'. __( '14-Day Forecast?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
@@ -379,6 +386,13 @@ function wpcloudy_basic($post){
 						<option ' . selected( '4', $wpcloudy_forecast_nd, false ) . ' value="4">'. __( '4 days', 'wpcloudy' ) .'</option>
 						<option ' . selected( '5', $wpcloudy_forecast_nd, false ) . ' value="5">'. __( '5 days', 'wpcloudy' ) .'</option>
 						<option ' . selected( '6', $wpcloudy_forecast_nd, false ) . ' value="6">'. __( '6 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '7', $wpcloudy_forecast_nd, false ) . ' value="7">'. __( '7 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '8', $wpcloudy_forecast_nd, false ) . ' value="8">'. __( '8 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '9', $wpcloudy_forecast_nd, false ) . ' value="9">'. __( '9 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '10', $wpcloudy_forecast_nd, false ) . ' value="10">'. __( '10 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '11', $wpcloudy_forecast_nd, false ) . ' value="11">'. __( '11 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '12', $wpcloudy_forecast_nd, false ) . ' value="12">'. __( '12 days', 'wpcloudy' ) .'</option>
+						<option ' . selected( '13', $wpcloudy_forecast_nd, false ) . ' value="13">'. __( '13 days', 'wpcloudy' ) .'</option>
 					</select>
 				</p>		
 			</div>
@@ -539,6 +553,11 @@ function save_metabox($post_id){
 		update_post_meta( $post_id, '_wpcloudy_date_temp', 'yes' );
 	} else {
 		update_post_meta( $post_id, '_wpcloudy_date_temp', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_sunrise_sunset' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_sunrise_sunset', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_sunrise_sunset', '' );
 	}
 	if( isset( $_POST[ 'wpcloudy_wind' ] ) ) {
 		update_post_meta( $post_id, '_wpcloudy_wind', 'yes' );
@@ -913,6 +932,33 @@ function get_bypass_display_date_temp($attr,$content) {
 	}
 	else {
 		return get_display_date_temp($attr,$content);
+	}
+}
+
+//Bypass Sunrise - sunset
+
+function get_admin_display_sunrise_sunset() {
+	$wpc_admin_display_sunrise_sunset_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_sunrise_sunset_option ) ) {
+		foreach ($wpc_admin_display_sunrise_sunset_option as $key => $wpc_admin_display_sunrise_sunset_value)
+			$options[$key] = $wpc_admin_display_sunrise_sunset_value;
+		return $wpc_admin_display_sunrise_sunset_option['wpc_display_sunrise_sunset'];
+	}
+};
+
+function get_display_sunrise_sunset($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_sunrise_sunset_value = get_post_meta($id,'_wpcloudy_sunrise_sunset',true);
+		return $wpc_display_sunrise_sunset_value;
+};
+
+function get_bypass_display_sunrise_sunset($attr,$content) {
+	if (get_admin_display_sunrise_sunset()) {
+		return get_admin_display_sunrise_sunset(); 
+	}
+	else {
+		return get_display_sunrise_sunset($attr,$content);
 	}
 }
 
@@ -1477,7 +1523,14 @@ function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city) {
 		return $wpcloudy_city;
 	}
 };
-			
+
+function display_today_sunrise_sunset($wpcloudy_sunrise_sunset, $sun_rise, $sun_set) {
+	if( $wpcloudy_sunrise_sunset ) {
+		return '<div class="sun_hours">
+					<span class="sunrise">'. $sun_rise .'</span> - <span class="sunset">'. $sun_set .'</span>
+				</div>';
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add shortcode Weather
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1506,7 +1559,8 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_meta_border_color	= get_bypass_color_border($attr,$content);
 			$wpcloudy_meta_bg_color		= get_bypass_color_background($attr,$content);
 			$wpcloudy_meta_text_color	= get_bypass_color_text($attr,$content);
-			
+			$wpcloudy_sunrise_sunset		= 	get_bypass_display_sunrise_sunset($attr,$content);
+	
 			switch ($wpcloudy_lang) {
 				case "fr":
 					$wpcloudy_lang_owm = 'fr';
@@ -1591,7 +1645,7 @@ function wpcloudy_display_weather($attr,$content) {
 	
 			$myweather			= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			
-			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
 	
 
 
@@ -1675,7 +1729,41 @@ function wpcloudy_display_weather($attr,$content) {
 			$forecast_number_6		= $myweather_sevendays->forecast[0]->time[6]->symbol[0]['number'];
 			$forecast_temp_min_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['min']));
 			$forecast_temp_max_6	= (round($myweather_sevendays->forecast[0]->time[6]->temperature[0]['max']));	
-
+	
+			$forecast_day_7			= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[7]['day']));
+			$forecast_number_7		= $myweather_sevendays->forecast[0]->time[7]->symbol[0]['number'];
+			$forecast_temp_min_7	= (round($myweather_sevendays->forecast[0]->time[7]->temperature[0]['min']));
+			$forecast_temp_max_7	= (round($myweather_sevendays->forecast[0]->time[7]->temperature[0]['max']));
+	
+			$forecast_day_8			= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[8]['day']));
+			$forecast_number_8		= $myweather_sevendays->forecast[0]->time[8]->symbol[0]['number'];
+			$forecast_temp_min_8	= (round($myweather_sevendays->forecast[0]->time[8]->temperature[0]['min']));
+			$forecast_temp_max_8	= (round($myweather_sevendays->forecast[0]->time[8]->temperature[0]['max']));
+	
+			$forecast_day_9			= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[9]['day']));
+			$forecast_number_9		= $myweather_sevendays->forecast[0]->time[9]->symbol[0]['number'];
+			$forecast_temp_min_9	= (round($myweather_sevendays->forecast[0]->time[9]->temperature[0]['min']));
+			$forecast_temp_max_9	= (round($myweather_sevendays->forecast[0]->time[9]->temperature[0]['max']));
+	
+			$forecast_day_10		= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[10]['day']));
+			$forecast_number_10		= $myweather_sevendays->forecast[0]->time[10]->symbol[0]['number'];
+			$forecast_temp_min_10	= (round($myweather_sevendays->forecast[0]->time[10]->temperature[0]['min']));
+			$forecast_temp_max_10	= (round($myweather_sevendays->forecast[0]->time[10]->temperature[0]['max']));
+	
+			$forecast_day_11		= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[11]['day']));
+			$forecast_number_11		= $myweather_sevendays->forecast[0]->time[11]->symbol[0]['number'];
+			$forecast_temp_min_11	= (round($myweather_sevendays->forecast[0]->time[11]->temperature[0]['min']));
+			$forecast_temp_max_11	= (round($myweather_sevendays->forecast[0]->time[11]->temperature[0]['max']));
+	
+			$forecast_day_12		= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[12]['day']));
+			$forecast_number_12		= $myweather_sevendays->forecast[0]->time[12]->symbol[0]['number'];
+			$forecast_temp_min_12	= (round($myweather_sevendays->forecast[0]->time[12]->temperature[0]['min']));
+			$forecast_temp_max_12	= (round($myweather_sevendays->forecast[0]->time[12]->temperature[0]['max']));
+	
+			$forecast_day_13		= strftime("%A", strtotime($myweather_sevendays->forecast[0]->time[13]['day']));
+			$forecast_number_13		= $myweather_sevendays->forecast[0]->time[13]->symbol[0]['number'];
+			$forecast_temp_min_13	= (round($myweather_sevendays->forecast[0]->time[13]->temperature[0]['min']));
+			$forecast_temp_max_13	= (round($myweather_sevendays->forecast[0]->time[13]->temperature[0]['max']));
 
 			$time_temperature_mid 	= $time_temperature_min + $time_temperature_max;
 			$time_temperature_ave 	= $time_temperature_mid / 2;
@@ -1828,9 +1916,13 @@ function wpcloudy_display_weather($attr,$content) {
 			$display_weather = '
 				<div class="short_condition">'. $time_symbol .'</div>
 			';
+			
+				
+	
 			$display_today_min_max = '
 				<div class="today">	
 					<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
+					'. display_today_sunrise_sunset($wpcloudy_sunrise_sunset, $sun_rise, $sun_set) .'
 					<div class="time_temperature_min">'. $time_temperature_min .'</div>
 					<div class="time_temperature_max"><span class="wpc-highlight">'. $time_temperature_max .'</span></div>
 				</div>
@@ -1838,6 +1930,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$display_today_ave = '
 				<div class="today">	
 					<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
+					'. display_today_sunrise_sunset($wpcloudy_sunrise_sunset, $sun_rise, $sun_set) .'
 					<div class="time_temperature_ave"><span class="wpc-highlight">'.round($time_temperature_ave).'</span></div>
 				</div>
 			';
@@ -1934,6 +2027,62 @@ function wpcloudy_display_weather($attr,$content) {
 					<div class="symbol climacon w'. $forecast_number_6 .'"></div>
 					<div class="temp_min">'. $forecast_temp_min_6 .'</div>
 					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_6 .'</span></div>
+				</div>
+			';
+			$display_forecast_7 = '	
+				<div class="seventh">
+					<div class="day">'. $forecast_day_7 .'</div>
+					<div class="symbol climacon w'. $forecast_number_7 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_7 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_7 .'</span></div>
+				</div>
+			';
+			$display_forecast_8 = '	
+				<div class="eighth">
+					<div class="day">'. $forecast_day_8 .'</div>
+					<div class="symbol climacon w'. $forecast_number_8 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_8 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_8 .'</span></div>
+				</div>
+			';
+			$display_forecast_9 = '	
+				<div class="ninth">
+					<div class="day">'. $forecast_day_9 .'</div>
+					<div class="symbol climacon w'. $forecast_number_9 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_9 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_9 .'</span></div>
+				</div>
+			';
+			$display_forecast_10 = '	
+				<div class="tenth">
+					<div class="day">'. $forecast_day_10 .'</div>
+					<div class="symbol climacon w'. $forecast_number_10 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_10 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_10 .'</span></div>
+				</div>
+			';
+			$display_forecast_11 = '	
+				<div class="eleventh">
+					<div class="day">'. $forecast_day_11 .'</div>
+					<div class="symbol climacon w'. $forecast_number_11 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_11 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_11 .'</span></div>
+				</div>
+			';
+			$display_forecast_12 = '	
+				<div class="twelfth">
+					<div class="day">'. $forecast_day_12 .'</div>
+					<div class="symbol climacon w'. $forecast_number_12 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_12 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_12 .'</span></div>
+				</div>
+			';
+			$display_forecast_13 = '	
+				<div class="thirteenth">
+					<div class="day">'. $forecast_day_13 .'</div>
+					<div class="symbol climacon w'. $forecast_number_13 .'"></div>
+					<div class="temp_min">'. $forecast_temp_min_13 .'</div>
+					<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_13 .'</span></div>
 				</div>
 			';
 
@@ -2126,7 +2275,9 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
 			$wpcloudy_skin 				    =   get_post_meta($id,'_wpcloudy_skin',true);
 			
-			$html = '<div id="wpc-weather" class="'. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
+			$html = '
+			<!-- WP Cloudy : WordPress weather plugin - http://wpcloudy.com/ -->
+			<div id="wpc-weather" class="'. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'">';
 			
 			if( $wpcloudy_current_weather ) {
 				$html .= $display_now;
@@ -2135,11 +2286,11 @@ function wpcloudy_display_weather($attr,$content) {
 			if( $wpcloudy_weather ) {
 				$html .= $display_weather;
 			}
-			
+	
 			if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == yes ) {
 				$html .= $display_today_min_max;
 			}	
-
+	
 			if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == no ) {
 				$html .= $display_today_ave;
 			}				
@@ -2194,6 +2345,27 @@ function wpcloudy_display_weather($attr,$content) {
 			
 			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 6 ) {
 				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6.'</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 7 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7.'</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 8 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7 . $display_forecast_8.'</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 9 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7 . $display_forecast_8 . $display_forecast_9.'</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 10 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7 . $display_forecast_8 . $display_forecast_9 . $display_forecast_10. '</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 11 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7 . $display_forecast_8 . $display_forecast_9 . $display_forecast_10 . $display_forecast_11.'</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 12 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7 . $display_forecast_8 . $display_forecast_9 . $display_forecast_10 . $display_forecast_11 . $display_forecast_12.'</div>';
+			}
+			if( $wpcloudy_forecast && $wpcloudy_forecast_nd == 13 ) {
+				$html .= '<div class="forecast">'.$display_forecast_1 . $display_forecast_2 . $display_forecast_3 . $display_forecast_4 . $display_forecast_5 . $display_forecast_6 . $display_forecast_7 . $display_forecast_8 . $display_forecast_9 . $display_forecast_10 . $display_forecast_11 . $display_forecast_12 . $display_forecast_13.'</div>';
 			}
 			
 			if( $wpcloudy_map ) {
