@@ -147,6 +147,14 @@ class wpc_options
         );
 		
 		add_settings_field(
+            'wpc_display_sunrise_sunset', // ID
+            __("Sunrise + sunset?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_sunrise_sunset_callback' ), // Callback
+            'wpc-settings-admin', // Page
+            'wpc_setting_section_display' // Section           
+        );
+		
+		add_settings_field(
             'wpc_display_wind', // ID
             __("Wind?","wpcloudy"), // Title 
             array( $this, 'wpc_display_wind_callback' ), // Callback
@@ -597,6 +605,19 @@ class wpc_options
 		echo '<label for="wpc_display_date_temp">'. __( 'Display today date + temperatures on all weather?', 'wpcloudy' ) .'</label>';
 
 		esc_attr( $this->options['wpc_display_date_temp']);
+    }
+	
+	public function wpc_display_sunrise_sunset_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$check = $options['wpc_display_sunrise_sunset'];
+		
+        echo '<input id="wpc_display_sunrise_sunset" name="wpc_option_name[wpc_display_sunrise_sunset]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_sunrise_sunset">'. __( 'Display sunrise - sunset on all weather?', 'wpcloudy' ) .'</label>';
+
+		esc_attr( $this->options['wpc_display_sunrise_sunset']);
     }
 	
 	public function wpc_display_wind_callback()
