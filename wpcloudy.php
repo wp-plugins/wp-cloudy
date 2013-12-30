@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.5.7
+Version: 2.6
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -1633,20 +1633,21 @@ function wpcloudy_display_weather($attr,$content) {
 			}
 
 
-//			$myweather = get_transient( 'myweather' );
-//	
-//			if ( false === $myweather || '' === $myweather ){
-//				
-//				$myweather		= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm.xml");
-//				set_transient( 'myweather', $myweather, 60*60*12 );
-//			}
+			$myweather = simplexml_load_string(get_transient( 'myweather' ));
 	
+			if ( false === $myweather || '' === $myweather ){
+				
+				$myweather		= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				set_transient( 'myweather', $myweather->asXML(), 10 * MINUTE_IN_SECONDS );
+			}
 	
+			$myweather_sevendays = simplexml_load_string(get_transient( 'myweather_sevendays' ));
 	
-			$myweather			= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
-			
-			$myweather_sevendays 	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
-	
+			if ( false === $myweather_sevendays || '' === $myweather_sevendays ){
+				
+				$myweather_sevendays		= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
+				set_transient( 'myweather_sevendays', $myweather_sevendays->asXML(), 10 * MINUTE_IN_SECONDS );
+			}
 
 
 			
@@ -1666,8 +1667,8 @@ function wpcloudy_display_weather($attr,$content) {
 			$time_temperature_min 	= (round($myweather->forecast[0]->time[0]->temperature[0]['min']));
 			$time_temperature_max 	= (round($myweather->forecast[0]->time[0]->temperature[0]['max']));
 
-			$sun_rise 				= date("h:m", strtotime($myweather->sun[0]['rise']));
-			$sun_set 				= date("h:m", strtotime($myweather->sun[0]['set']));		
+			$sun_rise 				= (string)date("h:m", strtotime($myweather->sun[0]['rise']));
+			$sun_set 				= (string)date("h:m", strtotime($myweather->sun[0]['set']));		
 			
 			$today_day				= strftime("%A", strtotime($myweather->meta[0]->lastupdate));
 			
