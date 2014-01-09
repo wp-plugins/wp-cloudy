@@ -1,10 +1,10 @@
 === WP Cloudy ===
 Contributors: rainbowgeek
 Donate link: http://wpcloudy.com/
-Tags: weather, forecast
+Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.8
-Stable tag: 2.6
+Stable tag: 2.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,9 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.6.1 =
+* FIX Caching system temporarily disabled 
+* FIX Improved accuracy for current weather
 = 2.6 =
 * NEW! Caching system to avoid connection problems to OpenWeatherMap.org using WordPress Transients API
 = 2.5.7 =

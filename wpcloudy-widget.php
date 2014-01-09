@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Add a widget to the dashboard.
