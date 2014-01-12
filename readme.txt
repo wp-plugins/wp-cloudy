@@ -67,9 +67,12 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.6.2 =
+* FIX Parse error: syntax error, unexpected '}' in wpcloudy-widget.php on line 71
 = 2.6.1 =
 * FIX Caching system temporarily disabled 
 * FIX Improved accuracy for current weather
+* FIX Sunrise/sunset time
 = 2.6 =
 * NEW! Caching system to avoid connection problems to OpenWeatherMap.org using WordPress Transients API
 = 2.5.7 =

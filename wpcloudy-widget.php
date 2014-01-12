@@ -42,13 +42,15 @@ function wpc_dashboard_widget_option($widget_id) {
 	// Retrieve feed URLs
 	$weather_db = $wpc_widget_options['weather_db'];
 	
-	?>
-	<p>
-		<label for="wpc_weather_db-"><?php _e('Select the weather to display:', 'wpcloudy'); ?></label>
 
-		<select name="wpc_widget[weather_db]">
+	echo'<p>';
+	echo'<label for="wpc_weather_db-">';
+			_e('Select the weather to display:', 'wpcloudy');
+	echo'</label>';
+
+	echo'<select name="wpc_widget[weather_db]">';
 			
-			<?php $query = new WP_Query( array( 'post_type' => array( 'wpc-weather' ) ) );
+			$query = new WP_Query( array( 'post_type' => array( 'wpc-weather' ) ) );
 	
 				while ( $query->have_posts() ) : $query->the_post();
 	
@@ -60,14 +62,14 @@ function wpc_dashboard_widget_option($widget_id) {
 					echo '</option>';
 				endwhile;
 			
-			?>
+		
 			
-		</select>	
+		echo'</select>';
 				
-	</p>
+	echo'</p>';
 	
-	<input name="wpc_widget_post" type="hidden" value="1" />
-<?php
+	echo'<input name="wpc_widget_post" type="hidden" value="1" />';
+
 }
 
 ?>
