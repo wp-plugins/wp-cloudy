@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.6.2
+Version: 2.6.3
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -1720,19 +1720,34 @@ function wpcloudy_display_weather($attr,$content) {
 			//$myweather = simplexml_load_string(get_transient( 'myweather' ));
 	
 			//if ( false === $myweather || '' === $myweather ){
+				$myweather_current_url = "http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm";
+
+				$myweather_url = "http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm";
 				
+				$myweather_sevendays_url = "http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14";
+
+				if (@simplexml_load_file($myweather_current_url)) {
+					$myweather_current = simplexml_load_file($myweather_current_url);
+				}
+				
+				if (@simplexml_load_file($myweather_url)) {
+					$myweather = simplexml_load_file($myweather_url);
+				}
+				
+				if (@simplexml_load_file($myweather_sevendays_url)) {
+					$myweather_sevendays = simplexml_load_file($myweather_sevendays_url);
+				}
 		
-				$myweather_current		= simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				
 	
-				$myweather				= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
-				//set_transient( 'myweather', $myweather->asXML(), 10 * MINUTE_IN_SECONDS );
+			//set_transient( 'myweather', $myweather->asXML(), 10 * MINUTE_IN_SECONDS );
 			//}
 	
 			//$myweather_sevendays = simplexml_load_string(get_transient( 'myweather_sevendays' ));
 	
 			//if ( false === $myweather_sevendays || '' === $myweather_sevendays ){
 				
-				$myweather_sevendays	= simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
+				
 				//set_transient( 'myweather_sevendays', $myweather_sevendays->asXML(), 10 * MINUTE_IN_SECONDS );
 			//}
 			
