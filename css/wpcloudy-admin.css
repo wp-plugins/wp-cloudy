@@ -142,3 +142,11 @@
 /* Admin - Options panel 																		 */
 /*************************************************************************************************/
 .wpcloudy-settings label {margin: 0 0 0 10px;}
+#wpcloudy-tabs .nav-tab-wrapper ul {
+	list-style: none;padding: 0;margin: 0;
+}
+#wpcloudy-tabs .nav-tab-wrapper ul li {
+	display: inline-block;
+	margin: 0;
+}
+#wpcloudy-tabs .nav-tab-wrapper ul li.ui-tabs-active a {background: #fff;color:#333;}

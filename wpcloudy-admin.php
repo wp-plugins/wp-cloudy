@@ -54,7 +54,26 @@ class wpc_options
             <h2><?php _e( 'WP Cloudy settings', 'wpcloudy' ); ?></h2>           
             <form method="post" action="options.php" class="wpcloudy-settings">
                 <?php settings_fields( 'wpc_cloudy_option_group' ); ?>
-                <?php do_settings_sections( 'wpc-settings-admin' ); ?>
+                <?php submit_button(); ?>
+                
+                <div id="wpcloudy-tabs">
+	                <h2 class="nav-tab-wrapper hide-if-no-js">
+	                	<ul>
+							<li><a href="#tab_basic" class="nav-tab"><?php _e( 'Basic options', 'wpcloudy' ); ?></a></li>
+							<li><a href="#tab_display" class="nav-tab"><?php _e( 'Display options', 'wpcloudy' ); ?></a></li>
+							<li><a href="#tab_advanced" class="nav-tab"><?php _e( 'Advanced options', 'wpcloudy' ); ?></a></li>
+							<li><a href="#tab_map" class="nav-tab"><?php _e( 'Map options', 'wpcloudy' ); ?></a></li>
+	                	</ul>
+					</h2>
+	               
+					<div id="wpcloudy-tabs-settings">
+						<div class="wpc-tab" id="tab_basic"><?php do_settings_sections( 'wpc-settings-admin-basic' ); ?></div>
+						<div class="wpc-tab" id="tab_display"><?php do_settings_sections( 'wpc-settings-admin-display' ); ?></div>
+						<div class="wpc-tab" id="tab_advanced"><?php do_settings_sections( 'wpc-settings-admin-advanced' ); ?></div>
+						<div class="wpc-tab" id="tab_map"><?php do_settings_sections( 'wpc-settings-admin-map' ); ?></div>
+					</div>
+                </div>
+                
 				<?php submit_button(); ?>
             </form>
         <?php
@@ -79,14 +98,14 @@ class wpc_options
             'wpc_setting_section_basic', // ID
             __("Basic settings","wpcloudy"), // Title
             array( $this, 'print_section_info_basic' ), // Callback
-            'wpc-settings-admin' // Page
+            'wpc-settings-admin-basic' // Page
         ); 	
 		
 		add_settings_field(
             'wpc_advanced_bypass_unit', // ID
            __("Bypass unit?","wpcloudy"), // Title
             array( $this, 'wpc_basic_bypass_unit_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-basic', // Page
             'wpc_setting_section_basic' // Section           
         );
 				
@@ -94,7 +113,7 @@ class wpc_options
             'wpc_advanced_unit', // ID
             __("Unit","wpcloudy"), // Title 
             array( $this, 'wpc_basic_unit_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-basic', // Page
             'wpc_setting_section_basic' // Section           
         );
 		
@@ -102,7 +121,7 @@ class wpc_options
             'wpc_advanced_bypass_lang', // ID
            __("Bypass language?","wpcloudy"), // Title
             array( $this, 'wpc_basic_bypass_lang_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-basic', // Page
             'wpc_setting_section_basic' // Section           
         );
 		
@@ -110,7 +129,7 @@ class wpc_options
             'wpc_advanced_lang', // ID
             __("Language","wpcloudy"), // Title 
             array( $this, 'wpc_basic_lang_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-basic', // Page
             'wpc_setting_section_basic' // Section           
         );
 		
@@ -119,14 +138,14 @@ class wpc_options
             'wpc_setting_section_display', // ID
             __("Display settings","wpcloudy"), // Title
             array( $this, 'print_section_info_display' ), // Callback
-            'wpc-settings-admin' // Page
+            'wpc-settings-admin-display' // Page
         );
 		
         add_settings_field(
             'wpc_display_current_weather', // ID
             __("Current weather?","wpcloudy"), // Title
             array( $this, 'wpc_display_current_weather_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -134,7 +153,7 @@ class wpc_options
             'wpc_display_weather', // ID
             __("Short condition?","wpcloudy"), // Title
             array( $this, 'wpc_display_weather_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -142,7 +161,7 @@ class wpc_options
             'wpc_display_date_temp', // ID
             __("Today date + Temperatures?","wpcloudy"), // Title 
             array( $this, 'wpc_display_date_temp_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -150,7 +169,7 @@ class wpc_options
             'wpc_display_sunrise_sunset', // ID
             __("Sunrise + sunset?","wpcloudy"), // Title 
             array( $this, 'wpc_display_sunrise_sunset_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -158,7 +177,7 @@ class wpc_options
             'wpc_display_wind', // ID
             __("Wind?","wpcloudy"), // Title 
             array( $this, 'wpc_display_wind_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -166,7 +185,7 @@ class wpc_options
             'wpc_display_humidity', // ID
             __("Humidity?","wpcloudy"), // Title
             array( $this, 'wpc_display_humidity_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -174,7 +193,7 @@ class wpc_options
             'wpc_display_pressure', // ID
            __("Pressure?","wpcloudy"), // Title
             array( $this, 'wpc_display_pressure_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -182,7 +201,7 @@ class wpc_options
             'wpc_display_cloudiness', // ID
             __("Cloudiness?","wpcloudy"), // Title
             array( $this, 'wpc_display_cloudiness_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -190,7 +209,7 @@ class wpc_options
             'wpc_display_hour_forecast', // ID
             __("Hour forecast?","wpcloudy"), // Title 
             array( $this, 'wpc_display_hour_forecast_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -198,7 +217,7 @@ class wpc_options
             'wpc_display_bypass_temperature', // ID
             __("Bypass individual temperatures settings?","wpcloudy"), // Title 
             array( $this, 'wpc_display_bypass_temperature_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -206,7 +225,7 @@ class wpc_options
             'wpc_display_temperature_min_max', // ID
 			__("Today date + Min-Max temperatures","wpcloudy"), // Title
             array( $this, 'wpc_display_temperature_min_max_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -214,7 +233,7 @@ class wpc_options
             'wpc_display_forecast', // ID
             __("7-Day Forecast","wpcloudy"), // Title 
             array( $this, 'wpc_display_forecast_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -222,7 +241,7 @@ class wpc_options
             'wpc_display_bypass_forecast_nd', // ID
             __("Bypass number of days forecast settings?","wpcloudy"), // Title 
             array( $this, 'wpc_display_bypass_forecast_nd_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -230,7 +249,7 @@ class wpc_options
             'wpc_display_forecast_nd', // ID
             __("Number of days forecast","wpcloudy"), // Title 
             array( $this, 'wpc_display_forecast_nd_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
 		
@@ -239,14 +258,22 @@ class wpc_options
             'wpc_setting_section_advanced', // ID
             __("Advanced settings","wpcloudy"), // Title
             array( $this, 'print_section_info_advanced' ), // Callback
-            'wpc-settings-admin' // Page
+            'wpc-settings-admin-advanced' // Page
         );
-		
+        
+		add_settings_field(
+            'wpc_advanced_disable_css3_anims', // ID
+            __("CSS 3 Animations","wpcloudy"), // Title 
+            array( $this, 'wpc_advanced_disable_css3_anims_callback' ), // Callback
+            'wpc-settings-admin-advanced', // Page
+            'wpc_setting_section_advanced' // Section           
+        ); 
+        
 		add_settings_field(
             'wpc_advanced_bg_color', // ID
             __("Background color","wpcloudy"), // Title 
             array( $this, 'wpc_advanced_bg_color_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section           
         );     
 		
@@ -254,7 +281,7 @@ class wpc_options
             'wpc_advanced_text_color', // ID
             __("Text color","wpcloudy"), // Title
             array( $this, 'wpc_advanced_text_color_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section   
         ); 	
 		
@@ -262,7 +289,7 @@ class wpc_options
             'wpc_advanced_border_color', // ID
             __("Border color","wpcloudy"), // Title 
             array( $this, 'wpc_advanced_border_color_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section   
         ); 
 
@@ -270,7 +297,7 @@ class wpc_options
             'wpc_advanced_bypass_size', // ID
             __("Bypass size?","wpcloudy"), // Title
             array( $this, 'wpc_advanced_bypass_size_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section           
         );
 				
@@ -278,7 +305,7 @@ class wpc_options
             'wpc_advanced_size', // ID
            __("Size","wpcloudy"), // Title
             array( $this, 'wpc_advanced_size_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section           
         );
 		
@@ -288,14 +315,14 @@ class wpc_options
             'wpc_setting_section_map', // ID
             __("Map settings","wpcloudy"), // Title
             array( $this, 'print_section_info_map' ), // Callback
-            'wpc-settings-admin' // Page
+            'wpc-settings-admin-map' // Page
         );
 
         add_settings_field(
             'wpc_map_display', // ID
             __("Map?","wpcloudy"), // Title
             array( $this, 'wpc_map_display_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -303,7 +330,7 @@ class wpc_options
             'wpc_map_height', // ID
             __("Map height","wpcloudy"), // Title 
             array( $this, 'wpc_map_height_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 		
@@ -311,7 +338,7 @@ class wpc_options
             'wpc_map_bypass_opacity', // ID
             __("Bypass layers opacity?","wpcloudy"), // Title 
             array( $this, 'wpc_map_bypass_opacity_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );
 
@@ -319,7 +346,7 @@ class wpc_options
             'wpc_map_opacity', // ID
             __("Layers opacity","wpcloudy"), // Title 
             array( $this, 'wpc_map_opacity_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 		
@@ -327,7 +354,7 @@ class wpc_options
             'wpc_map_bypass_zoom', // ID
             __("Bypass zoom?","wpcloudy"), // Title
             array( $this, 'wpc_map_bypass_zoom_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -335,7 +362,7 @@ class wpc_options
             'wpc_map_zoom', // ID
             __("Zoom","wpcloudy"), // Title 
             array( $this, 'wpc_map_zoom_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -343,7 +370,7 @@ class wpc_options
             'wpc_map_layers_stations', // ID
             __("Stations?","wpcloudy"), // Title
             array( $this, 'wpc_map_layers_stations_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -351,7 +378,7 @@ class wpc_options
             'wpc_map_layers_clouds', // ID
             __("Clouds?","wpcloudy"), // Title 
             array( $this, 'wpc_map_layers_clouds_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -359,7 +386,7 @@ class wpc_options
             'wpc_map_layers_precipitation', // ID
             __("Precipitations?","wpcloudy"), // Title
             array( $this, 'wpc_map_layers_precipitation_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -367,7 +394,7 @@ class wpc_options
             'wpc_map_layers_snow', // ID
             __("Snow?","wpcloudy"), // Title
             array( $this, 'wpc_map_layers_snow_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -375,7 +402,7 @@ class wpc_options
             'wpc_map_layers_wind', // ID
             __("Wind?","wpcloudy"), // Title 
             array( $this, 'wpc_map_layers_wind_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -383,7 +410,7 @@ class wpc_options
             'wpc_map_layers_temperature', // ID
             __("Temperatures?","wpcloudy"), // Title
             array( $this, 'wpc_map_layers_temperature_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
 
@@ -391,7 +418,7 @@ class wpc_options
             'wpc_map_layers_pressure', // ID
             __("Pressure?","wpcloudy"), // Title
             array( $this, 'wpc_map_layers_pressure_callback' ), // Callback
-            'wpc-settings-admin', // Page
+            'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );			
 	
@@ -771,6 +798,19 @@ class wpc_options
 		esc_attr( $this->options['wpc_display_forecast_nd']);
 	}
 	
+	public function wpc_advanced_disable_css3_anims_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$check = $options['wpc_advanced_disable_css3_anims'];
+		
+        echo '<input id="wpc_advanced_disable_css3_anims" name="wpc_option_name[wpc_advanced_disable_css3_anims]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_advanced_disable_css3_anims">'. __( 'Disable CSS3 animations, transformations and transitions?', 'wpcloudy' ) .'</label>';
+
+		esc_attr( $this->options['wpc_advanced_disable_css3_anims']);
+    } 
+    
     public function wpc_advanced_bg_color_callback()
     {
         printf(

@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.6.3
+Version: 2.6.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -137,7 +137,7 @@ global $post;
 	wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
 	wp_enqueue_style( 'wpcloudy-admin' );
 }
-add_action( 'admin_enqueue_scripts', add_admin_scripts, 10, 1 );
+add_action( 'admin_enqueue_scripts', 'add_admin_scripts', 10, 1 );
 
 //WP Cloudy Options page
 function add_admin_options_scripts() {
@@ -151,7 +151,7 @@ function add_admin_options_scripts() {
 
 if (isset($_GET['page']) && ($_GET['page'] == 'wpc-settings-admin')) { 
 
-	add_action('admin_enqueue_scripts', add_admin_options_scripts, 10, 1);
+	add_action('admin_enqueue_scripts', 'add_admin_options_scripts', 10, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -773,6 +773,17 @@ function get_bypass_forecast_nd($attr,$content) {
 		return get_forecast_nd($attr,$content);
 	}
 }	
+
+//Disable CSS3 animations
+function get_admin_disable_css3_anims() {
+	$wpc_admin_disable_css3_anims_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_disable_css3_anims_option ) ) {
+		foreach ($wpc_admin_disable_css3_anims_option as $key => $wpc_admin_disable_css3_anims_value)
+			$options[$key] = $wpc_admin_disable_css3_anims_value;
+		return $wpc_admin_disable_css3_anims_option['wpc_advanced_disable_css3_anims'];
+	}
+};
+
 //Bypass Background Color
 	
 function get_admin_color_background() {
@@ -2375,6 +2386,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_size					=	get_bypass_size($attr,$content);
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
 			$wpcloudy_skin 				    =   get_post_meta($id,'_wpcloudy_skin',true);
+			$wpcloudy_css3_anims			=	get_admin_disable_css3_anims();
 			
 			$html = '
 			<!-- WP Cloudy : WordPress weather plugin - http://wpcloudy.com/ -->
@@ -2482,6 +2494,32 @@ function wpcloudy_display_weather($attr,$content) {
 			}
 			if ($display_custom_css) {
 				$html .= $display_custom_css;
+			}
+			
+			if ( $wpcloudy_css3_anims == 1) {
+				$html .= '<style>
+							#wpc-weather * {
+								/*CSS transitions*/
+								-o-transition-property: none !important;
+								-moz-transition-property: none !important;
+								-ms-transition-property: none !important;
+								-webkit-transition-property: none !important;
+								transition-property: none !important;
+								/*CSS transforms*/
+								-o-transform: none !important;
+								-moz-transform: none !important;
+								-ms-transform: none !important;
+								-webkit-transform: none !important;
+								transform: none !important;
+								/*CSS animations*/
+								-webkit-animation: none !important;
+								-moz-animation: none !important;
+								-o-animation: none !important;
+								-ms-animation: none !important;
+								animation: none !important;
+							}
+							</style>
+						';
 			}
 
 		 $html .= '</div>';
