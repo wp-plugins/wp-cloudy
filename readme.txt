@@ -31,18 +31,31 @@ Many features like:
 * NEW! Now with SVG animated icons (thanks to Noah Blon => http://codepen.io/noahblon )
 * NEW! Adding an options panel to bypass options for individual weather
 * NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure)
+
 * Retina ready (SVG + CSS3)
+
 * 70 000 cities listed (thanks to OpenWeatherMap)
+
 * Current weather
+
 * Hourly forecasts
+
 * Week forecasts
+
 * Temperatures (current, average, min and max)
+
 * Speed and Wind direction
+
 * Humidity
+
 * Atmospheric pressure
+
 * Cloudiness
+
 * Celcius or Fahrenheit
+
 * Many display languages
+
 * and new features are added regularly
 
 == Installation ==
