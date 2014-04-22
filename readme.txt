@@ -104,6 +104,7 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 * NEW! Change date format (12h or 24h)
 * NEW! Display temperatures unit (C / F)
 * INFO Improved design for WP Cloudy admin panel
+* FIX RTE compatibility with WordPress 3.9
 * FIX Improve performances in FE / BE
 * FIX Severals PHP Notice
 * FIX Improve security
