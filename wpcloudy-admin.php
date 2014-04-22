@@ -49,12 +49,21 @@ class wpc_options
 	
         // Set class property
         $this->options = get_option( 'wpc_option_name' );
-        ?>
-            <?php screen_icon(); ?>
-            <h2><?php _e( 'WP Cloudy settings', 'wpcloudy' ); ?></h2>           
+        ?>      
+            
+            <div id="wpcloudy-header">
+				<div id="wpcloudy-clouds">
+					<h3><?php _e( 'WP Cloudy', 'wpcloudy' ); ?></h3>
+					<div id="wpcloudy-notice">
+						<p><?php _e( 'Not just another WordPress Weather plugin!', 'wpcloudy' ); ?></p>
+						<p class="small"><a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank"><?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?></a></p>
+					</div>
+				</div>
+			</div>
+			
             <form method="post" action="options.php" class="wpcloudy-settings">
                 <?php settings_fields( 'wpc_cloudy_option_group' ); ?>
-                <?php submit_button(); ?>
+   
                 
                 <div id="wpcloudy-tabs">
 	                <h2 class="nav-tab-wrapper hide-if-no-js">
@@ -63,6 +72,7 @@ class wpc_options
 							<li><a href="#tab_display" class="nav-tab"><?php _e( 'Display options', 'wpcloudy' ); ?></a></li>
 							<li><a href="#tab_advanced" class="nav-tab"><?php _e( 'Advanced options', 'wpcloudy' ); ?></a></li>
 							<li><a href="#tab_map" class="nav-tab"><?php _e( 'Map options', 'wpcloudy' ); ?></a></li>
+							<li><a href="#tab_support" class="nav-tab"><?php _e( 'Support', 'wpcloudy' ); ?></a></li>
 	                	</ul>
 					</h2>
 	               
@@ -71,11 +81,44 @@ class wpc_options
 						<div class="wpc-tab" id="tab_display"><?php do_settings_sections( 'wpc-settings-admin-display' ); ?></div>
 						<div class="wpc-tab" id="tab_advanced"><?php do_settings_sections( 'wpc-settings-admin-advanced' ); ?></div>
 						<div class="wpc-tab" id="tab_map"><?php do_settings_sections( 'wpc-settings-admin-map' ); ?></div>
+						<div class="wpc-tab" id="tab_support"><?php do_settings_sections( 'wpc-settings-admin-support' ); ?></div>
 					</div>
                 </div>
                 
 				<?php submit_button(); ?>
             </form>
+            <div class="wpcloudy-sidebar">	
+            	<div id="wpcloudy-geolocation" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
+					<h3><?php _e('WP Cloudy Geolocation','wpcloudy'); ?></h3>
+					<div class="wpcloudy-module-description">
+						<div class="module-image">
+							<div class="dashicons dashicons-location-alt"></div>
+							<p><span class="module-image-badge"><?php _e('$ 39','wpcloudy'); ?></span></p>
+						</div>
+
+						<p><?php _e('Geolocated weather for your visitors.','wpcloudy'); ?></p>
+					</div>
+	
+					<div class="wpcloudy-module-actions">
+						<a target="_blank" href="http://wpcloudy.com/geolocation" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Geolocation']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
+					</div>
+				</div>
+				<div id="wpcloudy-skins" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
+					<h3><?php _e('WP Cloudy Skins','wpcloudy'); ?></h3>
+					<div class="wpcloudy-module-description">
+						<div class="module-image">
+							<div class="dashicons dashicons-admin-appearance"></div>
+							<p><span class="module-image-badge"><?php _e('$ 10','wpcloudy'); ?></span></p>
+						</div>
+
+						<p><?php _e('10 beautiful skins for your weather.','wpcloudy'); ?></p>
+					</div>
+	
+					<div class="wpcloudy-module-actions">
+						<a target="_blank" href="http://wpcloudy.com/skins" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Skins']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
+					</div>
+				</div>
+            </div>
         <?php
     }
 
@@ -102,7 +145,7 @@ class wpc_options
         ); 	
 		
 		add_settings_field(
-            'wpc_advanced_bypass_unit', // ID
+            'wpc_basic_bypass_unit', // ID
            __("Bypass unit?","wpcloudy"), // Title
             array( $this, 'wpc_basic_bypass_unit_callback' ), // Callback
             'wpc-settings-admin-basic', // Page
@@ -110,15 +153,31 @@ class wpc_options
         );
 				
         add_settings_field(
-            'wpc_advanced_unit', // ID
+            'wpc_basic_unit', // ID
             __("Unit","wpcloudy"), // Title 
             array( $this, 'wpc_basic_unit_callback' ), // Callback
             'wpc-settings-admin-basic', // Page
             'wpc_setting_section_basic' // Section           
         );
+        
+		add_settings_field(
+            'wpc_basic_bypass_date', // ID
+           __("Bypass date format?","wpcloudy"), // Title
+            array( $this, 'wpc_basic_bypass_date_callback' ), // Callback
+            'wpc-settings-admin-basic', // Page
+            'wpc_setting_section_basic' // Section           
+        );
+				
+        add_settings_field(
+            'wpc_basic_date', // ID
+            __("Date","wpcloudy"), // Title 
+            array( $this, 'wpc_basic_date_callback' ), // Callback
+            'wpc-settings-admin-basic', // Page
+            'wpc_setting_section_basic' // Section           
+        );
 		
 		add_settings_field(
-            'wpc_advanced_bypass_lang', // ID
+            'wpc_basic_bypass_lang', // ID
            __("Bypass language?","wpcloudy"), // Title
             array( $this, 'wpc_basic_bypass_lang_callback' ), // Callback
             'wpc-settings-admin-basic', // Page
@@ -126,7 +185,7 @@ class wpc_options
         );
 		
 		add_settings_field(
-            'wpc_advanced_lang', // ID
+            'wpc_basic_lang', // ID
             __("Language","wpcloudy"), // Title 
             array( $this, 'wpc_basic_lang_callback' ), // Callback
             'wpc-settings-admin-basic', // Page
@@ -161,6 +220,14 @@ class wpc_options
             'wpc_display_date_temp', // ID
             __("Today date + Temperatures?","wpcloudy"), // Title 
             array( $this, 'wpc_display_date_temp_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
+        
+        add_settings_field(
+            'wpc_display_date_temp_unit', // ID
+            __("Temperatures unit (C / F)?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_date_temp_unit_callback' ), // Callback
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
@@ -308,6 +375,14 @@ class wpc_options
             'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section           
         );
+        
+        add_settings_field(
+            'wpc_advanced_cache_time', // ID
+           __("Time cache refresh (in minutes)","wpcloudy"), // Title
+            array( $this, 'wpc_advanced_cache_time_callback' ), // Callback
+            'wpc-settings-admin-advanced', // Page
+            'wpc_setting_section_advanced' // Section           
+        );
 		
 		//MAP SECTION =============================================================================
 
@@ -420,6 +495,22 @@ class wpc_options
             array( $this, 'wpc_map_layers_pressure_callback' ), // Callback
             'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
+        );
+        
+        //SUPPORT SECTION============================================================================
+		add_settings_section( 
+            'wpc_setting_section_support', // ID
+            '', // Title
+            array( $this, 'print_section_info_support' ), // Callback
+            'wpc-settings-admin-support' // Page
+        ); 	
+		
+		add_settings_field(
+            'wpc_support_info', // ID
+            '', // Title
+            array( $this, 'wpc_support_info_callback' ), // Callback
+            'wpc-settings-admin-support', // Page
+            'wpc_setting_section_support' // Section           
         );			
 	
     }
@@ -439,6 +530,9 @@ class wpc_options
 		
 		if( !empty( $input['wpc_advanced_border_color'] ) )
 		$input['wpc_advanced_border_color'] = sanitize_text_field( $input['wpc_advanced_border_color'] );
+		
+		if( !empty( $input['wpc_advanced_cache_time'] ) )
+		$input['wpc_advanced_cache_time'] = sanitize_text_field( $input['wpc_advanced_cache_time'] );
 		
 		if( !empty( $input['wpc_map_height'] ) )
 		$input['wpc_map_height'] = sanitize_text_field( $input['wpc_map_height'] );
@@ -476,15 +570,19 @@ class wpc_options
 	
 	public function wpc_basic_bypass_unit_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );  
+		  
 		$check = $options['wpc_basic_bypass_unit'];
 		
         echo '<input id="wpc_basic_bypass_unit" name="wpc_option_name[wpc_basic_bypass_unit]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_basic_bypass_unit">'. __( 'Enable bypass unit on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_basic_bypass_unit']);
+		
+		if (isset($this->options['wpc_basic_bypass_unit'])) {
+			esc_attr( $this->options['wpc_basic_bypass_unit']);
+		}
+		
     } 
 	 
 	public function wpc_basic_unit_callback()
@@ -500,20 +598,62 @@ class wpc_options
 		if ('metric' == $selected) echo 'selected="selected"'; 
 		echo ' value="metric">'. __( 'Metric', 'wpcloudy' ) .'</option>';
 		echo '</select>';
-		esc_attr( $this->options['wpc_basic_unit']);
+
+		if (isset($this->options['wpc_basic_unit'])) {
+			esc_attr( $this->options['wpc_basic_unit']);
+		}
+	}
+	
+	public function wpc_basic_bypass_date_callback()
+    {
+		$options = get_option( 'wpc_option_name' );  
+		  
+		$check = $options['wpc_basic_bypass_date'];
+		
+        echo '<input id="wpc_basic_bypass_date" name="wpc_option_name[wpc_basic_bypass_date]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_basic_bypass_date">'. __( 'Enable bypass date format on all weather?', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_basic_bypass_date'])) {
+			esc_attr( $this->options['wpc_basic_bypass_date']);
+		}
+		
+    } 
+	 
+	public function wpc_basic_date_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		$selected = $options['wpc_basic_date'];
+		
+		echo '<select id="wpc_basic_date" name="wpc_option_name[wpc_basic_date]"> ';
+		echo '<option '; 
+		if ('12' == $selected) echo 'selected="selected"'; 
+		echo ' value="12">'. __( '12 h', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('24' == $selected) echo 'selected="selected"'; 
+		echo ' value="24">'. __( '24 h', 'wpcloudy' ) .'</option>';
+		echo '</select>';
+
+		if (isset($this->options['wpc_basic_date'])) {
+			esc_attr( $this->options['wpc_basic_date']);
+		}
 	}
 	
 	public function wpc_basic_bypass_lang_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+		 
 		$check = $options['wpc_basic_bypass_lang'];
 		
         echo '<input id="wpc_basic_bypass_lang" name="wpc_option_name[wpc_basic_bypass_lang]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_basic_bypass_lang">'. __( 'Enable bypass language on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_basic_bypass_lang']);
+		
+		if (isset($this->options['wpc_basic_bypass_lang'])) {
+			esc_attr( $this->options['wpc_basic_bypass_lang']);
+		}
     }
 	
 	public function wpc_basic_lang_callback()
@@ -592,174 +732,233 @@ class wpc_options
 			echo ' value="tr">'. __( 'Turkish', 'wpcloudy' ) .'</option>';
 			
 		echo '</select>';
-		esc_attr( $this->options['wpc_basic_lang']);
+		
+		if (isset($this->options['wpc_basic_lang'])) {
+			esc_attr( $this->options['wpc_basic_lang']);
+		}
 	}
 
 	public function wpc_display_current_weather_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+	
 		$check = $options['wpc_display_current_weather'];
 		
         echo '<input id="wpc_display_current_weather" name="wpc_option_name[wpc_display_current_weather]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_current_weather">'. __( 'Display current weather on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_current_weather']);
+		
+		if (isset($this->options['wpc_display_current_weather'])) {
+			esc_attr( $this->options['wpc_display_current_weather']);
+		}
     }
 	
 	public function wpc_display_weather_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+
 		$check = $options['wpc_display_weather'];
 		
         echo '<input id="wpc_display_weather" name="wpc_option_name[wpc_display_weather]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_weather">'. __( 'Display short condition on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_weather']);
+		
+		if (isset($this->options['wpc_display_weather'])) { 
+			esc_attr( $this->options['wpc_display_weather']);
+		}
     }
 	
 	public function wpc_display_date_temp_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+   
 		$check = $options['wpc_display_date_temp'];
 		
         echo '<input id="wpc_display_date_temp" name="wpc_option_name[wpc_display_date_temp]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_date_temp">'. __( 'Display today date + temperatures on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_date_temp']);
+		
+		if (isset($this->options['wpc_display_date_temp'])) { 
+			esc_attr( $this->options['wpc_display_date_temp']);
+		}
+    }
+    
+    public function wpc_display_date_temp_unit_callback()
+    {
+		$options = get_option( 'wpc_option_name' ); 
+   
+		$check = $options['wpc_display_date_temp_unit'];
+		
+        echo '<input id="wpc_display_date_temp_unit" name="wpc_option_name[wpc_display_date_temp_unit]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_date_temp_unit">'. __( 'Display temperatures unit (C / F)?', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_display_date_temp_unit'])) { 
+			esc_attr( $this->options['wpc_display_date_temp_unit']);
+		}
     }
 	
 	public function wpc_display_sunrise_sunset_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+		    
 		$check = $options['wpc_display_sunrise_sunset'];
 		
         echo '<input id="wpc_display_sunrise_sunset" name="wpc_option_name[wpc_display_sunrise_sunset]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_sunrise_sunset">'. __( 'Display sunrise - sunset on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_sunrise_sunset']);
+		
+		if (isset($this->options['wpc_display_sunrise_sunset'])) { 
+			esc_attr( $this->options['wpc_display_sunrise_sunset']);
+		}
     }
 	
 	public function wpc_display_wind_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+  
 		$check = $options['wpc_display_wind'];
 		
         echo '<input id="wpc_display_wind" name="wpc_option_name[wpc_display_wind]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_wind">'. __( 'Display wind on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_wind']);
+		
+		if (isset($this->options['wpc_display_wind'])) {   
+			esc_attr( $this->options['wpc_display_wind']);
+		}
     }
 	
 	public function wpc_display_humidity_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+		    
 		$check = $options['wpc_display_humidity'];
 		
         echo '<input id="wpc_display_humidity" name="wpc_option_name[wpc_display_humidity]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_humidity">'. __( 'Display humidity on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_humidity']);
+		
+		if (isset($this->options['wpc_display_humidity'])) {  
+			esc_attr( $this->options['wpc_display_humidity']);
+		}
     }
 	
 	public function wpc_display_pressure_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+		  
 		$check = $options['wpc_display_pressure'];
 		
         echo '<input id="wpc_display_pressure" name="wpc_option_name[wpc_display_pressure]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_pressure">'. __( 'Display pressure on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_pressure']);
+		
+		if (isset($this->options['wpc_display_pressure'])) {
+			esc_attr( $this->options['wpc_display_pressure']);
+		}
     }
 	
 	public function wpc_display_cloudiness_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );  
+		  
 		$check = $options['wpc_display_cloudiness'];
 		
         echo '<input id="wpc_display_cloudiness" name="wpc_option_name[wpc_display_cloudiness]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_cloudiness">'. __( 'Display cloudiness on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_cloudiness']);
+		
+		if (isset($this->options['wpc_display_cloudiness'])) { 
+			esc_attr( $this->options['wpc_display_cloudiness']);
+		}
     }
 	
 	public function wpc_display_hour_forecast_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
-		$check = $options['wpc_display_hour_forecast'];
+		$options = get_option( 'wpc_option_name' );   
 		
+		$check = $options['wpc_display_hour_forecast'];
+	
         echo '<input id="wpc_display_hour_forecast" name="wpc_option_name[wpc_display_hour_forecast]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_hour_forecast">'. __( 'Display hour forecast on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_hour_forecast']);
+		
+		if (isset($this->options['wpc_display_hour_forecast'])) { 
+			esc_attr( $this->options['wpc_display_hour_forecast']);
+		}
     }
 
 	public function wpc_display_bypass_temperature_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+		  
 		$check = $options['wpc_display_bypass_temperature'];
 		
         echo '<input id="wpc_display_bypass_temperature" name="wpc_option_name[wpc_display_bypass_temperature]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_bypass_temperature">'. __( 'Bypass temperatures settings on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_bypass_temperature']);
+		 
+		if (isset($this->options['wpc_display_bypass_temperature'])) {  
+			esc_attr( $this->options['wpc_display_bypass_temperature']);
+		}
     }
 	
 	public function wpc_display_temperature_min_max_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+		 
 		$check = $options['wpc_display_temperature_min_max'];
 		
         echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
 		if ('yes' == $check) echo 'checked="yes"'; 
 		echo ' value="yes"/>';
+		
 		echo '<label for="wpc_display_temperature_min_max">'. __( 'Display Today date + Min-Max temperatures on all weather?', 'wpcloudy' ) .'</label>';
+		
+		echo '<br><br>';
 		
 		echo '<input id="wpc_display_temperature_average" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
 		if ('no' == $check) echo 'checked="yes"'; 
 		echo ' value="no"/>';
 		
 		echo '<label for="wpc_display_temperature_average">'. __( 'Display Today date + average temperature on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_temperature_min_max']);
+		
+		if (isset($this->options['wpc_display_temperature_min_max'])) {
+			esc_attr( $this->options['wpc_display_temperature_min_max']);
+		}
     }
 	
 	public function wpc_display_forecast_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );   
+		
 		$check = $options['wpc_display_forecast'];
 		
         echo '<input id="wpc_display_forecast" name="wpc_option_name[wpc_display_forecast]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_forecast">'. __( 'Display 7-day Forecast on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_display_forecast']);
+		
+		if (isset($this->options['wpc_display_forecast'])) {
+			esc_attr( $this->options['wpc_display_forecast']);
+		}
     }
 
 	public function wpc_display_bypass_forecast_nd_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );   
+		 
 		$check = $options['wpc_display_bypass_forecast_nd'];
 		
         echo '<input id="wpc_display_bypass_forecast_nd" name="wpc_option_name[wpc_display_bypass_forecast_nd]" type="checkbox"';
@@ -767,12 +966,15 @@ class wpc_options
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_bypass_forecast_nd">'. __( 'Enable bypass number of days forecast on all weather?', 'wpcloudy' ) .'</label>';
 
-		esc_attr( $this->options['wpc_display_bypass_forecast_nd']);
+		if (isset($this->options['wpc_display_bypass_forecast_nd'])) { 
+			esc_attr( $this->options['wpc_display_bypass_forecast_nd']);
+		}
     } 
 	 
 	public function wpc_display_forecast_nd_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+		 
 		$selected = $options['wpc_display_forecast_nd'];
 		
 		echo ' <select id="wpc_display_forecast_nd" name="wpc_option_name[wpc_display_forecast_nd]"> ';
@@ -795,20 +997,27 @@ class wpc_options
 		if ('6' == $selected) echo 'selected="selected"'; 
 		echo ' value="6">'. __( '6 days', 'wpcloudy' ) .'</option>';
 		echo '</select>';
-		esc_attr( $this->options['wpc_display_forecast_nd']);
+		
+		if (isset($this->options['wpc_display_forecast_nd'])) { 
+			esc_attr( $this->options['wpc_display_forecast_nd']);
+		}
 	}
 	
 	public function wpc_advanced_disable_css3_anims_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );   
+		
 		$check = $options['wpc_advanced_disable_css3_anims'];
 		
         echo '<input id="wpc_advanced_disable_css3_anims" name="wpc_option_name[wpc_advanced_disable_css3_anims]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_advanced_disable_css3_anims">'. __( 'Disable CSS3 animations, transformations and transitions?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_advanced_disable_css3_anims']);
+		 
+		if (isset($this->options['wpc_advanced_disable_css3_anims'])) {  
+			esc_attr( $this->options['wpc_advanced_disable_css3_anims']);
+		}
+		
     } 
     
     public function wpc_advanced_bg_color_callback()
@@ -841,20 +1050,24 @@ class wpc_options
 	
 	public function wpc_advanced_bypass_size_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );   
+		  
 		$check = $options['wpc_advanced_bypass_size'];
 		
         echo '<input id="wpc_advanced_bypass_size" name="wpc_option_name[wpc_advanced_bypass_size]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_advanced_bypass_size">'. __( 'Enable bypass size on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_advanced_bypass_size']);
+		
+		if (isset($this->options['wpc_advanced_bypass_size'])) {
+			esc_attr( $this->options['wpc_advanced_bypass_size']);
+		}
     } 
 	 
 	public function wpc_advanced_size_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+		
 		$selected = $options['wpc_advanced_size'];
 		
 		echo ' <select id="wpc_advanced_size" name="wpc_option_name[wpc_advanced_size]"> ';
@@ -868,20 +1081,35 @@ class wpc_options
 			if ('large' == $selected) echo 'selected="selected"'; 
 			echo ' value="large">'. __( 'Large', 'wpcloudy' ) .'</option>';
 		echo '</select>';
-		esc_attr( $this->options['wpc_advanced_size']);
+		
+		if (isset($this->options['wpc_advanced_size'])) {
+			esc_attr( $this->options['wpc_advanced_size']);
+		}
+	}
+	
+	public function wpc_advanced_cache_time_callback()
+    {
+		printf(
+		'<input name="wpc_option_name[wpc_advanced_cache_time]" type="text" value="%s" />',
+		esc_attr( $this->options['wpc_advanced_cache_time'])
+		
+		);
 	}
 	
 	public function wpc_map_display_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );  
+		
 		$check = $options['wpc_map_display'];
 		
         echo '<input id="wpc_map_display" name="wpc_option_name[wpc_map_display]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_display">'. __( 'Enable map on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_display']);
+		
+		if (isset($this->options['wpc_map_display'])) {
+			esc_attr( $this->options['wpc_map_display']);
+		}
     } 
 	
 	public function wpc_map_height_callback()
@@ -896,19 +1124,23 @@ class wpc_options
 	public function wpc_map_bypass_opacity_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+		
 		$check = $options['wpc_map_bypass_opacity'];
 		
         echo '<input id="wpc_map_bypass_opacity" name="wpc_option_name[wpc_map_bypass_opacity]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_bypass_opacity">'. __( 'Enable bypass map opacity on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_bypass_opacity']);
+		
+		if (isset($this->options['wpc_map_bypass_opacity'])) {
+			esc_attr( $this->options['wpc_map_bypass_opacity']);
+		}
     }
 	
 	public function wpc_map_opacity_callback()
 	{
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+		  
 		$selected = $options['wpc_map_opacity'];
 		
 		echo ' <select id="wpc_map_opacity" name="wpc_option_name[wpc_map_opacity]"> ';
@@ -946,25 +1178,32 @@ class wpc_options
 			if ('1' == $selected) echo 'selected="selected"'; 
 		echo ' value="1">100%</option>';
 		echo '</select>';
-		esc_attr( $this->options['wpc_map_opacity']);
+	
+		if (isset($this->options['wpc_map_opacity'])) {
+			esc_attr( $this->options['wpc_map_opacity']);
+		}
 	} 
 	
 	public function wpc_map_bypass_zoom_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+		  
 		$check = $options['wpc_map_bypass_zoom'];
 		
         echo '<input id="wpc_map_bypass_zoom" name="wpc_option_name[wpc_map_bypass_zoom]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_bypass_zoom">'. __( 'Enable bypass map zoom on all weather?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_bypass_zoom']);
+		
+		if (isset($this->options['wpc_map_bypass_zoom'])) {
+			esc_attr( $this->options['wpc_map_bypass_zoom']);
+		}
     }
 	
 	public function wpc_map_zoom_callback()
 	{
 		$options = get_option( 'wpc_option_name' );    
+	
 		$selected = $options['wpc_map_zoom'];
 		
 		echo ' <select id="wpc_map_zoom" name="wpc_option_name[wpc_map_zoom]"> ';
@@ -1023,99 +1262,136 @@ class wpc_options
 			if ('18' == $selected) echo 'selected="selected"'; 
 			echo ' value="18">18</option>';
 		echo '</select>';
-		esc_attr( $this->options['wpc_map_zoom']);
+		
+		if (isset($this->options['wpc_map_zoom'])) {
+			esc_attr( $this->options['wpc_map_zoom']);
+		}
 	} 
 	
 	public function wpc_map_layers_stations_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+		
 		$check = $options['wpc_map_layers_stations'];
 		
         echo '<input id="wpc_map_layers_stations" name="wpc_option_name[wpc_map_layers_stations]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_stations">'. __( 'Display stations on all weather maps?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_layers_stations']);
+		
+		if (isset($this->options['wpc_map_layers_stations'])) {
+			esc_attr( $this->options['wpc_map_layers_stations']);
+		}
     } 
 	
 	public function wpc_map_layers_clouds_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+    
 		$check = $options['wpc_map_layers_clouds'];
 		
         echo '<input id="wpc_map_layers_clouds" name="wpc_option_name[wpc_map_layers_clouds]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_clouds">'. __( 'Display clouds on all weather maps?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_layers_clouds']);
+		
+		if (isset($this->options['wpc_map_layers_clouds'])) {
+			esc_attr( $this->options['wpc_map_layers_clouds']);
+		}
     }
 	
 	public function wpc_map_layers_precipitation_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );  
+		  
 		$check = $options['wpc_map_layers_precipitation'];
 		
         echo '<input id="wpc_map_layers_precipitation" name="wpc_option_name[wpc_map_layers_precipitation]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_precipitation">'. __( 'Display precipitations on all weather maps?', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_map_layers_precipitation'])) {
+			esc_attr( $this->options['wpc_map_layers_precipitation']);
+		}
 
-		esc_attr( $this->options['wpc_map_layers_precipitation']);
     }
 	
 	public function wpc_map_layers_snow_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+		
 		$check = $options['wpc_map_layers_snow'];
 		
         echo '<input id="wpc_map_layers_snow" name="wpc_option_name[wpc_map_layers_snow]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_snow">'. __( 'Display snow on all weather maps?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_layers_snow']);
+		
+		if (isset($this->options['wpc_map_layers_snow'])) {
+			esc_attr( $this->options['wpc_map_layers_snow']);
+		}
     }
 	
 	public function wpc_map_layers_wind_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' );
+		
 		$check = $options['wpc_map_layers_wind'];
 		
         echo '<input id="wpc_map_layers_wind" name="wpc_option_name[wpc_map_layers_wind]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_wind">'. __( 'Display wind on all weather maps?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_layers_wind']);
+		
+		if (isset($this->options['wpc_map_layers_wind'])) {
+			esc_attr( $this->options['wpc_map_layers_wind']);
+		}
     }
 	
 	public function wpc_map_layers_temperature_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
+		$options = get_option( 'wpc_option_name' ); 
+		  
 		$check = $options['wpc_map_layers_temperature'];
 		
         echo '<input id="wpc_map_layers_temperature" name="wpc_option_name[wpc_map_layers_temperature]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_temperature">'. __( 'Display temperatures on all weather maps?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_layers_temperature']);
+		
+		if (isset($this->options['wpc_map_layers_temperature'])) {
+			esc_attr( $this->options['wpc_map_layers_temperature']);
+		}
     }
-	
+    
 	public function wpc_map_layers_pressure_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
+		
 		$check = $options['wpc_map_layers_pressure'];
 		
         echo '<input id="wpc_map_layers_pressure" name="wpc_option_name[wpc_map_layers_pressure]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_map_layers_pressure">'. __( 'Display pressure on all weather maps?', 'wpcloudy' ) .'</label>';
-
-		esc_attr( $this->options['wpc_map_layers_pressure']);
+		
+		if (isset($this->options['wpc_map_layers_pressure'])) {
+			esc_attr( $this->options['wpc_map_layers_pressure']);
+		}
     }
+    
+    public function wpc_support_info_callback()
+    {
+		echo '
+			<h3>'. __("Problem with WP Cloudy?", "wpcloudy").'</h3>
+			<p><a href="http://www.wpcloudy.com/support/faq/" target="_blank" title="'. __("FAQ", "wpcloudy").'">'. __("Read our FAQ", "wpcloudy").'</a></p>
+			<p><a href="http://www.wpcloudy.com/support/guides/" target="_blank" title="'. __("Guides", "wpcloudy").'">'.__("Read our Guides", "wpcloudy").'</a></p>
+			<p><a href="http://www.wpcloudy.com/support/forums/" target="_blank" title="'. __("Forum", "wpcloudy").'">'. __("WP Cloudy Forum", "wpcloudy").'</a></p>
+			<p><a href="http://wordpress.org/plugins/wp-cloudy/" target="_blank" title="'. __("WP Cloudy Forum on WordPress.org", "wpcloudy").'">'. __("WP Cloudy Forum on WordPress.org", "wpcloudy").'</a></p>
+			';
+		
+    } 
 	
 }
 	

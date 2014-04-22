@@ -32,6 +32,9 @@
     display: block;
     font-weight: bold;
 }
+#wpc-weather .temp_max .wpc-highlight, #wpc-weather .hours .temperature .wpc-highlight, #wpc-weather .today .time_temperature_max .wpc-highlight {
+    display: inline-block;
+}
 #wpc-weather.small .now .location_name {
 	font-size:14px;
 }
@@ -123,7 +126,7 @@
 	width: 50px;
 }
 #wpc-weather .today .sun_hours {
-	min-width: 150px;
+	min-width: 200px;
 	width:30%;
 	float: left;
 	text-align: center;
@@ -238,8 +241,10 @@
     width: 100%;
 }
 #wpc-weather #wpc-map {
-	width:100%;
-	height:300px;
+    height: 300px;
+    position: relative;
+    width: 100%;
+    z-index: 3;
 }
 #wpc-weather #wpc-map svg {
 	width:auto;

@@ -3,13 +3,13 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.6.4
+Version: 2.7
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
 */
 
-/*  Copyright 2013  Benjamin DENIS  (email : contact@wpcloudy.com)
+/*  Copyright 2013-2014  Benjamin DENIS  (email : contact@wpcloudy.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -104,7 +104,7 @@ add_action('wp_enqueue_scripts', 'wpcloudy_styles');
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Dashboard
-function add_dashboard_scripts() {
+function wpc_add_dashboard_scripts() {
 	wp_register_style('wpcloudy', plugins_url('css/wpcloudy.css', __FILE__));
 	wp_enqueue_style('wpcloudy');
 	
@@ -113,10 +113,10 @@ function add_dashboard_scripts() {
 	
 	require_once dirname( __FILE__ ) . '/wpcloudy-anim.php';
 }
-add_action('admin_head-index.php', 'add_dashboard_scripts');
+add_action('admin_head-index.php', 'wpc_add_dashboard_scripts');
 
 //Admin + Custom Post Type (new, listing)
-function add_admin_scripts( $hook ) {
+function wpc_add_admin_scripts( $hook ) {
 
 global $post;
     
@@ -137,10 +137,10 @@ global $post;
 	wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
 	wp_enqueue_style( 'wpcloudy-admin' );
 }
-add_action( 'admin_enqueue_scripts', 'add_admin_scripts', 10, 1 );
+add_action( 'admin_enqueue_scripts', 'wpc_add_admin_scripts', 10, 1 );
 
 //WP Cloudy Options page
-function add_admin_options_scripts() {
+function wpc_add_admin_options_scripts() {
 			wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.css', __FILE__));
 			wp_enqueue_style( 'wpcloudy-admin' );
 			
@@ -151,13 +151,14 @@ function add_admin_options_scripts() {
 
 if (isset($_GET['page']) && ($_GET['page'] == 'wpc-settings-admin')) { 
 
-	add_action('admin_enqueue_scripts', 'add_admin_options_scripts', 10, 1);
+	add_action('admin_enqueue_scripts', 'wpc_add_admin_options_scripts', 10, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add weather button in tinymce editor
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+//TinyMCE v3.x--------------------------------------------------------------------------------------
 // init process for registering our button
  add_action('init', 'wpc_shortcode_button_init');
  function wpc_shortcode_button_init() {
@@ -186,6 +187,34 @@ function wpc_add_tinymce_button($buttons) {
     $buttons[] = "wpc_button";
     return $buttons;
 }
+
+//TinyMCE v4.x--------------------------------------------------------------------------------------
+add_action('admin_head', 'wpc_add_button_v4');
+
+function wpc_add_button_v4() {
+    global $typenow;
+    
+    if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) {
+    	return;
+    }
+    
+    if( ! in_array( $typenow, array( 'post', 'page' ) ) )
+        return;
+	
+	if ( get_user_option('rich_editing') == 'true') {
+		add_filter("mce_external_plugins", "wpc_add_button_v4_plugin");
+		add_filter('mce_buttons', 'wpc_add_button_v4_register');
+	}
+}
+function wpc_add_button_v4_plugin($plugin_array) {
+    $plugin_array['wpc_button_v4'] = plugins_url( 'js/wpc-tinymce.js', __FILE__ );
+    return $plugin_array;
+}
+function wpc_add_button_v4_register($buttons) {
+   array_push($buttons, "wpc_button_v4");
+   return $buttons;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Display metabox in Weather Custom Post Type
@@ -216,6 +245,7 @@ function wpcloudy_basic($post){
   $wpcloudy_city_name				= get_post_meta($post->ID,'_wpcloudy_city_name',true);
   $wpcloudy_country_code 			= get_post_meta($post->ID,'_wpcloudy_country_code',true);
   $wpcloudy_unit 					= get_post_meta($post->ID,'_wpcloudy_unit',true);
+  $wpcloudy_date_format				= get_post_meta($post->ID,'_wpcloudy_date_format',true);
   $wpcloudy_lang 					= get_post_meta($post->ID,'_wpcloudy_lang',true);
   $wpcloudy_current_weather			= get_post_meta($post->ID,'_wpcloudy_current_weather',true);
   $wpcloudy_date_temp				= get_post_meta($post->ID,'_wpcloudy_date_temp',true);
@@ -227,6 +257,7 @@ function wpcloudy_basic($post){
   $wpcloudy_cloudiness				= get_post_meta($post->ID,'_wpcloudy_cloudiness',true);
   $wpcloudy_hour_forecast			= get_post_meta($post->ID,'_wpcloudy_hour_forecast',true);
   $wpcloudy_temperature_min_max		= get_post_meta($post->ID,'_wpcloudy_temperature_min_max',true);
+  $wpcloudy_display_temp_unit		= get_post_meta($post->ID,'_wpcloudy_display_temp_unit',true);
   $wpcloudy_forecast				= get_post_meta($post->ID,'_wpcloudy_forecast',true);
   $wpcloudy_forecast_nd				= get_post_meta($post->ID,'_wpcloudy_forecast_nd',true);
   $wpcloudy_meta_bg_color			= get_post_meta($post->ID,'_wpcloudy_meta_bg_color',true);
@@ -276,6 +307,13 @@ function wpcloudy_basic($post){
 					</select>
 				</p>
 				<p>
+					<label for="wpcloudy_date_format_meta">'. __( '12h / 24h date format?', 'wpcloudy' ) .'</label>
+					<select name="wpcloudy_date_format">
+						<option ' . selected( '12', $wpcloudy_date_format, false ) . ' value="12">'. __( '12 h', 'wpcloudy' ) .'</option>
+						<option ' . selected( '24', $wpcloudy_date_format, false ) . ' value="24">'. __( '24 h', 'wpcloudy' ) .'</option>
+					</select>
+				</p>
+				<p>
 					<label for="wpcloudy_lang_meta">'. __( 'Display language?', 'wpcloudy' ) .'</label>
 					<select name="wpcloudy_lang">
 						<option ' . selected( 'fr', $wpcloudy_lang, false ) . ' value="fr">'. __( 'French', 'wpcloudy' ) .'</option>
@@ -315,6 +353,12 @@ function wpcloudy_basic($post){
 					<label for="wpcloudy_date_temp_meta">
 						<input type="checkbox" name="wpcloudy_date_temp" id="wpcloudy_date_temp_meta" value="yes" '. checked( $wpcloudy_date_temp, 'yes', false ) .' />
 							'. __( 'Date + temperatures?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>
+					<label for="wpcloudy_display_temp_unit_meta">
+						<input type="checkbox" name="wpcloudy_display_temp_unit" id="wpcloudy_display_temp_unit_meta" value="yes" '. checked( $wpcloudy_display_temp_unit, 'yes', false ) .' />
+							'. __( 'Temperatures unit (C / F)?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
@@ -536,6 +580,9 @@ function save_metabox($post_id){
 	if(isset($_POST['wpcloudy_unit'])) {
 	  update_post_meta($post_id, '_wpcloudy_unit', $_POST['wpcloudy_unit']);
 	}
+	if(isset($_POST['wpcloudy_date_format'])) {
+	  update_post_meta($post_id, '_wpcloudy_date_format', $_POST['wpcloudy_date_format']);
+	}
 	if(isset($_POST['wpcloudy_lang'])){
 	  update_post_meta($post_id, '_wpcloudy_lang', esc_html($_POST['wpcloudy_lang']));
 	}
@@ -553,6 +600,11 @@ function save_metabox($post_id){
 		update_post_meta( $post_id, '_wpcloudy_date_temp', 'yes' );
 	} else {
 		update_post_meta( $post_id, '_wpcloudy_date_temp', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_display_temp_unit' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_display_temp_unit', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_display_temp_unit', '' );
 	}
 	if( isset( $_POST[ 'wpcloudy_sunrise_sunset' ] ) ) {
 		update_post_meta( $post_id, '_wpcloudy_sunrise_sunset', 'yes' );
@@ -671,7 +723,9 @@ function get_admin_bypass_lang() {
 	if ( ! empty ( $wpc_admin_bypass_lang_option ) ) {
 		foreach ($wpc_admin_bypass_lang_option as $key => $wpc_admin_bypass_lang_value)
 			$options[$key] = $wpc_admin_bypass_lang_value;
-		return $wpc_admin_bypass_lang_option['wpc_basic_bypass_lang'];
+		if (isset($wpc_admin_bypass_lang_option['wpc_basic_bypass_lang'])) {
+			return $wpc_admin_bypass_lang_option['wpc_basic_bypass_lang'];
+		}
 	}
 };
 
@@ -703,14 +757,15 @@ function get_bypass_lang($attr,$content) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //WPC Options Panel
 ///////////////////////////////////////////////////////////////////////////////////////////////////		
-
 //Bypass Unit
 function get_admin_bypass_unit() {
 	$wpc_admin_bypass_unit_option = get_option("wpc_option_name");
 	if ( ! empty ( $wpc_admin_bypass_unit_option ) ) {
 		foreach ($wpc_admin_bypass_unit_option as $key => $wpc_admin_bypass_unit_value)
 			$options[$key] = $wpc_admin_bypass_unit_value;
-		return $wpc_admin_bypass_unit_option['wpc_basic_bypass_unit'];
+		 if (isset($wpc_admin_bypass_unit_option['wpc_basic_bypass_unit'])) { 
+		 	return $wpc_admin_bypass_unit_option['wpc_basic_bypass_unit'];
+		 }
 	}
 };
 
@@ -720,7 +775,9 @@ function get_admin_unit() {
 	if ( ! empty ( $wpc_admin_unit_option ) ) {
 		foreach ($wpc_admin_unit_option as $key => $wpc_admin_unit_value)
 			$options[$key] = $wpc_admin_unit_value;
-		return $wpc_admin_unit_option['wpc_basic_unit'];
+		if (isset($wpc_admin_unit_option['wpc_basic_unit'])) { 
+			return $wpc_admin_unit_option['wpc_basic_unit'];
+		}
 	}
 };
 
@@ -738,14 +795,53 @@ function get_bypass_unit($attr,$content) {
 		return get_unit($attr,$content);
 	}
 }	
+//Bypass Date format
+function get_admin_bypass_date() {
+	$wpc_admin_bypass_date_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_date_option ) ) {
+		foreach ($wpc_admin_bypass_date_option as $key => $wpc_admin_bypass_date_value)
+			$options[$key] = $wpc_admin_bypass_date_value;
+		 if (isset($wpc_admin_bypass_date_option['wpc_basic_bypass_date'])) { 
+		 	return $wpc_admin_bypass_date_option['wpc_basic_bypass_date'];
+		 }
+	}
+};
 
+function get_admin_date() {
+	$wpc_admin_date_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_date_option ) ) {
+		foreach ($wpc_admin_date_option as $key => $wpc_admin_date_value)
+			$options[$key] = $wpc_admin_date_value;
+		if (isset($wpc_admin_date_option['wpc_basic_date'])) { 
+			return $wpc_admin_date_option['wpc_basic_date'];
+		}
+	}
+};
+
+function get_date($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_date_value = get_post_meta($id,'_wpcloudy_date_format',true);
+		return $wpc_date_value;
+};
+
+function get_bypass_date($attr,$content) {
+	if (get_admin_date() && (get_admin_bypass_date())) {
+		return get_admin_date(); 
+	}
+	else {
+		return get_date($attr,$content);
+	}
+}	
 //Bypass Forecast Days
 function get_admin_bypass_forecast_nd() {
 	$wpc_admin_bypass_forecast_nd_option = get_option("wpc_option_name");
 	if ( ! empty ( $wpc_admin_bypass_forecast_nd_option ) ) {
 		foreach ($wpc_admin_bypass_forecast_nd_option as $key => $wpc_admin_bypass_forecast_nd_value)
 			$options[$key] = $wpc_admin_bypass_forecast_nd_value;
-		return $wpc_admin_bypass_forecast_nd_option['wpc_display_bypass_forecast_nd'];
+		if (isset($wpc_admin_bypass_forecast_nd_option['wpc_display_bypass_forecast_nd'])) {
+			return $wpc_admin_bypass_forecast_nd_option['wpc_display_bypass_forecast_nd'];
+		}
 	}
 };
 
@@ -755,7 +851,9 @@ function get_admin_forecast_nd() {
 	if ( ! empty ( $wpc_admin_forecast_nd_option ) ) {
 		foreach ($wpc_admin_forecast_nd_option as $key => $wpc_admin_forecast_nd_value)
 			$options[$key] = $wpc_admin_forecast_nd_value;
-		return $wpc_admin_forecast_nd_option['wpc_display_forecast_nd'];
+		if (isset($wpc_admin_forecast_nd_option['wpc_display_forecast_nd'])) {
+			return $wpc_admin_forecast_nd_option['wpc_display_forecast_nd'];
+		}
 	}
 };
 
@@ -780,7 +878,21 @@ function get_admin_disable_css3_anims() {
 	if ( ! empty ( $wpc_admin_disable_css3_anims_option ) ) {
 		foreach ($wpc_admin_disable_css3_anims_option as $key => $wpc_admin_disable_css3_anims_value)
 			$options[$key] = $wpc_admin_disable_css3_anims_value;
-		return $wpc_admin_disable_css3_anims_option['wpc_advanced_disable_css3_anims'];
+		if (isset($wpc_admin_disable_css3_anims_option['wpc_advanced_disable_css3_anims'])) {
+			return $wpc_admin_disable_css3_anims_option['wpc_advanced_disable_css3_anims'];
+		}
+	}
+};
+
+//Time cache refresh
+function get_admin_cache_time() {
+	$wpc_admin_cache_time_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_cache_time_option ) ) {
+		foreach ($wpc_admin_cache_time_option as $key => $wpc_admin_cache_time_value)
+			$options[$key] = $wpc_admin_cache_time_value;
+		if (isset($wpc_admin_cache_time_option['wpc_advanced_cache_time'])) {
+			return $wpc_admin_cache_time_option['wpc_advanced_cache_time'];
+		}
 	}
 };
 
@@ -792,7 +904,9 @@ function get_admin_color_background() {
 	if ( ! empty ( $wpc_admin_bg_color_option ) ) {
 		foreach ($wpc_admin_bg_color_option as $key => $wpc_admin_bg_color_value)
 			$options[$key] = $wpc_admin_bg_color_value;
-		return $wpc_admin_bg_color_option['wpc_advanced_bg_color'];
+		if (isset($wpc_admin_bg_color_option['wpc_advanced_bg_color'])) {
+			return $wpc_admin_bg_color_option['wpc_advanced_bg_color'];
+		}
 	}
 };
 
@@ -819,7 +933,9 @@ function get_admin_color_text() {
 	if ( ! empty ( $wpc_admin_text_color_option ) ) {
 		foreach ($wpc_admin_text_color_option as $key => $wpc_admin_text_color_value)
 			$options[$key] = $wpc_admin_text_color_value;
-		return $wpc_admin_text_color_option['wpc_advanced_text_color'];
+		if (isset($wpc_admin_text_color_option['wpc_advanced_text_color'])) {
+			return $wpc_admin_text_color_option['wpc_advanced_text_color'];
+		}
 	}
 };
 
@@ -846,7 +962,9 @@ function get_admin_color_border() {
 	if ( ! empty ( $wpc_admin_color_border_option ) ) {
 		foreach ($wpc_admin_color_border_option as $key => $wpc_admin_color_border_value)
 			$options[$key] = $wpc_admin_color_border_value;
-		return $wpc_admin_color_border_option['wpc_advanced_border_color'];
+		if (isset($wpc_admin_color_border_option['wpc_advanced_border_color'])) {
+			return $wpc_admin_color_border_option['wpc_advanced_border_color'];
+		}
 	}
 };
 
@@ -873,7 +991,9 @@ function get_admin_display_current_weather() {
 	if ( ! empty ( $wpc_admin_display_current_weather_option ) ) {
 		foreach ($wpc_admin_display_current_weather_option as $key => $wpc_admin_display_current_weather_value)
 			$options[$key] = $wpc_admin_display_current_weather_value;
-		return $wpc_admin_display_current_weather_option['wpc_display_current_weather'];
+		if (isset($wpc_admin_display_current_weather_option['wpc_display_current_weather'])) {
+			return $wpc_admin_display_current_weather_option['wpc_display_current_weather'];
+		}
 	}
 };
 
@@ -900,7 +1020,9 @@ function get_admin_display_weather() {
 	if ( ! empty ( $wpc_admin_display_weather_option ) ) {
 		foreach ($wpc_admin_display_weather_option as $key => $wpc_admin_display_weather_value)
 			$options[$key] = $wpc_admin_display_weather_value;
-		return $wpc_admin_display_weather_option['wpc_display_weather'];
+		if (isset($wpc_admin_display_weather_option['wpc_display_weather'])) {
+			return $wpc_admin_display_weather_option['wpc_display_weather'];
+		}
 	}
 };
 
@@ -919,7 +1041,7 @@ function get_bypass_display_weather($attr,$content) {
 	}
 }
 
-//Bypass Date Temp
+//Bypass Date Format
 
 function get_admin_display_date_temp() {
 	$wpc_admin_display_date_temp_option = get_option("wpc_option_name");
@@ -927,7 +1049,9 @@ function get_admin_display_date_temp() {
 	if ( ! empty ( $wpc_admin_display_date_temp_option ) ) {
 		foreach ($wpc_admin_display_date_temp_option as $key => $wpc_admin_display_date_temp_value)
 			$options[$key] = $wpc_admin_display_date_temp_value;
-		return $wpc_admin_display_date_temp_option['wpc_display_date_temp'];
+		if (isset($wpc_admin_display_date_temp_option['wpc_display_date_temp'])) {
+			return $wpc_admin_display_date_temp_option['wpc_display_date_temp'];
+		}
 	}
 };
 
@@ -954,7 +1078,9 @@ function get_admin_display_sunrise_sunset() {
 	if ( ! empty ( $wpc_admin_display_sunrise_sunset_option ) ) {
 		foreach ($wpc_admin_display_sunrise_sunset_option as $key => $wpc_admin_display_sunrise_sunset_value)
 			$options[$key] = $wpc_admin_display_sunrise_sunset_value;
-		return $wpc_admin_display_sunrise_sunset_option['wpc_display_sunrise_sunset'];
+		if (isset($wpc_admin_display_sunrise_sunset_option['wpc_display_sunrise_sunset'])) {
+			return $wpc_admin_display_sunrise_sunset_option['wpc_display_sunrise_sunset'];
+		}
 	}
 };
 
@@ -973,6 +1099,35 @@ function get_bypass_display_sunrise_sunset($attr,$content) {
 	}
 }
 
+//Bypass display temperatures unit
+
+function get_admin_display_temp_unit() {
+	$wpc_admin_display_temp_unit_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_temp_unit_option ) ) {
+		foreach ($wpc_admin_display_temp_unit_option as $key => $wpc_admin_display_temp_unit_value)
+			$options[$key] = $wpc_admin_display_temp_unit_value;
+		if (isset($wpc_admin_display_temp_unit_option['wpc_display_temp_unit'])) {
+			return $wpc_admin_display_temp_unit_option['wpc_display_temp_unit'];
+		}
+	}
+};
+
+function get_display_temp_unit($attr,$content) {
+	extract(shortcode_atts(array( 'id' => ''), $attr));
+	$wpc_display_temp_unit_value = get_post_meta($id,'_wpcloudy_display_temp_unit',true);
+	return $wpc_display_temp_unit_value;
+};
+
+function get_bypass_display_temp_unit($attr,$content) {
+	if (get_admin_display_temp_unit()) {
+		return get_admin_display_temp_unit(); 
+	}
+	else {
+		return get_display_temp_unit($attr,$content);
+	}
+}
+
 //Bypass Wind
 
 function get_admin_display_wind() {
@@ -981,7 +1136,9 @@ function get_admin_display_wind() {
 	if ( ! empty ( $wpc_admin_display_wind_option ) ) {
 		foreach ($wpc_admin_display_wind_option as $key => $wpc_admin_display_wind_value)
 			$options[$key] = $wpc_admin_display_wind_value;
-		return $wpc_admin_display_wind_option['wpc_display_wind'];
+		if (isset($wpc_admin_display_wind_option['wpc_display_wind'])) {
+			return $wpc_admin_display_wind_option['wpc_display_wind'];
+		}
 	}
 };
 
@@ -1007,7 +1164,9 @@ function get_admin_display_humidity() {
 	if ( ! empty ( $wpc_admin_display_humidity_option ) ) {
 		foreach ($wpc_admin_display_humidity_option as $key => $wpc_admin_display_humidity_value)
 			$options[$key] = $wpc_admin_display_humidity_value;
-		return $wpc_admin_display_humidity_option['wpc_display_current_weather'];
+		if (isset($wpc_admin_display_humidity_option['wpc_display_current_weather'])) {
+			return $wpc_admin_display_humidity_option['wpc_display_current_weather'];
+		}
 	}
 };
 
@@ -1033,7 +1192,9 @@ function get_admin_display_pressure() {
 	if ( ! empty ( $wpc_admin_display_pressure_option ) ) {
 		foreach ($wpc_admin_display_pressure_option as $key => $wpc_admin_display_pressure_value)
 			$options[$key] = $wpc_admin_display_pressure_value;
-		return $wpc_admin_display_pressure_option['wpc_display_pressure'];
+		if (isset($wpc_admin_display_pressure_option['wpc_display_pressure'])) {
+			return $wpc_admin_display_pressure_option['wpc_display_pressure'];
+		}
 	}
 };
 
@@ -1059,7 +1220,9 @@ function get_admin_display_cloudiness() {
 	if ( ! empty ( $wpc_admin_display_cloudiness_option ) ) {
 		foreach ($wpc_admin_display_cloudiness_option as $key => $wpc_admin_display_cloudiness_value)
 			$options[$key] = $wpc_admin_display_cloudiness_value;
-		return $wpc_admin_display_cloudiness_option['wpc_display_cloudiness'];
+		if (isset($wpc_admin_display_cloudiness_option['wpc_display_cloudiness'])) {
+			return $wpc_admin_display_cloudiness_option['wpc_display_cloudiness'];
+		}
 	}
 };
 
@@ -1086,7 +1249,9 @@ function get_admin_display_hour_forecast() {
 	if ( ! empty ( $wpc_admin_display_hour_forecast_option ) ) {
 		foreach ($wpc_admin_display_hour_forecast_option as $key => $wpc_admin_display_hour_forecast_value)
 			$options[$key] = $wpc_admin_display_hour_forecast_value;
-		return $wpc_admin_display_hour_forecast_option['wpc_display_hour_forecast'];
+		if (isset($wpc_admin_display_hour_forecast_option['wpc_display_hour_forecast'])) {
+			return $wpc_admin_display_hour_forecast_option['wpc_display_hour_forecast'];
+		}
 	}
 };
 
@@ -1112,7 +1277,9 @@ function get_admin_bypass_temp() {
 	if ( ! empty ( $wpc_display_temperature_option ) ) {
 		foreach ($wpc_display_temperature_option as $key => $wpc_display_temperature_value)
 			$options[$key] = $wpc_display_temperature_value;
-		return $wpc_display_temperature_option['wpc_display_bypass_temperature'];
+		if (isset($wpc_display_temperature_option['wpc_display_bypass_temperature'])) {
+			return $wpc_display_temperature_option['wpc_display_bypass_temperature'];
+		}
 	}
 };
 
@@ -1122,7 +1289,9 @@ function get_admin_display_temp() {
 	if ( ! empty ( $wpc_admin_display_temperature_min_max_option ) ) {
 		foreach ($wpc_admin_display_temperature_min_max_option as $key => $wpc_admin_display_temperature_min_max_value)
 			$options[$key] = $wpc_admin_display_temperature_min_max_value;
-		return $wpc_admin_display_temperature_min_max_option['wpc_display_temperature_min_max'];
+		if (isset($wpc_admin_display_temperature_min_max_option['wpc_display_temperature_min_max'])) {
+			return $wpc_admin_display_temperature_min_max_option['wpc_display_temperature_min_max'];
+		}
 	}
 };
 
@@ -1149,7 +1318,9 @@ function get_admin_display_forecast() {
 	if ( ! empty ( $wpc_admin_display_forecast_option ) ) {
 		foreach ($wpc_admin_display_forecast_option as $key => $wpc_admin_display_forecast_value)
 			$options[$key] = $wpc_admin_display_forecast_value;
-		return $wpc_admin_display_forecast_option['wpc_display_forecast'];
+			if (isset($wpc_admin_display_forecast_option['wpc_display_forecast'])) {
+			return $wpc_admin_display_forecast_option['wpc_display_forecast'];
+		}
 	}
 };
 
@@ -1175,7 +1346,9 @@ function get_admin_bypass_size() {
 	if ( ! empty ( $wpc_admin_bypass_size_option ) ) {
 		foreach ($wpc_admin_bypass_size_option as $key => $wpc_admin_bypass_size_value)
 			$options[$key] = $wpc_admin_bypass_size_value;
-		return $wpc_admin_bypass_size_option['wpc_advanced_bypass_size'];
+		if (isset($wpc_admin_bypass_size_option['wpc_advanced_bypass_size'])) {
+			return $wpc_admin_bypass_size_option['wpc_advanced_bypass_size'];
+		}
 	}
 };
 
@@ -1185,7 +1358,9 @@ function get_admin_size() {
 	if ( ! empty ( $wpc_admin_size_option ) ) {
 		foreach ($wpc_admin_size_option as $key => $wpc_admin_size_value)
 			$options[$key] = $wpc_admin_size_value;
-		return $wpc_admin_size_option['wpc_advanced_size'];
+		if (isset($wpc_admin_size_option['wpc_advanced_size'])) {
+			return $wpc_admin_size_option['wpc_advanced_size'];
+		}
 	}
 };
 
@@ -1210,7 +1385,9 @@ function get_admin_bypass_map() {
 	if ( ! empty ( $wpc_admin_bypass_map_option ) ) {
 		foreach ($wpc_admin_bypass_map_option as $key => $wpc_admin_bypass_map_value)
 			$options[$key] = $wpc_admin_bypass_map_value;
-		return $wpc_admin_bypass_map_option['wpc_map_display'];
+		if (isset($wpc_admin_bypass_map_option['wpc_map_display'])) {
+			return $wpc_admin_bypass_map_option['wpc_map_display'];
+		}
 	}
 };
 
@@ -1235,7 +1412,9 @@ function get_admin_bypass_map_height() {
 	if ( ! empty ( $wpc_admin_bypass_map_height_option ) ) {
 		foreach ($wpc_admin_bypass_map_height_option as $key => $wpc_admin_bypass_map_height_value)
 			$options[$key] = $wpc_admin_bypass_map_height_value;
-		return $wpc_admin_bypass_map_height_option['wpc_map_height'];
+		if (isset($wpc_admin_bypass_map_height_option['wpc_map_height'])) {
+			return $wpc_admin_bypass_map_height_option['wpc_map_height'];
+		}
 	}
 };
 
@@ -1260,7 +1439,9 @@ function get_admin_bypass_map_opacity() {
 	if ( ! empty ( $wpc_admin_bypass_map_opacity_option ) ) {
 		foreach ($wpc_admin_bypass_map_opacity_option as $key => $wpc_admin_bypass_map_opacity_value)
 			$options[$key] = $wpc_admin_bypass_map_opacity_value;
-		return $wpc_admin_bypass_map_opacity_option['wpc_map_bypass_opacity'];
+		if (isset($wpc_admin_bypass_map_opacity_option['wpc_map_bypass_opacity'])) {	
+			return $wpc_admin_bypass_map_opacity_option['wpc_map_bypass_opacity'];
+		}
 	}
 };
 
@@ -1270,7 +1451,9 @@ function get_admin_map_opacity() {
 	if ( ! empty ( $wpc_admin_map_opacity_option ) ) {
 		foreach ($wpc_admin_map_opacity_option as $key => $wpc_admin_map_opacity_value)
 			$options[$key] = $wpc_admin_map_opacity_value;
-		return $wpc_admin_map_opacity_option['wpc_map_opacity'];
+		if (isset($wpc_admin_map_opacity_option['wpc_map_opacity'])) {	
+			return $wpc_admin_map_opacity_option['wpc_map_opacity'];
+		}
 	}
 };
 
@@ -1295,7 +1478,9 @@ function get_admin_bypass_map_zoom() {
 	if ( ! empty ( $wpc_admin_bypass_map_zoom_option ) ) {
 		foreach ($wpc_admin_bypass_map_zoom_option as $key => $wpc_admin_bypass_map_zoom_value)
 			$options[$key] = $wpc_admin_bypass_map_zoom_value;
-		return $wpc_admin_bypass_map_zoom_option['wpc_map_bypass_zoom'];
+		if (isset($wpc_admin_bypass_map_zoom_option['wpc_map_bypass_zoom'])) {
+			return $wpc_admin_bypass_map_zoom_option['wpc_map_bypass_zoom'];
+		}
 	}
 };
 
@@ -1305,7 +1490,9 @@ function get_admin_map_zoom() {
 	if ( ! empty ( $wpc_admin_map_zoom_option ) ) {
 		foreach ($wpc_admin_map_zoom_option as $key => $wpc_admin_map_zoom_value)
 			$options[$key] = $wpc_admin_map_zoom_value;
-		return $wpc_admin_map_zoom_option['wpc_map_zoom'];
+		if (isset($wpc_admin_map_zoom_option['wpc_map_zoom'])) {
+			return $wpc_admin_map_zoom_option['wpc_map_zoom'];
+		}	
 	}
 };
 
@@ -1331,7 +1518,9 @@ function get_admin_map_layers_stations() {
 	if ( ! empty ( $wpc_admin_map_layers_stations_option ) ) {
 		foreach ($wpc_admin_map_layers_stations_option as $key => $wpc_admin_map_layers_stations_value)
 			$options[$key] = $wpc_admin_map_layers_stations_value;
-		return $wpc_admin_map_layers_stations_option['wpc_map_layers_stations'];
+		if (isset($wpc_admin_map_layers_stations_option['wpc_map_layers_stations'])) {
+			return $wpc_admin_map_layers_stations_option['wpc_map_layers_stations'];
+		}
 	}
 };
 
@@ -1357,7 +1546,9 @@ function get_admin_map_layers_clouds() {
 	if ( ! empty ( $wpc_admin_map_layers_clouds_option ) ) {
 		foreach ($wpc_admin_map_layers_clouds_option as $key => $wpc_admin_map_layers_clouds_value)
 			$options[$key] = $wpc_admin_map_layers_clouds_value;
-		return $wpc_admin_map_layers_clouds_option['wpc_map_layers_clouds'];
+		if (isset($wpc_admin_map_layers_clouds_option['wpc_map_layers_clouds'])) {
+			return $wpc_admin_map_layers_clouds_option['wpc_map_layers_clouds'];
+		}
 	}
 };
 
@@ -1383,7 +1574,9 @@ function get_admin_map_layers_precipitation() {
 	if ( ! empty ( $wpc_admin_map_layers_precipitation_option ) ) {
 		foreach ($wpc_admin_map_layers_precipitation_option as $key => $wpc_admin_map_layers_precipitation_value)
 			$options[$key] = $wpc_admin_map_layers_precipitation_value;
-		return $wpc_admin_map_layers_precipitation_option['wpc_map_layers_precipitation'];
+		if (isset($wpc_admin_map_layers_precipitation_option['wpc_map_layers_precipitation'])) {
+			return $wpc_admin_map_layers_precipitation_option['wpc_map_layers_precipitation'];
+		}
 	}
 };
 
@@ -1409,7 +1602,9 @@ function get_admin_map_layers_snow() {
 	if ( ! empty ( $wpc_admin_map_layers_snow_option ) ) {
 		foreach ($wpc_admin_map_layers_snow_option as $key => $wpc_admin_map_layers_snow_value)
 			$options[$key] = $wpc_admin_map_layers_snow_value;
-		return $wpc_admin_map_layers_snow_option['wpc_map_layers_snow'];
+		if (isset($wpc_admin_map_layers_snow_option['wpc_map_layers_snow'])) {
+			return $wpc_admin_map_layers_snow_option['wpc_map_layers_snow'];
+		}
 	}
 };
 
@@ -1435,7 +1630,9 @@ function get_admin_map_layers_wind() {
 	if ( ! empty ( $wpc_admin_map_layers_wind_option ) ) {
 		foreach ($wpc_admin_map_layers_wind_option as $key => $wpc_admin_map_layers_wind_value)
 			$options[$key] = $wpc_admin_map_layers_wind_value;
-		return $wpc_admin_map_layers_wind_option['wpc_map_layers_wind'];
+		if (isset($wpc_admin_map_layers_wind_option['wpc_map_layers_wind'])) {
+			return $wpc_admin_map_layers_wind_option['wpc_map_layers_wind'];
+		}
 	}
 };
 
@@ -1461,7 +1658,9 @@ function get_admin_map_layers_temperature() {
 	if ( ! empty ( $wpc_admin_map_layers_temperature_option ) ) {
 		foreach ($wpc_admin_map_layers_temperature_option as $key => $wpc_admin_map_layers_temperature_value)
 			$options[$key] = $wpc_admin_map_layers_temperature_value;
-		return $wpc_admin_map_layers_temperature_option['wpc_map_layers_temperature'];
+		if (isset($wpc_admin_map_layers_temperature_option['wpc_map_layers_temperature'])) {
+			return $wpc_admin_map_layers_temperature_option['wpc_map_layers_temperature'];
+		}
 	}
 };
 
@@ -1487,7 +1686,9 @@ function get_admin_map_layers_pressure() {
 	if ( ! empty ( $wpc_admin_map_layers_pressure_option ) ) {
 		foreach ($wpc_admin_map_layers_pressure_option as $key => $wpc_admin_map_layers_pressure_value)
 			$options[$key] = $wpc_admin_map_layers_pressure_value;
-		return $wpc_admin_map_layers_pressure_option['wpc_map_layers_pressure'];
+		if (isset($wpc_admin_map_layers_pressure_option['wpc_map_layers_pressure'])) {
+			return $wpc_admin_map_layers_pressure_option['wpc_map_layers_pressure'];
+		}
 	}
 };
 
@@ -1526,11 +1727,18 @@ function wpc_css_border($wpcloudy_meta_border_color) {
 	}
 };
 
-function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city) {
-	if( $wpcloudy_city_name ) {
-			return $wpcloudy_city_name;
+function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation) {
+
+	if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_select_city_name) {	
+		return $wpcloudy_select_city_name;
 	}
-	else {
+	if ($wpcloudy_enable_geolocation == 'yes' && $location_name) {
+		return $location_name;
+	}
+	if( $wpcloudy_city_name && $wpcloudy_enable_geolocation == '') {
+		return $wpcloudy_city_name;
+	}
+	if( $wpcloudy_city && $wpcloudy_enable_geolocation == '') {
 		return $wpcloudy_city;
 	}
 };
@@ -1635,26 +1843,45 @@ add_shortcode("wpc-weather", "wpcloudy_display_weather");
 function wpcloudy_display_weather($attr,$content) {
 
 		extract(shortcode_atts(array( 'id' => ''), $attr));
-
-			$wpcloudy_city 				= get_post_meta($id,'_wpcloudy_city',true);
-			$wpcloudy_city_name 		= get_post_meta($id,'_wpcloudy_city_name',true);
-			$wpcloudy_country_code		= get_post_meta($id,'_wpcloudy_country_code',true);
-			$wpcloudy_unit 				= get_bypass_unit($attr,$content);
-			$wpcloudy_lang				= get_bypass_lang($attr,$content);
-			$wpcloudy_map_height		= get_bypass_map_height($attr,$content);
-			$wpcloudy_map_opacity		= get_bypass_map_opacity($attr,$content);
-			$wpcloudy_map_zoom			= get_bypass_map_zoom($attr,$content);
-			$wpcloudy_map_stations		= get_bypass_map_layers_stations($attr,$content);
-			$wpcloudy_map_clouds		= get_bypass_map_layers_clouds($attr,$content);
-			$wpcloudy_map_precipitation	= get_bypass_map_layers_precipitation($attr,$content);
-			$wpcloudy_map_snow			= get_bypass_map_layers_snow($attr,$content);
-			$wpcloudy_map_wind			= get_bypass_map_layers_wind($attr,$content);
-			$wpcloudy_map_temperature	= get_bypass_map_layers_temperature($attr,$content);
-			$wpcloudy_map_pressure		= get_bypass_map_layers_pressure($attr,$content);
-			$wpcloudy_meta_border_color	= get_bypass_color_border($attr,$content);
-			$wpcloudy_meta_bg_color		= get_bypass_color_background($attr,$content);
-			$wpcloudy_meta_text_color	= get_bypass_color_text($attr,$content);
-			$wpcloudy_sunrise_sunset	= get_bypass_display_sunrise_sunset($attr,$content);
+			$wpc_id 						= $id;
+			$wpcloudy_city 					= get_post_meta($id,'_wpcloudy_city',true);
+			$wpcloudy_city_name 			= get_post_meta($id,'_wpcloudy_city_name',true);
+			$wpcloudy_country_code			= get_post_meta($id,'_wpcloudy_country_code',true);
+			$wpcloudy_unit 					= get_bypass_unit($attr,$content);
+			$wpcloudy_lang					= get_bypass_lang($attr,$content);
+			$wpcloudy_map_height			= get_bypass_map_height($attr,$content);
+			$wpcloudy_map_opacity			= get_bypass_map_opacity($attr,$content);
+			$wpcloudy_map_zoom				= get_bypass_map_zoom($attr,$content);
+			$wpcloudy_map_stations			= get_bypass_map_layers_stations($attr,$content);
+			$wpcloudy_map_clouds			= get_bypass_map_layers_clouds($attr,$content);
+			$wpcloudy_map_precipitation		= get_bypass_map_layers_precipitation($attr,$content);
+			$wpcloudy_map_snow				= get_bypass_map_layers_snow($attr,$content);
+			$wpcloudy_map_wind				= get_bypass_map_layers_wind($attr,$content);
+			$wpcloudy_map_temperature		= get_bypass_map_layers_temperature($attr,$content);
+			$wpcloudy_map_pressure			= get_bypass_map_layers_pressure($attr,$content);
+			$wpcloudy_meta_border_color		= get_bypass_color_border($attr,$content);
+			$wpcloudy_meta_bg_color			= get_bypass_color_background($attr,$content);
+			$wpcloudy_meta_text_color		= get_bypass_color_text($attr,$content);
+			$wpcloudy_date_format			= get_bypass_date($attr,$content);
+			$wpcloudy_sunrise_sunset		= get_bypass_display_sunrise_sunset($attr,$content);
+			$wpcloudy_display_temp_unit		= get_bypass_display_temp_unit($attr,$content);
+			$wpcloudy_enable_geolocation 	= get_post_meta($id,'_wpcloudy_enable_geolocation',true);
+			$wpc_advanced_set_cache_time	= get_admin_cache_time();
+			
+			if (isset($_COOKIE['posLat'])) {
+				$wpcloudy_lat 					= $_COOKIE['posLat'];
+			}
+			if (isset($_COOKIE['posLon'])) {
+				$wpcloudy_lon 					= $_COOKIE['posLon'];
+			}
+			
+			if (isset($_COOKIE['posCityId'])) {
+				$wpcloudy_select_city_id 	= $_COOKIE['posCityId'];
+			}
+			
+			if (isset($_COOKIE['posCityName'])) {
+				$wpcloudy_select_city_name 	= $_COOKIE['posCityName'];
+			}
 	
 			switch ($wpcloudy_lang) {
 				case "fr":
@@ -1726,45 +1953,67 @@ function wpcloudy_display_weather($attr,$content) {
 					$wpcloudy_lang_host = 'turkish';
 					break;
 			}
-
-
-			//$myweather = simplexml_load_string(get_transient( 'myweather' ));
+			
+						
+			//XML : real time weather
+			$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ));
 	
-			//if ( false === $myweather || '' === $myweather ){
-				$myweather_current_url = "http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm";
-
-				$myweather_url = "http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm";
-				
-				$myweather_sevendays_url = "http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&cnt=7&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14";
-
-				if (@simplexml_load_file($myweather_current_url)) {
-					$myweather_current = simplexml_load_file($myweather_current_url);
+			if ( false === $myweather_current || '' === $myweather_current ){
+			
+				if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+					$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				}
+				elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posCityId']!='' )  {
+					$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				}
+				else {
+					$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+					set_transient( 'myweather_current_'.$wpc_id, $myweather_current->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 				}
 				
-				if (@simplexml_load_file($myweather_url)) {
-					$myweather = simplexml_load_file($myweather_url);
+			}
+			
+			//XML : Hourly weather			
+			$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ));
+	
+			if ( false === $myweather || '' === $myweather ){
+				
+				if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+					$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				}
+				elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posCityId']!='' )  {
+					$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				}
+				else {
+					$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+					set_transient( 'myweather_'.$wpc_id, $myweather->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 				}
 				
-				if (@simplexml_load_file($myweather_sevendays_url)) {
-					$myweather_sevendays = simplexml_load_file($myweather_sevendays_url);
+			}
+			
+			//XML : 7-days forecast
+			$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ));
+	
+			if ( false === $myweather_sevendays || '' === $myweather_sevendays ){
+				
+				if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+					$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
+	
 				}
-		
-				
+				elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posCityId']!='' )  {
+					$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
+				}
+				else {
+					$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
+					set_transient( 'myweather_sevendays_'.$wpc_id, $myweather_sevendays->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 	
-			//set_transient( 'myweather', $myweather->asXML(), 10 * MINUTE_IN_SECONDS );
-			//}
-	
-			//$myweather_sevendays = simplexml_load_string(get_transient( 'myweather_sevendays' ));
-	
-			//if ( false === $myweather_sevendays || '' === $myweather_sevendays ){
-				
-				
-				//set_transient( 'myweather_sevendays', $myweather_sevendays->asXML(), 10 * MINUTE_IN_SECONDS );
-			//}
+				}
+						
+			}
 			
 			setlocale(LC_TIME, "$wpcloudy_lang_host");
 			
-			$location_name 			= $myweather_current->city[0][name];	
+			$location_name 			= $myweather_current->city[0]['name'];	
 			$location_latitude 		= $myweather_current->city[0]->coord[0]['lat'];
 			$location_longitude 	= $myweather_current->city[0]->coord[0]['lon'];
 			$time_symbol 			= $myweather_current->weather[0]['value'];
@@ -1773,41 +2022,51 @@ function wpcloudy_display_weather($attr,$content) {
 			$time_wind_speed 		= $myweather_current->wind[0]->speed[0]['value'];
 			$time_humidity 			= $myweather_current->humidity[0]['value'];
 			$time_pressure 			= $myweather_current->pressure[0]['value'];
-			$time_cloudiness		= $myweather_current->clouds[0]['value'];
-			$time_temperature		= (round($myweather_current->temperature[0]['value']));
-			$time_temperature_min 	= (round($myweather_current->temperature[0]['min']));
-			$time_temperature_max 	= (round($myweather_current->temperature[0]['max']));
+			$time_cloudiness		= (ceil($myweather_current->clouds[0]['value']));
+			$time_temperature		= (ceil($myweather_current->temperature[0]['value']));
+			$time_temperature_min 	= (ceil($myweather_sevendays->forecast[0]->time[0]->temperature[0]['min']));
+			$time_temperature_max 	= (ceil($myweather_sevendays->forecast[0]->time[0]->temperature[0]['max']));
 
-			$sun_rise 				= (string)date("h:i", strtotime($myweather_current->city[0]->sun[0]['rise']));
-			$sun_set 				= (string)date("h:i", strtotime($myweather_current->city[0]->sun[0]['set']));		
+			if ($wpcloudy_date_format =='12') {
+				$wpcloudy_date_php_sun 		= 'h:i A';
+				$wpcloudy_date_php_hours = 'h A';
+			}
 			
+			if ($wpcloudy_date_format =='24') {	
+				$wpcloudy_date_php_sun 		= 'H:i';
+				$wpcloudy_date_php_hours 	= 'H';		
+			}
+			
+			$sun_rise			= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['rise']));
+			$sun_set			= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['set']));
+				
 			$today_day				= strftime("%A", strtotime($myweather_current->lastupdate[0]['value']));
 			
 			$hour_temp_0			= (round($myweather->forecast[0]->time[0]->temperature[0]['value']));
 			$hour_symbol_0			= $myweather->forecast[0]->time[0]->symbol[0]['name'];
 			$hour_symbol_number_0	= $myweather->forecast[0]->time[0]->symbol[0]['number'];
 			
-			$hour_time_1			= date("H A", strtotime($myweather->forecast[0]->time[1]['from']));
+			$hour_time_1			= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[1]['from']));
 			$hour_temp_1			= (round($myweather->forecast[0]->time[1]->temperature[0]['value']));
 			$hour_symbol_1			= $myweather->forecast[0]->time[1]->symbol[0]['name'];
 			$hour_symbol_number_1	= $myweather->forecast[0]->time[1]->symbol[0]['number'];
 			
-			$hour_time_2			= date("H A", strtotime($myweather->forecast[0]->time[2]['from']));
+			$hour_time_2			= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[2]['from']));
 			$hour_temp_2			= (round($myweather->forecast[0]->time[2]->temperature[0]['value']));
 			$hour_symbol_2			= $myweather->forecast[0]->time[2]->symbol[0]['name'];
 			$hour_symbol_number_2	= $myweather->forecast[0]->time[2]->symbol[0]['number'];
 			
-			$hour_time_3			= date("H A", strtotime($myweather->forecast[0]->time[3]['from']));
+			$hour_time_3			= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[3]['from']));
 			$hour_temp_3			= (round($myweather->forecast[0]->time[3]->temperature[0]['value']));
 			$hour_symbol_3			= $myweather->forecast[0]->time[3]->symbol[0]['name'];
 			$hour_symbol_number_3	= $myweather->forecast[0]->time[3]->symbol[0]['number'];
 			
-			$hour_time_4			= date("H A", strtotime($myweather->forecast[0]->time[4]['from']));
+			$hour_time_4			= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[4]['from']));
 			$hour_temp_4			= (round($myweather->forecast[0]->time[4]->temperature[0]['value']));
 			$hour_symbol_4			= $myweather->forecast[0]->time[4]->symbol[0]['name'];
 			$hour_symbol_number_4	= $myweather->forecast[0]->time[4]->symbol[0]['number'];
 			
-			$hour_time_5			= date("H A", strtotime($myweather->forecast[0]->time[5]['from']));
+			$hour_time_5			= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[5]['from']));
 			$hour_temp_5			= (round($myweather->forecast[0]->time[5]->temperature[0]['value']));
 			$hour_symbol_5			= $myweather->forecast[0]->time[5]->symbol[0]['name'];
 			$hour_symbol_number_5	= $myweather->forecast[0]->time[5]->symbol[0]['number'];
@@ -2017,20 +2276,18 @@ function wpcloudy_display_weather($attr,$content) {
 					</style>
 				';
 			}
-		
+			
 			$display_now = '
 				<div class="now">
-					<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city) .'</div>		
+					<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation)  .'</div>		
 					<div class="time_symbol climacon" style="fill:'. wpc_css_text_color($wpcloudy_meta_text_color) .'">'. $time_symbol_svg .'</div>
-					<div class="time_temperature">'. $time_temperature .'&deg;</div>
+					<div class="time_temperature">'. $time_temperature .'</div>
 				</div>
 			';
 			$display_weather = '
 				<div class="short_condition">'. $time_symbol .'</div>
 			';
 			
-				
-	
 			$display_today_min_max = '
 				<div class="today">	
 					<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>
@@ -2308,19 +2565,33 @@ function wpcloudy_display_weather($attr,$content) {
 				$display_map_pressure 					= '';
 				$display_map_pressure_layers 			= '';
 			};
+			
+			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+
+			$wpcloudy_map_lat = $_COOKIE['posLat'];
+			$wpcloudy_map_lon = $_COOKIE['posLon'];
+			
+			}
+			
+			if( $wpcloudy_enable_geolocation == 'yes' && (isset($_COOKIE['posCityId']))!='' && $_COOKIE['posCityName']!='' ) { 
+				$wpcloudy_map_lat = $_COOKIE['posLat'];
+				$wpcloudy_map_lon = $_COOKIE['posLon'];
+			}
+			
+			else {
+				$wpcloudy_map_lat = $location_latitude;
+				$wpcloudy_map_lon = $location_longitude;
+			}
 				
-			$display_map = '
-				<script type="text/javascript"
-					src="http://maps.google.com/maps/api/js?sensor=true">
-				</script>				
+			$display_map = '				
 				<div id="wpc-map-container">	
 					<div id="wpc-map" style="height: '. $wpcloudy_map_height .'px"></div>
 				</div>
 				<script type="text/javascript">
 					window.onload = function init() {
 						//Center of map
-						var lat = '. $location_latitude .'; 
-						var lon = '. $location_longitude .';
+						var lat = '. $wpcloudy_map_lat .'; 
+						var lon = '. $wpcloudy_map_lon .';
 						var lonlat = new OpenLayers.LonLat(lon, lat);
 							var map = new OpenLayers.Map("wpc-map");
 						// Create overlays
@@ -2371,6 +2642,7 @@ function wpcloudy_display_weather($attr,$content) {
 					}
 				</script>
 			';
+
 			
 			$wpcloudy_current_weather		= 	get_bypass_display_current_weather($attr,$content);
 			$wpcloudy_weather				= 	get_bypass_display_weather($attr,$content);
@@ -2387,10 +2659,21 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
 			$wpcloudy_skin 				    =   get_post_meta($id,'_wpcloudy_skin',true);
 			$wpcloudy_css3_anims			=	get_admin_disable_css3_anims();
-			
+						
 			$html = '
 			<!-- WP Cloudy : WordPress weather plugin - http://wpcloudy.com/ -->
 			<div id="wpc-weather" class="'. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'; font-family:'. wpc_css_webfont($attr,$content) .'">';
+			
+			
+			if ( $wpcloudy_enable_geolocation == 'yes' && !isset($_COOKIE["posLat"]) && !isset($_COOKIE["posLon"]) && !isset($_COOKIE["posCityId"]) ) { 
+				$html .=  wpc_geolocation_form($attr,$content);
+			}
+			elseif( $wpcloudy_enable_geolocation == 'yes' && isset($_COOKIE["posCityId"]) )  {
+				$html .=  wpc_geolocation_form($attr,$content);
+			}
+			elseif ( $wpcloudy_enable_geolocation == 'yes' && isset($_COOKIE["posLat"]) && isset($_COOKIE["posLon"]) ) { 
+				$html .=  wpc_geolocation_form($attr,$content);
+			}
 			
 			if( $wpcloudy_current_weather ) {
 				$html .= $display_now;
@@ -2400,11 +2683,11 @@ function wpcloudy_display_weather($attr,$content) {
 				$html .= $display_weather;
 			}
 	
-			if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == yes ) {
+			if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == 'yes' ) {
 				$html .= $display_today_min_max;
 			}	
 	
-			if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == no ) {
+			if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == 'no' ) {
 				$html .= $display_today_ave;
 			}				
 			 
@@ -2521,9 +2804,46 @@ function wpcloudy_display_weather($attr,$content) {
 							</style>
 						';
 			}
+			
+			if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'metric') {
+				$html .= '<style>
+						  #wpc-weather.small .now .time_temperature:after,
+						  #wpc-weather .forecast .temp_max:after,
+						  #wpc-weather .forecast .temp_min:after,
+						  #wpc-weather .hours .temperature:after,
+						  #wpc-weather .today .time_temperature_max:after,
+						  #wpc-weather .today .time_temperature_min:after {
+						  	content:"\e03e";
+						  	font-family: "Climacons-Font";
+						    font-size: 24px;
+						    margin-left: 2px;
+						    vertical-align: top;
+						  }
+						  </style>
+				';
+			}
+			
+			if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'imperial') {
+				$html .= '<style>
+						  #wpc-weather.small .now .time_temperature:after,
+						  #wpc-weather .forecast .temp_max:after,
+						  #wpc-weather .forecast .temp_min:after,
+						  #wpc-weather .hours .temperature:after,
+						  #wpc-weather .today .time_temperature_max:after,
+						  #wpc-weather .today .time_temperature_min:after {
+						  	content: "\e03f";
+						  	font-family: "Climacons-Font";
+						    font-size: 24px;
+						    margin-left: 2px;
+						    vertical-align: top;
+						  }
+						  </style>
+				';
+			}
 
-		 $html .= '</div>';
-		 return $html;
+		$html .= '</div>';
+		 
+		return $html;
 			 
 }
 

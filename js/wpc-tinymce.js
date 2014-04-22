@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-
+	//TinyMCE v3.x
     tinymce.create('tinymce.plugins.wpc_plugin', {
         init : function(ed, url) {
                 // Register command for when button is clicked
@@ -18,9 +18,28 @@ jQuery(document).ready(function($) {
         },   
     });
 
-    // Register our TinyMCE plugin
-    // first parameter is the button ID1
-    // second parameter must match the first parameter of the tinymce.create() function above
-    tinymce.PluginManager.add('wpc_button', tinymce.plugins.wpc_plugin);
+    //TinyMCE v4.x
+	(function() {
+	    tinymce.PluginManager.add('wpc_button_v4', function( editor, url ) {
+	        editor.addButton( 'wpc_button_v4', {
+	            title: 'WP Cloudy',
+	            type: 'button',
+	            icon: 'icon mceIcon mce_wpc_button',
+	            onclick: function() {
+				    editor.windowManager.open( {
+				        title: 'Insert Weather',
+				        body: [{
+				            type: 'textbox',
+				            name: 'title',
+				            label: 'Enter the id of the weather to display:'
+				        }],
+				        onsubmit: function( e ) {
+				            editor.insertContent( '[wpc-weather id="' + e.data.title + '"/]');
+				        }
+				    });
+				}
+			});
+		});
+	})();      
 });
 

@@ -141,7 +141,104 @@
 /*************************************************************************************************/
 /* Admin - Options panel 																		 */
 /*************************************************************************************************/
-.wpcloudy-settings label {margin: 0 0 0 10px;}
+
+#wpcloudy-header {
+    height: 150px;
+    margin: 0 10px 40px;
+}
+#wpcloudy-header #wpcloudy-clouds h3 {
+    background: url("../img/logo-wpcloudy.png") no-repeat scroll 0 0 / contain rgba(0, 0, 0, 0);
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 80px;
+    margin: 30px 0;
+    text-indent: -9999px;
+}
+#wpcloudy-header #wpcloudy-clouds #wpcloudy-notice p {
+	font-size: 16px;
+}
+#wpcloudy-header #wpcloudy-clouds #wpcloudy-notice p.small {
+	font-size: 13px;
+}
+.wpcloudy-settings {
+    float: left;
+    max-width: 650px;
+    width: 100%;
+}
+.wpcloudy-settings label {
+	margin: 0 0 0 10px;
+}
+.wpcloudy-sidebar {
+    float: left;
+    margin-left: 20px;
+    width: 250px;
+}
+.wpcloudy-sidebar .wpcloudy-module {
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 #FFFFFF inset, 0 0 20px rgba(0, 0, 0, 0.05) inset, 0 1px 2px rgba(0, 0, 0, 0.1);
+    float: left;
+    margin: 0 0 15px 15px;
+    max-height: 220px;
+    min-height: 160px;
+    padding: 15px 0 35px 15px;
+    position: relative;
+    transition-duration: 0.4s;
+    width: 210px;
+}
+.wpcloudy-sidebar .wpcloudy-module h3 {
+    color: #000000;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.1;
+    margin: 0;
+    padding: 0;
+}
+.wpcloudy-sidebar .wpcloudy-module .wpcloudy-module-actions {
+    background: none repeat scroll 0 0 #FFFFFF;
+    bottom: 20px;
+    display: block;
+    left: 15px;
+    position: absolute;
+}
+.wpcloudy-sidebar .wpcloudy-module .module-image {
+	background: rgba(52,153,220,0.8);
+	border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    float: right;
+    margin: 0 0 5px 10px;
+    padding: 60px 0 0;
+    width: 80px;
+}
+.wpcloudy-sidebar .wpcloudy-module .module-image .dashicons {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 60px;
+    height: 40px;
+    left: 68%;
+    position: absolute;
+    top: 48px;
+    width: 40px;
+}
+.wpcloudy-sidebar .wpcloudy-module .module-image p {
+    background-color: #3498DB;
+    border-bottom-left-radius: 2px;
+    clear: both;
+    color: #FFFFFF;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+.wpcloudy-sidebar .wpcloudy-module-description {
+    color: #666666;
+    font-size: 12px;
+    line-height: 150%;
+    margin-bottom: 20px;
+    font-family: georgia, arial;
+}
 #wpcloudy-tabs .nav-tab-wrapper ul {
 	list-style: none;padding: 0;margin: 0;
 }
