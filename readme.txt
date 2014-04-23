@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.9
-Stable tag: 2.7
+Stable tag: 2.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -98,6 +98,9 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.7 =
+* FIX Cache refresh with Geolocation Add-on
+* FIX Rounding hours temperatures
 = 2.7 =
 * NEW! New paid Add-on : WP Cloudy Geolocation, allows your visitors to get a geolocation weather.
 * NEW! Cache system (finally)!
