@@ -171,7 +171,12 @@
 .wpcloudy-sidebar {
     float: left;
     margin-left: 20px;
+    position: relative;
+    top: -180px;
     width: 250px;
+}
+.wpcloudy-sidebar .button {
+	font-family: "Open Sans",sans-serif;
 }
 .wpcloudy-sidebar .wpcloudy-module {
 	background: none repeat scroll 0 0 #FFFFFF;

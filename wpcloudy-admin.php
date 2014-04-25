@@ -88,6 +88,74 @@ class wpc_options
 				<?php submit_button(); ?>
             </form>
             <div class="wpcloudy-sidebar">	
+            
+            	<div id="wpcloudy-cache" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
+					<h3><?php _e('WP Cloudy cache','wpcloudy'); ?></h3>
+					<div class="wpcloudy-module-description">  
+						<div class="module-image">
+							<div class="dashicons dashicons-trash"></div>
+							<p><span class="module-image-badge"><?php _e('cache system','wpcloudy'); ?></span></p>
+						</div>
+						
+						<p><?php _e('Click this button to refresh weather cache.','wpcloudy'); ?></p>
+            
+		            	<?php
+							function wpc_clear_all_cache() {
+						    	if (!isset($_GET['wpc_clear_all_cache_nonce']) || !wp_verify_nonce($_GET['wpc_clear_all_cache_nonce'], 'wpc_clear_all_cache_action')) {
+							?>
+								<p>
+								    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache_nonce');?>"
+								        class="button button-primary">
+								        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
+									</a>
+								</p>
+			
+							<?php
+			
+						    } else {
+						        
+							?>
+							<p>
+							    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache');?>"
+							        class="button button-primary">
+							        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
+								</a>
+							</p>
+						
+							<?php
+									
+						        // The Query
+						        $wpc_cache_query = new WP_Query( array(
+									'post_type' => array( 'wpc-weather' )
+								) );
+						
+						        $wpc_cache_query_array = array();
+						
+								// The Loop
+								if ( $wpc_cache_query->have_posts() ) {
+									while ( $wpc_cache_query->have_posts() ) {
+										$wpc_cache_query->the_post();
+										
+										array_push( $wpc_cache_query_array, get_the_id());	
+									}
+								} else {
+									// no posts found
+								}
+								/* Restore original Post Data */
+								wp_reset_postdata();
+						
+						        foreach ($wpc_cache_query_array as $id) {
+								    delete_transient( "myweather_current_".$id ); 
+								    delete_transient( "myweather_".$id ); 
+									delete_transient( "myweather_sevendays_".$id );
+								} 
+							}
+						};
+						?>
+						<?php echo wpc_clear_all_cache(); ?>    
+					</div>    
+				</div>
+				
             	<div id="wpcloudy-geolocation" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
 					<h3><?php _e('WP Cloudy Geolocation','wpcloudy'); ?></h3>
 					<div class="wpcloudy-module-description">

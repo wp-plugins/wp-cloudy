@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.1
+Version: 2.7.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -713,6 +713,12 @@ function wpc_save_metabox($post_id){
 	}
 }
 
+add_action('save_post','wpc_clear_cache_current');
+function wpc_clear_cache_current() {
+	delete_transient( "myweather_current_".get_the_ID() );
+	delete_transient( "myweather_".get_the_ID() );
+	delete_transient( "myweather_sevendays_".get_the_ID() );
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //WPC Languages
 ///////////////////////////////////////////////////////////////////////////////////////////////////		
@@ -1882,14 +1888,7 @@ function wpcloudy_display_weather($attr,$content) {
 			if (isset($_COOKIE['posCityName'])) {
 				$wpcloudy_select_city_name 	= $_COOKIE['posCityName'];
 			}
-			//If Geolocation enabled on this weather, clear cache
-			/*
-			if ($wpcloudy_enable_geolocation == 'yes') {
-				delete_transient( "myweather_current_".$post_id ); 
-				delete_transient( "myweather_".$post_id ); 
-				delete_transient( "myweather_sevendays_".$post_id );
-			}
-			*/
+			
 			switch ($wpcloudy_lang) {
 				case "fr":
 					$wpcloudy_lang_owm = 'fr';
@@ -1980,8 +1979,6 @@ function wpcloudy_display_weather($attr,$content) {
 				}
 			}
 				
-			
-			
 			//XML : Hourly weather			
 							
 			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
