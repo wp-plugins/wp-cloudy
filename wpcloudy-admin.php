@@ -445,6 +445,14 @@ class wpc_options
         );
         
         add_settings_field(
+            'wpc_advanced_disable_cache', // ID
+           __("Disable cache","wpcloudy"), // Title
+            array( $this, 'wpc_advanced_disable_cache_callback' ), // Callback
+            'wpc-settings-admin-advanced', // Page
+            'wpc_setting_section_advanced' // Section           
+        );
+        
+        add_settings_field(
             'wpc_advanced_cache_time', // ID
            __("Time cache refresh (in minutes)","wpcloudy"), // Title
             array( $this, 'wpc_advanced_cache_time_callback' ), // Callback
@@ -1155,6 +1163,22 @@ class wpc_options
 		}
 	}
 	
+	public function wpc_advanced_disable_cache_callback()
+    {
+		$options = get_option( 'wpc_option_name' );  
+		
+		$check = $options['wpc_advanced_disable_cache'];
+		
+        echo '<input id="wpc_advanced_disable_cache" name="wpc_option_name[wpc_advanced_disable_cache]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_advanced_disable_cache">'. __( 'Disable weather cache? (not recommended)', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_advanced_disable_cache'])) {
+			esc_attr( $this->options['wpc_advanced_disable_cache']);
+		}
+    }
+    
 	public function wpc_advanced_cache_time_callback()
     {
 		printf(

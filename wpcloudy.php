@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.2
+Version: 2.7.3
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -886,6 +886,18 @@ function get_admin_disable_css3_anims() {
 			$options[$key] = $wpc_admin_disable_css3_anims_value;
 		if (isset($wpc_admin_disable_css3_anims_option['wpc_advanced_disable_css3_anims'])) {
 			return $wpc_admin_disable_css3_anims_option['wpc_advanced_disable_css3_anims'];
+		}
+	}
+};
+
+//Disable weather cache
+function get_admin_disable_cache() {
+	$wpc_admin_disable_cache_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_disable_cache_option ) ) {
+		foreach ($wpc_admin_disable_cache_option as $key => $wpc_admin_disable_cache_value)
+			$options[$key] = $wpc_admin_disable_cache_value;
+		if (isset($wpc_admin_disable_cache_option['wpc_advanced_disable_cache'])) {
+			return $wpc_admin_disable_cache_option['wpc_advanced_disable_cache'];
 		}
 	}
 };
@@ -1873,6 +1885,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_display_temp_unit		= get_bypass_display_temp_unit($attr,$content);
 			$wpcloudy_enable_geolocation 	= get_post_meta($id,'_wpcloudy_enable_geolocation',true);
 			$wpc_advanced_set_cache_time	= get_admin_cache_time();
+			$wpc_advanced_set_disable_cache = get_admin_disable_cache();
 			
 			if (isset($_COOKIE['posLat'])) {
 				$wpcloudy_lat 					= $_COOKIE['posLat'];
@@ -1970,12 +1983,16 @@ function wpcloudy_display_weather($attr,$content) {
 				$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			}
 			else {
-				
-				$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ));
-
-				if ( false === $myweather_current || '' === $myweather_current ){
+				if (!$wpc_advanced_set_disable_cache == 'yes') {
+					$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ));
+	
+					if ( false === $myweather_current || '' === $myweather_current ){
+						$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+						set_transient( 'myweather_current_'.$wpc_id, $myweather_current->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+					}
+				}
+				else {
 					$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
-					set_transient( 'myweather_current_'.$wpc_id, $myweather_current->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 				}
 			}
 				
@@ -1988,15 +2005,17 @@ function wpcloudy_display_weather($attr,$content) {
 				$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			}
 			else {
-			
-				$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ));
-
-				if ( false === $myweather || '' === $myweather ){
-
-					$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
-					set_transient( 'myweather_'.$wpc_id, $myweather->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+				if (!$wpc_advanced_set_disable_cache == 'yes') {
+					$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ));
+	
+					if ( false === $myweather || '' === $myweather ){
+						$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+						set_transient( 'myweather_'.$wpc_id, $myweather->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+					}
 				}
-			
+				else {
+					$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+				}
 			}
 			
 			//XML : 7-days forecast
@@ -2009,17 +2028,18 @@ function wpcloudy_display_weather($attr,$content) {
 				$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
 			}
 			else {
-			
-				$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ));
-
-				if ( false === $myweather_sevendays || '' === $myweather_sevendays ){
-		
-					$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
-					set_transient( 'myweather_sevendays_'.$wpc_id, $myweather_sevendays->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+				if (!$wpc_advanced_set_disable_cache == 'yes') {
+					$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ));
+	
+					if ( false === $myweather_sevendays || '' === $myweather_sevendays ){
+						$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
+						set_transient( 'myweather_sevendays_'.$wpc_id, $myweather_sevendays->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+					}
+				}
+				else {			
+					$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");					
 				}
 			}
-						
-			
 			
 			setlocale(LC_TIME, "$wpcloudy_lang_host");
 			

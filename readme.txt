@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.9
-Stable tag: 2.7.2
+Stable tag: 2.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,31 +23,19 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 Many features like:
 
 * NEW! New paid Add-on : WP Cloudy Geolocation, allows your visitors to get a geolocation weather.
-
+* NEW! Add disable cache button in WP Cloudy settings 
 * NEW! Cache system to prevent OpenWeatherMap failure
-
 * NEW! Change date format (12h or 24h)
-
 * NEW! Display temperatures unit (C / F)
-
 * NEW! Tabs in WP Cloudy admin panel for better UX
-
 * NEW! New option to enable/disable CSS3 animations
-
 * NEW! Add 14-day forecast 
-
 * NEW! New option to display (or not) Sunrise / Sunset
-
 * NEW! New option to display (or not) today date + temperatures (min-max/average) 
-
 * NEW! Add WP Cloudy widget dashboard 
-
 * NEW! Add a button to integrate the weather shortcode in tinymce editor more easily
-
 * NEW! Now with SVG animated icons (thanks to Noah Blon => http://codepen.io/noahblon )
-
 * NEW! Adding an options panel to bypass options for individual weather
-
 * NEW! Support OpenStreetMap (layers included: current weather, stations, clouds, precipitation, snow, wind, temperature, pressure)
 
 * Retina ready (SVG + CSS3)
@@ -98,6 +86,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.7.3 =
+* NEW! Add disable cache button in WP Cloudy settings 
 = 2.7.2 =
 * FIX Cache refresh
 * NEW! Add clear cache button in WP Cloudy settings
