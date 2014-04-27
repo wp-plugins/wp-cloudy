@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.3
+Version: 2.7.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -1747,10 +1747,10 @@ function wpc_css_border($wpcloudy_meta_border_color) {
 
 function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation) {
 
-	if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_select_city_name) {	
+	if ($wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1') {	
 		return $wpcloudy_select_city_name;
 	}
-	if ($wpcloudy_enable_geolocation == 'yes' && $location_name) {
+	if ($wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1') {
 		return $location_name;
 	}
 	if( $wpcloudy_city_name && $wpcloudy_enable_geolocation == '') {
@@ -1887,19 +1887,19 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpc_advanced_set_cache_time	= get_admin_cache_time();
 			$wpc_advanced_set_disable_cache = get_admin_disable_cache();
 			
-			if (isset($_COOKIE['posLat'])) {
-				$wpcloudy_lat 					= $_COOKIE['posLat'];
+			if (isset($_COOKIE['wpc-posLat'])) {
+				$wpcloudy_lat 				= $_COOKIE['wpc-posLat'];
 			}
-			if (isset($_COOKIE['posLon'])) {
-				$wpcloudy_lon 					= $_COOKIE['posLon'];
-			}
-			
-			if (isset($_COOKIE['posCityId'])) {
-				$wpcloudy_select_city_id 	= $_COOKIE['posCityId'];
+			if (isset($_COOKIE['wpc-posLon'])) {
+				$wpcloudy_lon 				= $_COOKIE['wpc-posLon'];
 			}
 			
-			if (isset($_COOKIE['posCityName'])) {
-				$wpcloudy_select_city_name 	= $_COOKIE['posCityName'];
+			if (isset($_COOKIE['wpc-posCityId'])) {
+				$wpcloudy_select_city_id 	= $_COOKIE['wpc-posCityId'];
+			}
+			
+			if (isset($_COOKIE['wpc-posCityName'])) {
+				$wpcloudy_select_city_name 	= $_COOKIE['wpc-posCityName'];
 			}
 			
 			switch ($wpcloudy_lang) {
@@ -1976,12 +1976,14 @@ function wpcloudy_display_weather($attr,$content) {
 						
 			//XML : real time weather
 			
-			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) { 
 				$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			}
-			elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posCityId']!='' )  {
-				$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+			
+			elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' )  {
+				$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			}
+			
 			else {
 				if (!$wpc_advanced_set_disable_cache == 'yes') {
 					$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ));
@@ -1998,11 +2000,11 @@ function wpcloudy_display_weather($attr,$content) {
 				
 			//XML : Hourly weather			
 							
-			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) {
 				$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			}
-			elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posCityId']!='' )  {
-				$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
+			elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' )  {
+				$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
 			}
 			else {
 				if (!$wpc_advanced_set_disable_cache == 'yes') {
@@ -2020,11 +2022,11 @@ function wpcloudy_display_weather($attr,$content) {
 			
 			//XML : 7-days forecast
 				
-			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) {
 				$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
 
 			}
-			elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posCityId']!='' )  {
+			elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' )  {
 				$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
 			}
 			else {
@@ -2596,16 +2598,16 @@ function wpcloudy_display_weather($attr,$content) {
 				$display_map_pressure_layers 			= '';
 			};
 			
-			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['posLat']!='' && $_COOKIE['posLon']!='' ) { 
+			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) { 
 
-			$wpcloudy_map_lat = $_COOKIE['posLat'];
-			$wpcloudy_map_lon = $_COOKIE['posLon'];
+				$wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
+				$wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
 			
 			}
 			
-			if( $wpcloudy_enable_geolocation == 'yes' && (isset($_COOKIE['posCityId']))!='' && $_COOKIE['posCityName']!='' ) { 
-				$wpcloudy_map_lat = $_COOKIE['posLat'];
-				$wpcloudy_map_lon = $_COOKIE['posLon'];
+			if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' ) { 
+				$wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
+				$wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
 			}
 			
 			else {
@@ -2695,13 +2697,7 @@ function wpcloudy_display_weather($attr,$content) {
 			<div id="wpc-weather" class="'. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'; font-family:'. wpc_css_webfont($attr,$content) .'">';
 			
 			
-			if ( $wpcloudy_enable_geolocation == 'yes' && !isset($_COOKIE["posLat"]) && !isset($_COOKIE["posLon"]) && !isset($_COOKIE["posCityId"]) ) { 
-				$html .=  wpc_geolocation_form($attr,$content);
-			}
-			elseif( $wpcloudy_enable_geolocation == 'yes' && isset($_COOKIE["posCityId"]) )  {
-				$html .=  wpc_geolocation_form($attr,$content);
-			}
-			elseif ( $wpcloudy_enable_geolocation == 'yes' && isset($_COOKIE["posLat"]) && isset($_COOKIE["posLon"]) ) { 
+			if ( $wpcloudy_enable_geolocation == 'yes' ) { 
 				$html .=  wpc_geolocation_form($attr,$content);
 			}
 			
@@ -2872,7 +2868,7 @@ function wpcloudy_display_weather($attr,$content) {
 			}
 
 		$html .= '</div>';
-		 
+
 		return $html;
 			 
 }
