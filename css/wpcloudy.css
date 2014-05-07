@@ -32,7 +32,7 @@
     display: block;
     font-weight: bold;
 }
-#wpc-weather .temp_max .wpc-highlight, #wpc-weather .hours .temperature .wpc-highlight, #wpc-weather .today .time_temperature_max .wpc-highlight {
+#wpc-weather .temp_max .wpc-highlight, #wpc-weather .hours .temperature .wpc-highlight, #wpc-weather .today .time_temperature_max .wpc-highlight, #wpc-weather .today .time_temperature_ave .wpc-highlight {
     display: inline-block;
 }
 #wpc-weather.small .now .location_name {

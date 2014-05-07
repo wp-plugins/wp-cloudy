@@ -639,6 +639,11 @@ class wpc_options
     {
         print __('Map settings to bypass:', 'wpcloudy');
     }
+    
+    public function print_section_info_support()
+    {
+        print __('', 'wpcloudy');
+    }
 
     /** 
      * Get the settings option array and print one of its values
@@ -648,7 +653,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );  
 		  
-		$check = $options['wpc_basic_bypass_unit'];
+		$check = isset($options['wpc_basic_bypass_unit']);
 		
         echo '<input id="wpc_basic_bypass_unit" name="wpc_option_name[wpc_basic_bypass_unit]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -664,7 +669,7 @@ class wpc_options
 	public function wpc_basic_unit_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
-		$selected = $options['wpc_basic_unit'];
+		$selected = isset($options['wpc_basic_unit']);
 		
 		echo ' <select id="wpc_basic_unit" name="wpc_option_name[wpc_basic_unit]"> ';
 		echo ' <option '; 
@@ -684,7 +689,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );  
 		  
-		$check = $options['wpc_basic_bypass_date'];
+		$check = isset($options['wpc_basic_bypass_date']);
 		
         echo '<input id="wpc_basic_bypass_date" name="wpc_option_name[wpc_basic_bypass_date]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -700,7 +705,7 @@ class wpc_options
 	public function wpc_basic_date_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
-		$selected = $options['wpc_basic_date'];
+		$selected = isset($options['wpc_basic_date']);
 		
 		echo '<select id="wpc_basic_date" name="wpc_option_name[wpc_basic_date]"> ';
 		echo '<option '; 
@@ -720,7 +725,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 		 
-		$check = $options['wpc_basic_bypass_lang'];
+		$check = isset($options['wpc_basic_bypass_lang']);
 		
         echo '<input id="wpc_basic_bypass_lang" name="wpc_option_name[wpc_basic_bypass_lang]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -735,7 +740,7 @@ class wpc_options
 	public function wpc_basic_lang_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
-		$selected = $options['wpc_basic_lang'];
+		$selected = isset($options['wpc_basic_lang']);
 		
 		echo ' <select id="wpc_basic_lang" name="wpc_option_name[wpc_basic_lang]"> ';
 		
@@ -818,7 +823,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 	
-		$check = $options['wpc_display_current_weather'];
+		$check = isset($options['wpc_display_current_weather']);
 		
         echo '<input id="wpc_display_current_weather" name="wpc_option_name[wpc_display_current_weather]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -834,7 +839,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 
-		$check = $options['wpc_display_weather'];
+		$check = isset($options['wpc_display_weather']);
 		
         echo '<input id="wpc_display_weather" name="wpc_option_name[wpc_display_weather]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -850,7 +855,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
    
-		$check = $options['wpc_display_date_temp'];
+		$check = isset($options['wpc_display_date_temp']);
 		
         echo '<input id="wpc_display_date_temp" name="wpc_option_name[wpc_display_date_temp]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -866,7 +871,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
    
-		$check = $options['wpc_display_date_temp_unit'];
+		$check = isset($options['wpc_display_date_temp_unit']);
 		
         echo '<input id="wpc_display_date_temp_unit" name="wpc_option_name[wpc_display_date_temp_unit]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -882,7 +887,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
 		    
-		$check = $options['wpc_display_sunrise_sunset'];
+		$check = isset($options['wpc_display_sunrise_sunset']);
 		
         echo '<input id="wpc_display_sunrise_sunset" name="wpc_option_name[wpc_display_sunrise_sunset]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -898,7 +903,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
   
-		$check = $options['wpc_display_wind'];
+		$check = isset($options['wpc_display_wind']);
 		
         echo '<input id="wpc_display_wind" name="wpc_option_name[wpc_display_wind]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -914,7 +919,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
 		    
-		$check = $options['wpc_display_humidity'];
+		$check = isset($options['wpc_display_humidity']);
 		
         echo '<input id="wpc_display_humidity" name="wpc_option_name[wpc_display_humidity]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -930,7 +935,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
 		  
-		$check = $options['wpc_display_pressure'];
+		$check = isset($options['wpc_display_pressure']);
 		
         echo '<input id="wpc_display_pressure" name="wpc_option_name[wpc_display_pressure]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -946,7 +951,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );  
 		  
-		$check = $options['wpc_display_cloudiness'];
+		$check = isset($options['wpc_display_cloudiness']);
 		
         echo '<input id="wpc_display_cloudiness" name="wpc_option_name[wpc_display_cloudiness]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -962,7 +967,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );   
 		
-		$check = $options['wpc_display_hour_forecast'];
+		$check = isset($options['wpc_display_hour_forecast']);
 	
         echo '<input id="wpc_display_hour_forecast" name="wpc_option_name[wpc_display_hour_forecast]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -978,7 +983,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
 		  
-		$check = $options['wpc_display_bypass_temperature'];
+		$check = isset($options['wpc_display_bypass_temperature']);
 		
         echo '<input id="wpc_display_bypass_temperature" name="wpc_option_name[wpc_display_bypass_temperature]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -994,7 +999,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 		 
-		$check = $options['wpc_display_temperature_min_max'];
+		$check = isset($options['wpc_display_temperature_min_max']);
 		
         echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
 		if ('yes' == $check) echo 'checked="yes"'; 
@@ -1019,7 +1024,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );   
 		
-		$check = $options['wpc_display_forecast'];
+		$check = isset($options['wpc_display_forecast']);
 		
         echo '<input id="wpc_display_forecast" name="wpc_option_name[wpc_display_forecast]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1035,7 +1040,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );   
 		 
-		$check = $options['wpc_display_bypass_forecast_nd'];
+		$check = isset($options['wpc_display_bypass_forecast_nd']);
 		
         echo '<input id="wpc_display_bypass_forecast_nd" name="wpc_option_name[wpc_display_bypass_forecast_nd]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1051,7 +1056,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
 		 
-		$selected = $options['wpc_display_forecast_nd'];
+		$selected = isset($options['wpc_display_forecast_nd']);
 		
 		echo ' <select id="wpc_display_forecast_nd" name="wpc_option_name[wpc_display_forecast_nd]"> ';
 		echo ' <option '; 
@@ -1083,7 +1088,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );   
 		
-		$check = $options['wpc_advanced_disable_css3_anims'];
+		$check = isset($options['wpc_advanced_disable_css3_anims']);
 		
         echo '<input id="wpc_advanced_disable_css3_anims" name="wpc_option_name[wpc_advanced_disable_css3_anims]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1128,7 +1133,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );   
 		  
-		$check = $options['wpc_advanced_bypass_size'];
+		$check = isset($options['wpc_advanced_bypass_size']);
 		
         echo '<input id="wpc_advanced_bypass_size" name="wpc_option_name[wpc_advanced_bypass_size]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1144,7 +1149,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
 		
-		$selected = $options['wpc_advanced_size'];
+		$selected = isset($options['wpc_advanced_size']);
 		
 		echo ' <select id="wpc_advanced_size" name="wpc_option_name[wpc_advanced_size]"> ';
 		echo ' <option '; 
@@ -1167,7 +1172,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );  
 		
-		$check = $options['wpc_advanced_disable_cache'];
+		$check = isset($options['wpc_advanced_disable_cache']);
 		
         echo '<input id="wpc_advanced_disable_cache" name="wpc_option_name[wpc_advanced_disable_cache]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1192,7 +1197,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );  
 		
-		$check = $options['wpc_map_display'];
+		$check = isset($options['wpc_map_display']);
 		
         echo '<input id="wpc_map_display" name="wpc_option_name[wpc_map_display]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1217,7 +1222,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 		
-		$check = $options['wpc_map_bypass_opacity'];
+		$check = isset($options['wpc_map_bypass_opacity']);
 		
         echo '<input id="wpc_map_bypass_opacity" name="wpc_option_name[wpc_map_bypass_opacity]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1233,7 +1238,7 @@ class wpc_options
 	{
 		$options = get_option( 'wpc_option_name' ); 
 		  
-		$selected = $options['wpc_map_opacity'];
+		$selected = isset($options['wpc_map_opacity']);
 		
 		echo ' <select id="wpc_map_opacity" name="wpc_option_name[wpc_map_opacity]"> ';
 		echo ' <option '; 
@@ -1280,7 +1285,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
 		  
-		$check = $options['wpc_map_bypass_zoom'];
+		$check = isset($options['wpc_map_bypass_zoom']);
 		
         echo '<input id="wpc_map_bypass_zoom" name="wpc_option_name[wpc_map_bypass_zoom]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1296,7 +1301,7 @@ class wpc_options
 	{
 		$options = get_option( 'wpc_option_name' );    
 	
-		$selected = $options['wpc_map_zoom'];
+		$selected = isset($options['wpc_map_zoom']);
 		
 		echo ' <select id="wpc_map_zoom" name="wpc_option_name[wpc_map_zoom]"> ';
 		echo ' <option '; 
@@ -1364,7 +1369,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 		
-		$check = $options['wpc_map_layers_stations'];
+		$check = isset($options['wpc_map_layers_stations']);
 		
         echo '<input id="wpc_map_layers_stations" name="wpc_option_name[wpc_map_layers_stations]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1380,7 +1385,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
     
-		$check = $options['wpc_map_layers_clouds'];
+		$check = isset($options['wpc_map_layers_clouds']);
 		
         echo '<input id="wpc_map_layers_clouds" name="wpc_option_name[wpc_map_layers_clouds]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1396,7 +1401,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );  
 		  
-		$check = $options['wpc_map_layers_precipitation'];
+		$check = isset($options['wpc_map_layers_precipitation']);
 		
         echo '<input id="wpc_map_layers_precipitation" name="wpc_option_name[wpc_map_layers_precipitation]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1413,7 +1418,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
 		
-		$check = $options['wpc_map_layers_snow'];
+		$check = isset($options['wpc_map_layers_snow']);
 		
         echo '<input id="wpc_map_layers_snow" name="wpc_option_name[wpc_map_layers_snow]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1429,7 +1434,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
 		
-		$check = $options['wpc_map_layers_wind'];
+		$check = isset($options['wpc_map_layers_wind']);
 		
         echo '<input id="wpc_map_layers_wind" name="wpc_option_name[wpc_map_layers_wind]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1445,7 +1450,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
 		  
-		$check = $options['wpc_map_layers_temperature'];
+		$check = isset($options['wpc_map_layers_temperature']);
 		
         echo '<input id="wpc_map_layers_temperature" name="wpc_option_name[wpc_map_layers_temperature]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
@@ -1461,7 +1466,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 		
-		$check = $options['wpc_map_layers_pressure'];
+		$check = isset($options['wpc_map_layers_pressure']);
 		
         echo '<input id="wpc_map_layers_pressure" name="wpc_option_name[wpc_map_layers_pressure]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
