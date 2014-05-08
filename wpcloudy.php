@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.5
+Version: 2.7.6
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -876,7 +876,7 @@ function get_bypass_forecast_nd($attr,$content) {
 	}
 }	
 
-//Disable CSS3 animations
+//Disables CSS3 animations
 function get_admin_disable_css3_anims() {
 	$wpc_admin_disable_css3_anims_option = get_option("wpc_option_name");
 	if ( ! empty ( $wpc_admin_disable_css3_anims_option ) ) {
@@ -888,7 +888,19 @@ function get_admin_disable_css3_anims() {
 	}
 };
 
-//Disable weather cache
+//Loads Map JS From...
+function get_admin_map_js() {
+	$wpc_admin_map_js_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_map_js_option ) ) {
+		foreach ($wpc_admin_map_js_option as $key => $wpc_admin_map_js_value)
+			$options[$key] = $wpc_admin_map_js_value;
+		if (isset($wpc_admin_map_js_option['wpc_map_js'])) {
+			return $wpc_admin_map_js_option['wpc_map_js'];
+		}
+	}
+};
+
+//Disables weather cache
 function get_admin_disable_cache() {
 	$wpc_admin_disable_cache_option = get_option("wpc_option_name");
 	if ( ! empty ( $wpc_admin_disable_cache_option ) ) {
@@ -2625,6 +2637,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
 			$wpcloudy_skin 				    =   get_post_meta($id,'_wpcloudy_skin',true);
 			$wpcloudy_css3_anims			=	get_admin_disable_css3_anims();
+			$wpcloudy_map_js 				= 	get_admin_map_js();
 						
 			$html = '
 			<!-- WP Cloudy : WordPress weather plugin - http://wpcloudy.com/ -->
@@ -2726,12 +2739,24 @@ function wpcloudy_display_weather($attr,$content) {
 			
 			if (isset($wpcloudy_map)) {
 			
-				wp_register_script("openlayers js", "http://openlayers.org/api/OpenLayers.js", array(), "1.0", false);
-				wp_register_script("owm js", "http://openweathermap.org/js/OWM.OpenLayers.1.3.4.js", array(), "1.0", false);	
-				wp_register_style("openlayers css", "http://openlayers.org/api/theme/default/style.css", array(), "1.0", false);
-				wp_enqueue_script("openlayers js");			
-				wp_enqueue_script("owm js");
-				wp_enqueue_style("openlayers css"); 
+				if ($wpcloudy_map_js == '0') { //Webhost
+				
+					wp_register_script("openlayers_js", plugins_url('js/OpenLayers.js', __FILE__), array(), "1.0", false);
+					wp_register_script("owm_js", plugins_url('js/OWM.OpenLayers.1.3.4.js', __FILE__), array(), "1.0", false);	
+					wp_register_style("openlayers_css", plugins_url('css/wpc-map.css', __FILE__), array(), "1.0", false);
+					wp_enqueue_script("openlayers_js");			
+					wp_enqueue_script("owm_js");
+					wp_enqueue_style("openlayers_css");
+
+				}
+				if ($wpcloudy_map_js == '1') { //OpenWeatherMap
+					wp_register_script("openlayers_js", "http://openlayers.org/api/OpenLayers.js", array(), "1.0", false);
+					wp_register_script("owm_js", "http://openweathermap.org/js/OWM.OpenLayers.1.3.4.js", array(), "1.0", false);	
+					wp_register_style("openlayers_css", "http://openlayers.org/api/theme/default/style.css", array(), "1.0", false);
+					wp_enqueue_script("openlayers_js");			
+					wp_enqueue_script("owm_js");
+					wp_enqueue_style("openlayers_css");
+				} 
 				
 				$html .= $display_map;
 			}

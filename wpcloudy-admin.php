@@ -50,10 +50,14 @@ class wpc_options
         // Set class property
         $this->options = get_option( 'wpc_option_name' );
         ?>      
-            
+        <?php $wpc_info_version = get_plugin_data( plugin_dir_path( __FILE__ ).'/wpcloudy.php'); ?>
+        
             <div id="wpcloudy-header">
 				<div id="wpcloudy-clouds">
-					<h3><?php _e( 'WP Cloudy', 'wpcloudy' ); ?></h3>
+					<h3>
+						<?php _e( 'WP Cloudy', 'wpcloudy' ); ?>
+					</h3>
+					<span class="wpc-info-version"><?php print_r($wpc_info_version['Version']); ?></span>
 					<div id="wpcloudy-notice">
 						<p><?php _e( 'Not just another WordPress Weather plugin!', 'wpcloudy' ); ?></p>
 						<p class="small"><a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank"><?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?></a></p>
@@ -63,7 +67,6 @@ class wpc_options
 			
             <form method="post" action="options.php" class="wpcloudy-settings">
                 <?php settings_fields( 'wpc_cloudy_option_group' ); ?>
-   
                 
                 <div id="wpcloudy-tabs">
 	                <h2 class="nav-tab-wrapper hide-if-no-js">
@@ -103,24 +106,26 @@ class wpc_options
 							function wpc_clear_all_cache() {
 						    	if (!isset($_GET['wpc_clear_all_cache_nonce']) || !wp_verify_nonce($_GET['wpc_clear_all_cache_nonce'], 'wpc_clear_all_cache_action')) {
 							?>
+							<div class="wpcloudy-module-actions">
 								<p>
 								    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache_nonce');?>"
 								        class="button button-primary">
 								        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
 									</a>
 								</p>
-			
+							</div>
+							
 							<?php
 			
 						    } else {
 						        
 							?>
-							<p>
+							<div class="wpcloudy-module-actions">
 							    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache');?>"
 							        class="button button-primary">
 							        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
 								</a>
-							</p>
+							</div>
 						
 							<?php
 									
@@ -162,6 +167,9 @@ class wpc_options
 						<div class="module-image">
 							<div class="dashicons dashicons-location-alt"></div>
 							<p><span class="module-image-badge"><?php _e('$ 39','wpcloudy'); ?></span></p>
+							<?php if ( is_plugin_active( 'wpcloudy-geolocation-addon/wpcloudy-geolocation-addon.php' ) ) {
+								echo '<div class="enabled"><div class="dashicons dashicons-yes"></div>'.__('Enabled','').'</div>';
+							}; ?>
 						</div>
 
 						<p><?php _e('Geolocated weather for your visitors.','wpcloudy'); ?></p>
@@ -177,6 +185,9 @@ class wpc_options
 						<div class="module-image">
 							<div class="dashicons dashicons-admin-appearance"></div>
 							<p><span class="module-image-badge"><?php _e('$ 10','wpcloudy'); ?></span></p>
+							<?php if ( is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' ) ) {
+								echo '<div class="enabled"><div class="dashicons dashicons-yes"></div>'.__('Enabled','').'</div>';
+							}; ?>
 						</div>
 
 						<p><?php _e('10 beautiful skins for your weather.','wpcloudy'); ?></p>
@@ -468,6 +479,14 @@ class wpc_options
             array( $this, 'print_section_info_map' ), // Callback
             'wpc-settings-admin-map' // Page
         );
+        
+        add_settings_field(
+            'wpc_map_js', // ID
+            __("Load JS/CSS from:","wpcloudy"), // Title
+            array( $this, 'wpc_map_js_callback' ), // Callback
+            'wpc-settings-admin-map', // Page
+            'wpc_setting_section_map' // Section           
+        );
 
         add_settings_field(
             'wpc_map_display', // ID
@@ -669,7 +688,7 @@ class wpc_options
 	public function wpc_basic_unit_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
-		$selected = isset($options['wpc_basic_unit']);
+		$selected = $options['wpc_basic_unit'];
 		
 		echo ' <select id="wpc_basic_unit" name="wpc_option_name[wpc_basic_unit]"> ';
 		echo ' <option '; 
@@ -705,7 +724,7 @@ class wpc_options
 	public function wpc_basic_date_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
-		$selected = isset($options['wpc_basic_date']);
+		$selected = $options['wpc_basic_date'];
 		
 		echo '<select id="wpc_basic_date" name="wpc_option_name[wpc_basic_date]"> ';
 		echo '<option '; 
@@ -740,7 +759,7 @@ class wpc_options
 	public function wpc_basic_lang_callback()
     {
 		$options = get_option( 'wpc_option_name' );    
-		$selected = isset($options['wpc_basic_lang']);
+		$selected = $options['wpc_basic_lang'];
 		
 		echo ' <select id="wpc_basic_lang" name="wpc_option_name[wpc_basic_lang]"> ';
 		
@@ -1056,7 +1075,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' ); 
 		 
-		$selected = isset($options['wpc_display_forecast_nd']);
+		$selected = $options['wpc_display_forecast_nd'];
 		
 		echo ' <select id="wpc_display_forecast_nd" name="wpc_option_name[wpc_display_forecast_nd]"> ';
 		echo ' <option '; 
@@ -1077,6 +1096,27 @@ class wpc_options
 		echo '<option '; 
 		if ('6' == $selected) echo 'selected="selected"'; 
 		echo ' value="6">'. __( '6 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('7' == $selected) echo 'selected="selected"'; 
+		echo ' value="7">'. __( '7 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('8' == $selected) echo 'selected="selected"'; 
+		echo ' value="8">'. __( '8 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('9' == $selected) echo 'selected="selected"'; 
+		echo ' value="9">'. __( '9 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('10' == $selected) echo 'selected="selected"'; 
+		echo ' value="10">'. __( '10 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('11' == $selected) echo 'selected="selected"'; 
+		echo ' value="11">'. __( '11 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('12' == $selected) echo 'selected="selected"'; 
+		echo ' value="12">'. __( '12 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('13' == $selected) echo 'selected="selected"'; 
+		echo ' value="13">'. __( '13 days', 'wpcloudy' ) .'</option>';
 		echo '</select>';
 		
 		if (isset($this->options['wpc_display_forecast_nd'])) { 
@@ -1149,7 +1189,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );
 		
-		$selected = isset($options['wpc_advanced_size']);
+		$selected = $options['wpc_advanced_size'];
 		
 		echo ' <select id="wpc_advanced_size" name="wpc_option_name[wpc_advanced_size]"> ';
 		echo ' <option '; 
@@ -1209,6 +1249,26 @@ class wpc_options
 		}
     } 
 	
+	public function wpc_map_js_callback()
+	{
+		$options = get_option( 'wpc_option_name' ); 
+		  
+		$selected = $options['wpc_map_js'];
+		
+		echo ' <select id="wpc_map_js" name="wpc_option_name[wpc_map_js]"> ';
+		echo ' <option '; 
+			if ('0' == $selected) echo 'selected="selected"'; 
+			echo ' value="0">Your webhost</option>';
+		echo '<option '; 
+			if ('1' == $selected) echo 'selected="selected"'; 
+			echo ' value="1">OpenWeatherMap</option>';
+		echo '</select>';
+	
+		if (isset($this->options['wpc_map_js'])) {
+			esc_attr( $this->options['wpc_map_js']);
+		}
+	} 
+	
 	public function wpc_map_height_callback()
     {
 		printf(
@@ -1238,7 +1298,7 @@ class wpc_options
 	{
 		$options = get_option( 'wpc_option_name' ); 
 		  
-		$selected = isset($options['wpc_map_opacity']);
+		$selected = $options['wpc_map_opacity'];
 		
 		echo ' <select id="wpc_map_opacity" name="wpc_option_name[wpc_map_opacity]"> ';
 		echo ' <option '; 
@@ -1301,7 +1361,7 @@ class wpc_options
 	{
 		$options = get_option( 'wpc_option_name' );    
 	
-		$selected = isset($options['wpc_map_zoom']);
+		$selected = $options['wpc_map_zoom'];
 		
 		echo ' <select id="wpc_map_zoom" name="wpc_option_name[wpc_map_zoom]"> ';
 		echo ' <option '; 

@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.9
-Stable tag: 2.7.5
+Stable tag: 2.7.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,11 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.7.6 =
+* NEW! Loads Map JS/CSS from your own web host or OWM
+* INFO UX improvement in WP Cloudy settings
+* FIX Saving settings from select in WP Cloudy settings 
+* FIX 14 days forecast instead of 6 
 = 2.7.5 =
 * FIX Severals PHP notice
 * FIX Warning PHP in Support settings tab
