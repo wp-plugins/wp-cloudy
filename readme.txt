@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.9
-Stable tag: 2.7.6
+Stable tag: 2.7.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,7 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
+* NEW! Loads Map JS/CSS from your own web host or OWM
 * NEW! New paid Add-on : WP Cloudy Geolocation, allows your visitors to get a geolocation weather.
 * NEW! Add disable cache button in WP Cloudy settings 
 * NEW! Cache system to prevent OpenWeatherMap failure
@@ -86,6 +87,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.7.7 =
+* FIX As->XML error
 = 2.7.6 =
 * NEW! Loads Map JS/CSS from your own web host or OWM
 * INFO UX improvement in WP Cloudy settings

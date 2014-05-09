@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.6
+Version: 2.7.7
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -2003,7 +2003,7 @@ function wpcloudy_display_weather($attr,$content) {
 	
 					if ( false == $myweather_current || '' == $myweather_current ){
 						$myweather_current = @simplexml_load_file("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
-						set_transient( 'myweather_current_'.$wpc_id, $myweather_current->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+						set_transient( 'myweather_current_'.$wpc_id, (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 					}
 				}
 				else {
@@ -2025,7 +2025,7 @@ function wpcloudy_display_weather($attr,$content) {
 	
 					if ( false == $myweather || '' == $myweather ){
 						$myweather = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm");
-						set_transient( 'myweather_'.$wpc_id, $myweather->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+						set_transient( 'myweather_'.$wpc_id, (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 					}
 				}
 				else {
@@ -2048,7 +2048,7 @@ function wpcloudy_display_weather($attr,$content) {
 	
 					if ( false == $myweather_sevendays || '' == $myweather_sevendays ){
 						$myweather_sevendays = @simplexml_load_file("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=46c433f6ba7dd4d29d5718dac3d7f035&lang=$wpcloudy_lang_owm&cnt=14");
-						set_transient( 'myweather_sevendays_'.$wpc_id, $myweather_sevendays->asXML(), $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+						set_transient( 'myweather_sevendays_'.$wpc_id, (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
 					}
 				}
 				else {			
