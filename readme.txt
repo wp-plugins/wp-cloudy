@@ -89,7 +89,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 == Changelog ==
 = 2.7.8 =
 * NEW! Choose number of hours displayed
-* NEW! Choose length days names : short or normal
+* NEW! Choose length days names: short or normal
+* NEW! 6 new languages supported: Czech, Galician, Vietnamese, Arabic, Macedonian, Slovak
 * INFO UX improvement in Weather Post type
 * FIX Saving settings from radio button in WP Cloudy settings 
 * FIX Encoding characters for days names (thanks to kryvulena)
