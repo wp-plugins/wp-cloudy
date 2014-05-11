@@ -358,6 +358,14 @@ class wpc_options
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
+        
+        add_settings_field(
+            'wpc_display_hour_forecast_nd', // ID
+            __("Number of range hours forecast?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_hour_forecast_nd_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
 		
 		add_settings_field(
             'wpc_display_bypass_temperature', // ID
@@ -395,6 +403,22 @@ class wpc_options
             'wpc_display_forecast_nd', // ID
             __("Number of days forecast","wpcloudy"), // Title 
             array( $this, 'wpc_display_forecast_nd_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
+        
+        add_settings_field(
+            'wpc_display_bypass_short_days_names', // ID
+            __("Bypass the length of name days?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_bypass_short_days_names_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
+		
+		add_settings_field(
+            'wpc_display_short_days_names', // ID
+			__("Lenght name days:","wpcloudy"), // Title
+            array( $this, 'wpc_display_short_days_names_callback' ), // Callback
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
@@ -831,6 +855,30 @@ class wpc_options
 			if ('tr' == $selected) echo 'selected="selected"'; 
 			echo ' value="tr">'. __( 'Turkish', 'wpcloudy' ) .'</option>';
 			
+			echo '<option '; 
+			if ('cz' == $selected) echo 'selected="selected"'; 
+			echo ' value="cz">'. __( 'Czech', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('gl' == $selected) echo 'selected="selected"'; 
+			echo ' value="gl">'. __( 'Galician', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('vi' == $selected) echo 'selected="selected"'; 
+			echo ' value="vi">'. __( 'Vietnamese', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('ar' == $selected) echo 'selected="selected"'; 
+			echo ' value="ar">'. __( 'Arabic', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('mk' == $selected) echo 'selected="selected"'; 
+			echo ' value="mk">'. __( 'Macedonian', 'wpcloudy' ) .'</option>';
+			
+			echo '<option '; 
+			if ('sk' == $selected) echo 'selected="selected"'; 
+			echo ' value="sk">'. __( 'Slovak', 'wpcloudy' ) .'</option>';
+			
 		echo '</select>';
 		
 		if (isset($this->options['wpc_basic_lang'])) {
@@ -997,6 +1045,38 @@ class wpc_options
 			esc_attr( $this->options['wpc_display_hour_forecast']);
 		}
     }
+    
+    public function wpc_display_hour_forecast_nd_callback()
+    {
+		$options = get_option( 'wpc_option_name' ); 
+		 
+		$selected = $options['wpc_display_hour_forecast_nd'];
+		
+		echo ' <select id="wpc_display_hour_forecast_nd" name="wpc_option_name[wpc_display_hour_forecast_nd]"> ';
+		echo ' <option '; 
+		if ('1' == $selected) echo 'selected="selected"'; 
+		echo ' value="1">'. __( '1', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('2' == $selected) echo 'selected="selected"'; 
+		echo ' value="2">'. __( '2', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('3' == $selected) echo 'selected="selected"'; 
+		echo ' value="3">'. __( '3', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('4' == $selected) echo 'selected="selected"'; 
+		echo ' value="4">'. __( '4', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('5' == $selected) echo 'selected="selected"'; 
+		echo ' value="5">'. __( '5', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('6' == $selected) echo 'selected="selected"'; 
+		echo ' value="6">'. __( '6', 'wpcloudy' ) .'</option>';
+		echo '</select>';
+		
+		if (isset($this->options['wpc_display_hour_forecast_nd'])) { 
+			esc_attr( $this->options['wpc_display_hour_forecast_nd']);
+		}
+	}
 
 	public function wpc_display_bypass_temperature_callback()
     {
@@ -1007,7 +1087,7 @@ class wpc_options
         echo '<input id="wpc_display_bypass_temperature" name="wpc_option_name[wpc_display_bypass_temperature]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
-		echo '<label for="wpc_display_bypass_temperature">'. __( 'Bypass temperatures settings on all weather?', 'wpcloudy' ) .'</label>';
+		echo '<label for="wpc_display_bypass_temperature">'. __( 'Bypass individual temperatures settings?', 'wpcloudy' ) .'</label>';
 		 
 		if (isset($this->options['wpc_display_bypass_temperature'])) {  
 			esc_attr( $this->options['wpc_display_bypass_temperature']);
@@ -1018,7 +1098,7 @@ class wpc_options
     {
 		$options = get_option( 'wpc_option_name' );    
 		 
-		$check = isset($options['wpc_display_temperature_min_max']);
+		$check = $options['wpc_display_temperature_min_max'];
 		
         echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
 		if ('yes' == $check) echo 'checked="yes"'; 
@@ -1123,6 +1203,47 @@ class wpc_options
 			esc_attr( $this->options['wpc_display_forecast_nd']);
 		}
 	}
+	
+	public function wpc_display_bypass_short_days_names_callback()
+    {
+		$options = get_option( 'wpc_option_name' );
+		  
+		$check = isset($options['wpc_display_bypass_short_days_names']);
+		
+        echo '<input id="wpc_display_bypass_short_days_names" name="wpc_option_name[wpc_display_bypass_short_days_names]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_bypass_short_days_names">'. __( 'Bypass the length of name days?', 'wpcloudy' ) .'</label>';
+		 
+		if (isset($this->options['wpc_display_bypass_short_days_names'])) {  
+			esc_attr( $this->options['wpc_display_bypass_short_days_names']);
+		}
+    }
+	
+	public function wpc_display_short_days_names_callback()
+    {
+		$options = get_option( 'wpc_option_name' );    
+		 
+		$check = $options['wpc_display_short_days_names'];
+		
+        echo '<input id="wpc_display_short_days_names_yes" name="wpc_option_name[wpc_display_short_days_names]" type="radio"';
+		if ('yes' == $check) echo 'checked="yes"'; 
+		echo ' value="yes"/>';
+		
+		echo '<label for="wpc_display_short_days_names_yes">'. __( 'Short days names', 'wpcloudy' ) .'</label>';
+		
+		echo '<br><br>';
+		
+		echo '<input id="wpc_display_short_days_names_no" name="wpc_option_name[wpc_display_short_days_names]" type="radio"';
+		if ('no' == $check) echo 'checked="yes"'; 
+		echo ' value="no"/>';
+		
+		echo '<label for="wpc_display_short_days_names_no">'. __( 'Normal days names', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_display_short_days_names'])) {
+			esc_attr( $this->options['wpc_display_short_days_names']);
+		}
+    }
 	
 	public function wpc_advanced_disable_css3_anims_callback()
     {
