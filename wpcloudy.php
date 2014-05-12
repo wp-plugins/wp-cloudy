@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.8
+Version: 2.7.8.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -2271,7 +2271,8 @@ function wpcloudy_display_weather($attr,$content) {
 				
 			$today_day				= strftime("%A", strtotime($myweather_current->lastupdate[0]['value']));
 			
-			$hour_temp_0			= (ceil($myweather->forecast[0]->time[0]->temperature[0]['value']));
+			$hour_temp_feed			= (ceil($myweather->forecast[0]->time[0]->temperature[0]['value']));
+			$hour_temp_0			= iconv("$wpcloudy_lang_encoding", 'UTF-8', $hour_temp_feed);
 			$hour_symbol_0			= $myweather->forecast[0]->time[0]->symbol[0]['name'];
 			$hour_symbol_number_0	= $myweather->forecast[0]->time[0]->symbol[0]['number'];
 			
@@ -2280,8 +2281,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$i=1;
 			
 			while ($i<=5) {
-				$hour_time_feed				= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[$i]['from']));
-				$hour_time_[$i]				= iconv("$wpcloudy_lang_encoding", 'UTF-8', $hour_time_feed);
+				$hour_time_[$i]				= date("$wpcloudy_date_php_hours", strtotime($myweather->forecast[0]->time[$i]['from']));
 				$hour_temp_[$i]				= (ceil($myweather->forecast[0]->time[$i]->temperature[0]['value']));
 				$hour_symbol_[$i]			= $myweather->forecast[0]->time[$i]->symbol[0]['name'];
 				$hour_symbol_number_[$i]	= $myweather->forecast[0]->time[$i]->symbol[0]['number'];
