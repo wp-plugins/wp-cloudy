@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.8.1
+Version: 2.7.8.1.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -130,6 +130,8 @@ global $post;
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
 			wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
+			wp_enqueue_script( 'typeahead-bundle-js', plugins_url( 'js/typeahead.bundle.min.js', __FILE__ ), array() );
+			wp_enqueue_script( 'autocomplete-js', plugins_url( 'js/wpc-autocomplete.js', __FILE__ ), array() );
 		}
 	}
 	
@@ -290,7 +292,7 @@ function wpcloudy_basic($post){
 			<div id="tabs-1">
 				<p>
 					<label for="wpcloudy_city_meta">'. __( 'City', 'wpcloudy' ) .'</label>
-					<input id="wpcloudy_city_meta" type="text" name="wpcloudy_city" value="'.$wpcloudy_city.'" />
+					<input id="wpcloudy_city_meta" type="text" name="wpcloudy_city" placeholder="'.__('Enter your city','wpcloudy').'" value="'.$wpcloudy_city.'" />
 				</p>
 				<p>
 					<label for="wpcloudy_city_name_meta">'. __( 'Custom city title', 'wpcloudy' ) .'</label>
@@ -2268,11 +2270,12 @@ function wpcloudy_display_weather($attr,$content) {
 			
 			$sun_rise				= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['rise']));
 			$sun_set				= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['set']));
-				
-			$today_day				= strftime("%A", strtotime($myweather_current->lastupdate[0]['value']));
+									
+			$today_day_feed			= strftime("%A", strtotime($myweather_current->lastupdate[0]['value']));
+			$today_day				= iconv("$wpcloudy_lang_encoding", 'UTF-8', $today_day_feed);
 			
-			$hour_temp_feed			= (ceil($myweather->forecast[0]->time[0]->temperature[0]['value']));
-			$hour_temp_0			= iconv("$wpcloudy_lang_encoding", 'UTF-8', $hour_temp_feed);
+			
+			$hour_temp_0			= (ceil($myweather->forecast[0]->time[0]->temperature[0]['value']));
 			$hour_symbol_0			= $myweather->forecast[0]->time[0]->symbol[0]['name'];
 			$hour_symbol_number_0	= $myweather->forecast[0]->time[0]->symbol[0]['number'];
 			
