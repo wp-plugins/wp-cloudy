@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.9.1
-Stable tag: 2.7.8.1.1
+Stable tag: 2.7.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 
 == Changelog ==
 = 2.7.9 =
-* NEW! Autocompletion for search cities in admin (jQuery 1.9 required)
+* NEW! Autocompletion / suggestion for search cities and countries in admin using Twitter Typeahead (jQuery 1.9 required)
+* FIX Option display today date + min-max temperatures
 = 2.7.8.1 =
 * FIX Encoding characters for today day name (thanks to kryvulena)
 = 2.7.8 =

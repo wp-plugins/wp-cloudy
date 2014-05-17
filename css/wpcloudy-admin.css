@@ -81,7 +81,44 @@
 }
 
 /*************************************************************************************************/
-/* Admin - Infobox 																				 */
+/* Admin - Typeahead																			 */
+/*************************************************************************************************/
+#wpcloudy_basic .typeahead {
+    background-color: #FFFFFF;
+}
+#wpcloudy_basic .tt-query {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+#wpcloudy_basic .tt-hint {
+    color: #999999;
+}
+#wpcloudy_basic .tt-dropdown-menu {
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 12px;
+    padding: 8px 0;
+    width: 422px;
+}
+#wpcloudy_basic .tt-suggestion {
+    font-size: 18px;
+    line-height: 24px;
+    padding: 3px 20px;
+}
+#wpcloudy_basic .tt-suggestion.tt-cursor {
+    background-color: #0097CF;
+    color: #FFFFFF;
+}
+#wpcloudy_basic .tt-suggestion p {
+    margin: 0;
+}
+#wpcloudy_basic .gist {
+    font-size: 14px;
+}
+
+/*************************************************************************************************/
+/* Admin - Shortcode																			 */
 /*************************************************************************************************/
 #wpcloudy_shortcode .shortcode {
 	margin:20px 0;

@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.7.8.1.1
+Version: 2.7.9
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -130,8 +130,11 @@ global $post;
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'color-picker-js', plugins_url('js/color-picker.js', __FILE__), array( 'wp-color-picker' ) );
 			wp_enqueue_script( 'tabs-js', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery-ui-tabs' ) );
-			wp_enqueue_script( 'typeahead-bundle-js', plugins_url( 'js/typeahead.bundle.min.js', __FILE__ ), array() );
-			wp_enqueue_script( 'autocomplete-js', plugins_url( 'js/wpc-autocomplete.js', __FILE__ ), array() );
+			
+			wp_enqueue_script( 'handlebars-js', plugins_url( 'js/handlebars-v1.3.0.js', __FILE__ ), array('typeahead-bundle-js') );
+			wp_enqueue_script( 'typeahead-bundle-js', plugins_url( 'js/typeahead.bundle.min.js', __FILE__ ), array('jquery') );
+			wp_enqueue_script( 'autocomplete-js', plugins_url( 'js/wpc-autocomplete.js', __FILE__ ), '', '', true );
+			
 		}
 	}
 	
@@ -292,15 +295,15 @@ function wpcloudy_basic($post){
 			<div id="tabs-1">
 				<p>
 					<label for="wpcloudy_city_meta">'. __( 'City', 'wpcloudy' ) .'</label>
-					<input id="wpcloudy_city_meta" type="text" name="wpcloudy_city" placeholder="'.__('Enter your city','wpcloudy').'" value="'.$wpcloudy_city.'" />
+					<input id="wpcloudy_city_meta" class="cities typeahead" type="text" name="wpcloudy_city" placeholder="'.__('Enter your city','wpcloudy').'" value="'.$wpcloudy_city.'" />
 				</p>
 				<p>
 					<label for="wpcloudy_city_name_meta">'. __( 'Custom city title', 'wpcloudy' ) .'</label>
 					<input id="wpcloudy_city_name_meta" type="text" name="wpcloudy_city_name" value="'.$wpcloudy_city_name.'" />
 				</p>
 				<p>
-					<label for="wpcloudy_country_meta">'. __( 'Country? (you can enter your country code as well as the country, in your own language, eg: "fr" or "france" or "francia"...)', 'wpcloudy' ) .'</label>
-					<input id="wpcloudy_country_meta" type="text" name="wpcloudy_country_code" value="'.$wpcloudy_country_code.'" />
+					<label for="wpcloudy_country_meta">'. __( 'Country?', 'wpcloudy' ) .'</label>
+					<input id="wpcloudy_country_meta" class="countries typeahead" type="text" name="wpcloudy_country_code" value="'.$wpcloudy_country_code.'" />
 				</p>
 				<p>
 					<label for="unit_meta">'. __( 'Imperial or metric units?', 'wpcloudy' ) .'</label>
@@ -2871,10 +2874,7 @@ function wpcloudy_display_weather($attr,$content) {
 			}	
 			elseif( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == 'no' ) {
 				$html .= $display_today_ave;
-			}	
-			else {
-				$html .= $display_today_ave;
-			}			
+			}				
 			 
 			if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
 				$html .= '<div class="infos">';
