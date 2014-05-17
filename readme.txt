@@ -22,6 +22,10 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 Many features like:
 
+* NEW! Autocompletion / suggestion for search cities and countries in admin using Twitter Typeahead (jQuery 1.9 required)
+* NEW! Choose number of hours displayed
+* NEW! Choose length days names: short or normal
+* NEW! 6 new languages supported: Czech, Galician, Vietnamese, Arabic, Macedonian, Slovak
 * NEW! Loads Map JS/CSS from your own web host or OWM
 * NEW! New paid Add-on : WP Cloudy Geolocation, allows your visitors to get a geolocation weather.
 * NEW! Add disable cache button in WP Cloudy settings 
