@@ -92,6 +92,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.8.0.1 =
+* FIX Loading template
 = 2.8 =
 * FIX Bypass number hours forecast in WP Cloudy settings
 * NEW! Templating system (developers can now create their own template with ease)
