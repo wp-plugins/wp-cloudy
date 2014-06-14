@@ -360,6 +360,14 @@ class wpc_options
         );
         
         add_settings_field(
+            'wpc_display_bypass_hour_forecast_nd', // ID
+            __("Bypass number of hours forecast settings?","wpcloudy"), // Title 
+            array( $this, 'wpc_display_bypass_hour_forecast_nd_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
+        
+        add_settings_field(
             'wpc_display_hour_forecast_nd', // ID
             __("Number of range hours forecast?","wpcloudy"), // Title 
             array( $this, 'wpc_display_hour_forecast_nd_callback' ), // Callback
@@ -1043,6 +1051,22 @@ class wpc_options
 		
 		if (isset($this->options['wpc_display_hour_forecast'])) { 
 			esc_attr( $this->options['wpc_display_hour_forecast']);
+		}
+    }
+    
+    public function wpc_display_bypass_hour_forecast_nd_callback()
+    {
+		$options = get_option( 'wpc_option_name' );   
+		 
+		$check = isset($options['wpc_display_bypass_hour_forecast_nd']);
+		
+        echo '<input id="wpc_display_bypass_hour_forecast_nd" name="wpc_option_name[wpc_display_bypass_hour_forecast_nd]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_bypass_hour_forecast_nd">'. __( 'Enable bypass number of hours forecast on all weather?', 'wpcloudy' ) .'</label>';
+
+		if (isset($this->options['wpc_display_bypass_hour_forecast_nd'])) { 
+			esc_attr( $this->options['wpc_display_bypass_hour_forecast_nd']);
 		}
     }
     
