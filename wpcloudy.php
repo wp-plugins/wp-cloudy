@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.8.0.1
+Version: 2.8.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -2279,8 +2279,10 @@ function wpcloudy_display_weather($attr,$content) {
 				$wpcloudy_date_php_hours 	= 'H';		
 			}
 			
-			$sun_rise				= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['rise']));
-			$sun_set				= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['set']));
+			$utc_time_wp 			= get_option('gmt_offset') * 60;			
+			 
+			$sun_rise				= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['rise'])+60*$utc_time_wp);
+			$sun_set				= (string)date("$wpcloudy_date_php_sun", strtotime($myweather_current->city[0]->sun[0]['set'])+60*$utc_time_wp);
 									
 			$today_day_feed			= strftime("%A", strtotime($myweather_current->lastupdate[0]['value']));
 			$today_day				= iconv("$wpcloudy_lang_encoding", 'UTF-8', $today_day_feed);
