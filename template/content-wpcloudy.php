@@ -4,7 +4,6 @@
  *
  */
 ?>
-
 <!-- Start #wpc-weather -->
 <?php echo $wpc_html_container_start; ?>
 

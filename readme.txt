@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap
 Requires at least: 3.5.1
 Tested up to: 3.9.1
-Stable tag: 2.8.1.1
+Stable tag: 2.8.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.8.1.2 =
+* FIX Shortcode position
 = 2.8.1.1 =
 * FIX Flexslider JS/CSS conflict
 = 2.8.1 =

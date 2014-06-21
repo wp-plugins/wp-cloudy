@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.8.1.1
+Version: 2.8.1.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -2020,7 +2020,6 @@ function wpc_css_webfont($attr,$content) {
 add_shortcode("wpc-weather", "wpcloudy_display_weather");
 
 function wpcloudy_display_weather($attr,$content) {
-
 		extract(shortcode_atts(array( 'id' => ''), $attr));
 			$wpc_id 								= $id;
 			$wpcloudy_city 							= get_post_meta($id,'_wpcloudy_city',true);
@@ -2938,16 +2937,23 @@ function wpcloudy_display_weather($attr,$content) {
 		
 		$wpc_theme_files = array('wp-cloudy/content-wpcloudy.php');
 		$wpc_exists_in_theme = locate_template($wpc_theme_files, false);
-		
+					
 		if ( $wpc_exists_in_theme != '' ) {//Bypass dans theme actif
-			require get_template_directory() . '/wp-cloudy/content-wpcloudy.php';
+			ob_start();
+			include get_template_directory() . '/wp-cloudy/content-wpcloudy.php';
+			return ob_get_clean();
 		}
 		elseif ( $wpcloudy_skin == 'theme1' ) {//Theme1 actif
-			require dirname( __FILE__ ) . '/template/content-wpcloudy-theme1.php';
+			ob_start();
+			include dirname( __FILE__ ) . '/template/content-wpcloudy-theme1.php';
+			return ob_get_clean();
 		} 
 		else { //Default
-			require dirname( __FILE__ ) . '/template/content-wpcloudy.php';
-		}			 
+			ob_start();
+			include ( dirname( __FILE__ ) . '/template/content-wpcloudy.php');
+			return ob_get_clean();
+
+		}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
