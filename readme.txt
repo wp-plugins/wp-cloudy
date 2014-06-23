@@ -69,7 +69,6 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 All the answers are on our site (at least we try): http://wpcloudy.com
 
 == Screenshots ==
-More screenshots on our site http://wpcloudy.com/
 1. Create your weather
 2. Display options
 3. Advanced options
