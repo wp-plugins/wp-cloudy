@@ -28,12 +28,13 @@
 		<?php echo $wpc_html_today_sun; ?>
 	<?php echo $wpc_html_today_temp_end; ?>
 	
-	<!-- Current infos: wind, humidity, pressure, cloudiness -->
+	<!-- Current infos: wind, humidity, pressure, cloudiness, precipitation -->
 	<?php echo $wpc_html_infos_start; ?>
 		<?php echo $wpc_html_infos_wind; ?>
 		<?php echo $wpc_html_infos_humidity; ?>
 		<?php echo $wpc_html_infos_pressure; ?>
 		<?php echo $wpc_html_infos_cloudiness; ?>
+		<?php echo $wpc_html_infos_precipitation; ?>
 	<?php echo $wpc_html_infos_end; ?>
 
 

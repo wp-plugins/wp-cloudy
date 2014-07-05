@@ -350,6 +350,14 @@ class wpc_options
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
+        
+        add_settings_field(
+            'wpc_display_precipitation', // ID
+            __("Precipitation?","wpcloudy"), // Title
+            array( $this, 'wpc_display_precipitation_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
 		
 		add_settings_field(
             'wpc_display_hour_forecast', // ID
@@ -1035,6 +1043,22 @@ class wpc_options
 		
 		if (isset($this->options['wpc_display_cloudiness'])) { 
 			esc_attr( $this->options['wpc_display_cloudiness']);
+		}
+    }
+    
+    public function wpc_display_precipitation_callback()
+    {
+		$options = get_option( 'wpc_option_name' );  
+		  
+		$check = isset($options['wpc_display_precipitation']);
+		
+        echo '<input id="wpc_display_precipitation" name="wpc_option_name[wpc_display_precipitation]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_display_precipitation">'. __( 'Display precipitation on all weather?', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_display_precipitation'])) { 
+			esc_attr( $this->options['wpc_display_precipitation']);
 		}
     }
 	

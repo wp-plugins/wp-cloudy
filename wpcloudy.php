@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.8.1.2
+Version: 2.8.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -268,6 +268,7 @@ function wpcloudy_basic($post){
 	$wpcloudy_humidity 				= get_post_meta($post->ID,'_wpcloudy_humidity',true);
 	$wpcloudy_pressure				= get_post_meta($post->ID,'_wpcloudy_pressure',true);
 	$wpcloudy_cloudiness			= get_post_meta($post->ID,'_wpcloudy_cloudiness',true);
+	$wpcloudy_precipitation			= get_post_meta($post->ID,'_wpcloudy_precipitation',true);
 	$wpcloudy_hour_forecast			= get_post_meta($post->ID,'_wpcloudy_hour_forecast',true);
 	$wpcloudy_hour_forecast_nd		= get_post_meta($post->ID,'_wpcloudy_hour_forecast_nd',true);
 	$wpcloudy_temperature_min_max	= get_post_meta($post->ID,'_wpcloudy_temperature_min_max',true);
@@ -405,6 +406,12 @@ function wpcloudy_basic($post){
 					<label for="wpcloudy_cloudiness_meta">
 						<input type="checkbox" name="wpcloudy_cloudiness" id="wpcloudy_cloudiness_meta" value="yes" '. checked( $wpcloudy_cloudiness, 'yes', false ) .' />
 							'. __( 'Cloudiness?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>
+					<label for="wpcloudy_precipitation_meta">
+						<input type="checkbox" name="wpcloudy_precipitation" id="wpcloudy_precipitation_meta" value="yes" '. checked( $wpcloudy_precipitation, 'yes', false ) .' />
+							'. __( 'Precipitation?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p class="temperatures">
@@ -684,6 +691,11 @@ function wpc_save_metabox($post_id){
 		update_post_meta( $post_id, '_wpcloudy_cloudiness', 'yes' );
 	} else {
 		update_post_meta( $post_id, '_wpcloudy_cloudiness', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_precipitation' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_precipitation', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_precipitation', '' );
 	}
 	if( isset( $_POST[ 'wpcloudy_hour_forecast' ] ) ) {
 		update_post_meta( $post_id, '_wpcloudy_hour_forecast', 'yes' );
@@ -1338,6 +1350,34 @@ function get_bypass_display_cloudiness($attr,$content) {
 	}
 	else {
 		return get_display_cloudiness($attr,$content);
+	}
+}
+
+//Bypass Precipitation
+function get_admin_display_precipitation() {
+	$wpc_admin_display_precipitation_option = get_option("wpc_option_name");
+
+	if ( ! empty ( $wpc_admin_display_precipitation_option ) ) {
+		foreach ($wpc_admin_display_precipitation_option as $key => $wpc_admin_display_precipitation_value)
+			$options[$key] = $wpc_admin_display_precipitation_value;
+		if (isset($wpc_admin_display_precipitation_option['wpc_display_precipitation'])) {
+			return $wpc_admin_display_precipitation_option['wpc_display_precipitation'];
+		}
+	}
+};
+
+function get_display_precipitation($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpc_display_precipitation_value = get_post_meta($id,'_wpcloudy_precipitation',true);
+		return $wpc_display_precipitation_value;
+};
+
+function get_bypass_display_precipitation($attr,$content) {
+	if (get_admin_display_precipitation()) {
+		return get_admin_display_precipitation(); 
+	}
+	else {
+		return get_display_precipitation($attr,$content);
 	}
 }
 
@@ -2264,6 +2304,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$time_humidity 			= $myweather_current->humidity[0]['value'];
 			$time_pressure 			= $myweather_current->pressure[0]['value'];
 			$time_cloudiness		= $myweather_current->clouds[0]['value'];
+			$time_precipitation		= $myweather_current->precipitation[0]['value'];
 			$time_temperature		= (ceil($myweather_current->temperature[0]['value']));
 			$time_temperature_min 	= (ceil($myweather_sevendays->forecast[0]->time[0]->temperature[0]['min']));
 			$time_temperature_max 	= (ceil($myweather_sevendays->forecast[0]->time[0]->temperature[0]['max']));
@@ -2504,7 +2545,16 @@ function wpcloudy_display_weather($attr,$content) {
 			$display_cloudiness = '
 				<div class="cloudiness">'. __( 'Cloudiness', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_cloudiness .' %</span></div>
 			';
-			
+			if ($time_precipitation != '') {
+				$display_precipitation = '
+					<div class="precipitation">'. __( 'Precipitation', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_precipitation .' mm</span></div>
+				';
+			}
+			elseif ($time_precipitation == '') {
+				$display_precipitation = '
+					<div class="precipitation">'. __( 'Precipitation', 'wpcloudy' ) .'<span class="wpc-highlight">0 mm</span></div>
+				';
+			}
 			
 			//Hours loop
 			$display_hours_0 = '
@@ -2745,6 +2795,7 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpcloudy_humidity				= 	get_bypass_display_humidity($attr,$content);
 			$wpcloudy_pressure				= 	get_bypass_display_pressure($attr,$content);
 			$wpcloudy_cloudiness			= 	get_bypass_display_cloudiness($attr,$content);
+			$wpcloudy_precipitation			= 	get_bypass_display_precipitation($attr,$content);
 			$wpcloudy_temperature_min_max	=	get_bypass_temp($attr,$content);
 			$wpcloudy_hour_forecast			=	get_bypass_display_hour_forecast($attr,$content);
 			$wpcloudy_hour_forecast_nd		=	get_bypass_display_hour_forecast_nd($attr,$content);
@@ -2794,25 +2845,29 @@ function wpcloudy_display_weather($attr,$content) {
 				$wpc_html_today_temp_end 		.= $display_today_ave_end;
 			}				
 			
-			if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness ) {
+			if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness || $wpcloudy_precipitation ) {
 				
 				$wpc_html_infos_start .= '<div class="infos">';
 
 				if( $wpcloudy_wind ) {
-					$wpc_html_infos_wind 		.= $display_wind;
+					$wpc_html_infos_wind 			.= $display_wind;
 				}
 				
 				if( $wpcloudy_humidity ) {
-					$wpc_html_infos_humidity 	.= $display_humidity;
+					$wpc_html_infos_humidity 		.= $display_humidity;
 				} 
 				
 				if( $wpcloudy_pressure ) {
-					$wpc_html_infos_pressure 	.= $display_pressure;
+					$wpc_html_infos_pressure 		.= $display_pressure;
 				} 
 				
 				if( $wpcloudy_cloudiness ) {
-					$wpc_html_infos_cloudiness 	.= $display_cloudiness;
-				} 
+					$wpc_html_infos_cloudiness 		.= $display_cloudiness;
+				}
+				
+				if( $wpcloudy_precipitation ) {
+					$wpc_html_infos_precipitation 	.= $display_precipitation;
+				}  
 				
 				$wpc_html_infos_end .= '</div>';
 			

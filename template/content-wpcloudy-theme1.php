@@ -8,8 +8,8 @@
 
 
 wp_enqueue_script('jquery');
-wp_enqueue_script( 'flexslider-js');	
-wp_enqueue_style( 'flexslider-css');
+wp_enqueue_script('wpc-flexslider-js');	
+wp_enqueue_style('wpc-flexslider-css');
 
 ?>
 
@@ -40,7 +40,7 @@ wp_enqueue_style( 'flexslider-css');
 	<?php echo $wpc_html_now_end; ?>
 	
 	<div class="wpc-toggle-infos">
-		<!-- Current infos: wind, humidity, pressure, cloudiness -->
+		<!-- Current infos: wind, humidity, pressure, cloudiness, precipitation -->
 		<div class="infos">
 			<div class="wpc-flexslider">
 				<ul class="wpc-slides">
@@ -61,8 +61,9 @@ wp_enqueue_style( 'flexslider-css');
 						<?php echo $wpc_html_infos_cloudiness; ?>
 					</li>
 					<?php } ?>
-					<?php if ( $wpc_html_today_sun ) { ?>
+					<?php if ( $wpc_html_today_sun || $wpc_html_infos_precipitation ) { ?>
 					<li>
+						<?php echo $wpc_html_infos_precipitation; ?>
 						<?php echo $wpc_html_today_sun; ?>	
 					</li>
 					<?php } ?>

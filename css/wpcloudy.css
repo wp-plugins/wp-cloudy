@@ -96,12 +96,12 @@
     display: inline-block;
     width: 100%;
 }
-#wpc-weather .infos .wind, #wpc-weather .infos .humidity, #wpc-weather .infos .pressure, #wpc-weather .infos .cloudiness {
+#wpc-weather .infos .wind, #wpc-weather .infos .humidity, #wpc-weather .infos .pressure, #wpc-weather .infos .cloudiness, #wpc-weather .infos .precipitation {
     display: inline-block;
     float: left;
     margin: 10px 0;
     text-align: center;
-    width: 25%;
+    width: 20%;
 }
 #wpc-weather .today .day {
 	float: left;
