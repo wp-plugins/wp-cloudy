@@ -60,7 +60,22 @@ class wpc_options
 					<span class="wpc-info-version"><?php print_r($wpc_info_version['Version']); ?></span>
 					<div id="wpcloudy-notice">
 						<p><?php _e( 'Not just another WordPress Weather plugin!', 'wpcloudy' ); ?></p>
-						<p class="small"><a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank"><?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?></a></p>
+						<p class="small">
+							<a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank">
+								<div class="dashicons dashicons-wordpress"></div>
+								<?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?>
+							</a>
+							|
+							<a href="http://wpcloudy.com/" target="_blank">
+								<div class="dashicons dashicons-info"></div>
+								<?php _e( 'Plugin website', 'wpcloudy' ); ?>
+							</a>
+							|
+							<a href="http://twitter.com/wpcloudy" target="_blank">
+								<div class="dashicons dashicons-twitter"></div>
+								<?php _e( 'Follow us on Twitter!', 'wpcloudy' ); ?>
+							</a>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -104,7 +119,7 @@ class wpc_options
             
 		            	<?php
 							function wpc_clear_all_cache() {
-						    	if (!isset($_GET['wpc_clear_all_cache_nonce']) || !wp_verify_nonce($_GET['wpc_clear_all_cache_nonce'], 'wpc_clear_all_cache_action')) {
+						    	if (($_GET['wpc_clear_all_cache_nonce'])) {
 							?>
 							<div class="wpcloudy-module-actions">
 								<p>
@@ -143,8 +158,6 @@ class wpc_options
 										
 										array_push( $wpc_cache_query_array, get_the_id());	
 									}
-								} else {
-									// no posts found
 								}
 								/* Restore original Post Data */
 								wp_reset_postdata();
@@ -157,7 +170,7 @@ class wpc_options
 							}
 						};
 						?>
-						<?php echo wpc_clear_all_cache(); ?>    
+						<?php echo wpc_clear_all_cache(); ?>   
 					</div>    
 				</div>
 				

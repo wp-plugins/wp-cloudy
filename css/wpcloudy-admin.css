@@ -202,6 +202,10 @@
 #wpcloudy-header #wpcloudy-clouds #wpcloudy-notice p {
 	font-size: 16px;
 }
+#wpcloudy-header #wpcloudy-clouds #wpcloudy-notice .dashicons {
+	color: #444;
+	text-decoration: none;
+}
 #wpcloudy-header #wpcloudy-clouds #wpcloudy-notice p.small {
 	font-size: 13px;
 }
