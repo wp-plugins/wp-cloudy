@@ -523,6 +523,14 @@ class wpc_options
             'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section           
         );
+        
+        add_settings_field(
+            'wpc_advanced_api_key', // ID
+           __("Open Weather Map API key","wpcloudy"), // Title
+            array( $this, 'wpc_advanced_api_key_callback' ), // Callback
+            'wpc-settings-admin-advanced', // Page
+            'wpc_setting_section_advanced' // Section           
+        );
 		
 		//MAP SECTION =============================================================================
 
@@ -681,6 +689,9 @@ class wpc_options
 		
 		if( !empty( $input['wpc_advanced_cache_time'] ) )
 		$input['wpc_advanced_cache_time'] = sanitize_text_field( $input['wpc_advanced_cache_time'] );
+		
+		if( !empty( $input['wpc_advanced_api'] ) )
+		$input['wpc_advanced_api'] = sanitize_text_field( $input['wpc_advanced_api'] );
 		
 		if( !empty( $input['wpc_map_height'] ) )
 		$input['wpc_map_height'] = sanitize_text_field( $input['wpc_map_height'] );
@@ -1411,6 +1422,15 @@ class wpc_options
 		printf(
 		'<input name="wpc_option_name[wpc_advanced_cache_time]" type="text" value="%s" />',
 		esc_attr( $this->options['wpc_advanced_cache_time'])
+		
+		);
+	}
+	
+	public function wpc_advanced_api_key_callback()
+    {
+		printf(
+		'<input name="wpc_option_name[wpc_advanced_api_key]" type="text" value="%s" />',
+		esc_attr( $this->options['wpc_advanced_api_key'])
 		
 		);
 	}

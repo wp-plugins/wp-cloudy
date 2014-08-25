@@ -199,6 +199,9 @@
     text-indent: 0;
     top: 85px;
 }
+#wpcloudy-header #wpcloudy-clouds #wpcloudy-notice {
+	width: 63%;
+}
 #wpcloudy-header #wpcloudy-clouds #wpcloudy-notice p {
 	font-size: 16px;
 }
