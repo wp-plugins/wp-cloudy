@@ -3,7 +3,7 @@ Contributors: rainbowgeek
 Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.5.1
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: 2.8.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
