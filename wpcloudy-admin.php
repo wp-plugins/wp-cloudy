@@ -143,30 +143,9 @@ class wpc_options
 							</div>
 						
 							<?php
-									
-						        // The Query
-						        $wpc_cache_query = new WP_Query( array(
-									'post_type' => array( 'wpc-weather' )
-								) );
-						
-						        $wpc_cache_query_array = array();
-						
-								// The Loop
-								if ( $wpc_cache_query->have_posts() ) {
-									while ( $wpc_cache_query->have_posts() ) {
-										$wpc_cache_query->the_post();
-										
-										array_push( $wpc_cache_query_array, get_the_id());	
-									}
-								}
-								/* Restore original Post Data */
-								wp_reset_postdata();
-						
-						        foreach ($wpc_cache_query_array as $id) {
-								    delete_transient( "myweather_current_".$id ); 
-								    delete_transient( "myweather_".$id ); 
-									delete_transient( "myweather_sevendays_".$id );
-								} 
+								global $wpdb;
+								$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_myweather%' ");
+								$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_myweather%' ");
 							}
 						};
 						?>
