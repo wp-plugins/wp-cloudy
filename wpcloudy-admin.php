@@ -575,6 +575,14 @@ class wpc_options
             'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
         );	
+        
+        add_settings_field(
+            'wpc_map_mouse_wheel', // ID
+            __("Disable zoom wheel?","wpcloudy"), // Title 
+            array( $this, 'wpc_map_mouse_wheel_callback' ), // Callback
+            'wpc-settings-admin-map', // Page
+            'wpc_setting_section_map' // Section           
+        );
 
         add_settings_field(
             'wpc_map_layers_stations', // ID
@@ -1248,6 +1256,12 @@ class wpc_options
 		echo '<option '; 
 		if ('13' == $selected) echo 'selected="selected"'; 
 		echo ' value="13">'. __( '13 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('14' == $selected) echo 'selected="selected"'; 
+		echo ' value="14">'. __( '14 days', 'wpcloudy' ) .'</option>';
+		echo '<option '; 
+		if ('15' == $selected) echo 'selected="selected"'; 
+		echo ' value="15">'. __( '15 days', 'wpcloudy' ) .'</option>';
 		echo '</select>';
 		
 		if (isset($this->options['wpc_display_forecast_nd'])) { 
@@ -1605,6 +1619,22 @@ class wpc_options
 			esc_attr( $this->options['wpc_map_zoom']);
 		}
 	} 
+	
+	public function wpc_map_mouse_wheel_callback()
+    {
+		$options = get_option( 'wpc_option_name' ); 
+		  
+		$check = isset($options['wpc_map_mouse_wheel']);
+		
+        echo '<input id="wpc_map_mouse_wheel" name="wpc_option_name[wpc_map_mouse_wheel]" type="checkbox"';
+		if ('1' == $check) echo 'checked="yes"'; 
+		echo ' value="1"/>';
+		echo '<label for="wpc_map_mouse_wheel">'. __( 'Disable zoom wheel on all weather?', 'wpcloudy' ) .'</label>';
+		
+		if (isset($this->options['wpc_map_mouse_wheel'])) {
+			esc_attr( $this->options['wpc_map_mouse_wheel']);
+		}
+    }
 	
 	public function wpc_map_layers_stations_callback()
     {

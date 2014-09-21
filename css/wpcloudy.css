@@ -177,7 +177,7 @@
 #wpc-weather .hours .first {
 	margin: 0 6%;
 }
-#wpc-weather .forecast .first, #wpc-weather .forecast .second, #wpc-weather .forecast .third, #wpc-weather .forecast .fourth, #wpc-weather .forecast .fifth, #wpc-weather .forecast .sixth, #wpc-weather .forecast .seventh, #wpc-weather .forecast .eighth, #wpc-weather .forecast .ninth, #wpc-weather .forecast .tenth, #wpc-weather .forecast .eleventh, #wpc-weather .forecast .twelfth, #wpc-weather .forecast .thirteenth {
+#wpc-weather .forecast .first, #wpc-weather .forecast .second, #wpc-weather .forecast .third, #wpc-weather .forecast .fourth, #wpc-weather .forecast .fifth, #wpc-weather .forecast .sixth, #wpc-weather .forecast .seventh, #wpc-weather .forecast .eighth, #wpc-weather .forecast .ninth, #wpc-weather .forecast .tenth, #wpc-weather .forecast .eleventh, #wpc-weather .forecast .twelfth, #wpc-weather .forecast .thirteenth, #wpc-weather .forecast .fourteenth, #wpc-weather .forecast .fifteenth {
 	display:inline-block;
 	width: 100%;
 }

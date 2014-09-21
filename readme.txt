@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 2.8.5
+Stable tag: 2.8.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,8 +80,15 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.8.6 =
+* NEW! 16 days forecast
+* NEW! Option to disable mouse scroll wheel zoom on map
+* INFO Loads JS asynchronously to improve performance
+* FIX Style.css error when loading Map from your own server
+* FIX Map loading from OpenStreetMap
+* FIX Style.css loading twice from OpenStreetMap
 = 2.8.5 =
-* NEW! Use your own custom fields from posts to build automatic weathers (addon Geolocation required)
+* NEW! Use your own custom fields from posts to build automatic weathers (add-on Geolocation required)
 * INFO Support WordPress 4.0 
 * INFO Add WP Cloudy icon to WordPress plugin browser
 * FIX Clear cache when save weather
