@@ -430,6 +430,22 @@ class wpc_options
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
         );
+        
+        add_settings_field(
+            'wpc_display_owm_link', // ID
+			__("Link to OpenWeatherMap?","wpcloudy"), // Title
+            array( $this, 'wpc_display_owm_link_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
+		
+		add_settings_field(
+            'wpc_display_last_update', // ID
+			__("Update date?","wpcloudy"), // Title
+            array( $this, 'wpc_display_last_update_callback' ), // Callback
+            'wpc-settings-admin-display', // Page
+            'wpc_setting_section_display' // Section           
+        );
 		
 		//ADVANCED SECTION=========================================================================
         add_settings_section( 
@@ -1309,6 +1325,40 @@ class wpc_options
 			esc_attr( $this->options['wpc_display_short_days_names']);
 		}
     }
+    
+    public function wpc_display_owm_link_callback()
+    {
+		$options = get_option( 'wpc_option_name' );   
+		
+		$check = isset($options['wpc_display_owm_link']);
+		
+        echo '<input id="wpc_display_owm_link" name="wpc_option_name[wpc_display_owm_link]" type="checkbox"';
+		if ('yes' == $check) echo 'checked="yes"'; 
+		echo ' value="yes"/>';
+		echo '<label for="wpc_display_owm_link">'. __( 'Display link to full weather on OpenWeatherMap?', 'wpcloudy' ) .'</label>';
+		 
+		if (isset($this->options['wpc_display_owm_link'])) {  
+			esc_attr( $this->options['wpc_display_owm_link']);
+		}
+		
+    } 
+    
+    public function wpc_display_last_update_callback()
+    {
+		$options = get_option( 'wpc_option_name' );   
+		
+		$check = isset($options['wpc_display_last_update']);
+		
+        echo '<input id="wpc_display_last_update" name="wpc_option_name[wpc_display_last_update]" type="checkbox"';
+		if ('yes' == $check) echo 'checked="yes"'; 
+		echo ' value="yes"/>';
+		echo '<label for="wpc_display_last_update">'. __( 'Display update date on all weather?', 'wpcloudy' ) .'</label>';
+		 
+		if (isset($this->options['wpc_display_last_update'])) {  
+			esc_attr( $this->options['wpc_display_last_update']);
+		}
+		
+    } 
 	
 	public function wpc_advanced_disable_css3_anims_callback()
     {

@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.8.6
+Version: 2.8.7
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -291,6 +291,8 @@ function wpcloudy_basic($post){
 	$wpcloudy_meta_border_color			= get_post_meta($post->ID,'_wpcloudy_meta_border_color',true);
 	$wpcloudy_custom_css				= get_post_meta($post->ID,'_wpcloudy_custom_css',true);
 	$wpcloudy_size 						= get_post_meta($post->ID,'_wpcloudy_size',true);
+	$wpcloudy_owm_link					= get_post_meta($post->ID,'_wpcloudy_owm_link',true);
+	$wpcloudy_last_update				= get_post_meta($post->ID,'_wpcloudy_last_update',true);
 	$wpcloudy_map 						= get_post_meta($post->ID,'_wpcloudy_map',true);
 	$wpcloudy_map_height				= get_post_meta($post->ID,'_wpcloudy_map_height',true);
 	$wpcloudy_map_opacity				= get_post_meta($post->ID,'_wpcloudy_map_opacity',true);
@@ -503,6 +505,20 @@ function wpcloudy_basic($post){
 					<label for="wpcloudy_short_days_names_no_meta">
 						<input type="radio" name="wpcloudy_short_days_names" id="wpcloudy_short_days_names_no_meta" value="no" '. checked( $wpcloudy_short_days_names, 'no', false ) .' />
 							'. __( 'Normal days names?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				<p>
+					<label for="wpcloudy_owm_link_meta">
+						<input type="checkbox" name="wpcloudy_owm_link" id="wpcloudy_owm_link_meta" value="yes" '. checked( $wpcloudy_owm_link, 'yes', false ) .' />
+						'. __( 'Link to OpenWeatherMap?', 'wpcloudy' ) .'
+					</label>
+				</p>
+				
+				<p>
+					<label for="wpcloudy_last_update_meta">
+						<input type="checkbox" name="wpcloudy_last_update" id="wpcloudy_last_update_meta" value="yes" '. checked( $wpcloudy_last_update, 'yes', false ) .' />
+
+						'. __( 'Update date?', 'wpcloudy' ) .'
 					</label>
 				</p>		
 			</div>
@@ -756,6 +772,16 @@ function wpc_save_metabox($post_id){
 	if(isset($_POST['wpcloudy_size'])) {
 	  update_post_meta($post_id, '_wpcloudy_size', $_POST['wpcloudy_size']);
 	}
+	if( isset( $_POST[ 'wpcloudy_owm_link' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_owm_link', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_owm_link', '' );
+	}
+	if( isset( $_POST[ 'wpcloudy_last_update' ] ) ) {
+		update_post_meta( $post_id, '_wpcloudy_last_update', 'yes' );
+	} else {
+		update_post_meta( $post_id, '_wpcloudy_last_update', '' );
+	}
 	if( isset( $_POST[ 'wpcloudy_map' ] ) ) {
 		update_post_meta( $post_id, '_wpcloudy_map', 'yes' );
 	} else {
@@ -979,6 +1005,58 @@ function get_bypass_forecast_nd($attr,$content) {
 		return get_forecast_nd($attr,$content);
 	}
 }	
+
+//Bypass link to OpenWeatherMap
+function get_admin_display_owm_link() {
+	$wpc_admin_display_owm_link_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_display_owm_link_option ) ) {
+		foreach ($wpc_admin_display_owm_link_option as $key => $wpc_admin_display_owm_link_value)
+			$options[$key] = $wpc_admin_display_owm_link_value;
+		if (isset($wpc_admin_display_owm_link_option['wpc_display_owm_link'])) {
+			return $wpc_admin_display_owm_link_option['wpc_display_owm_link'];
+		}
+	}
+};
+function get_display_owm_link($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpcloudy_display_owm_link_value = get_post_meta($id,'_wpcloudy_owm_link',true);
+		return $wpcloudy_display_owm_link_value;
+};
+
+function get_bypass_owm_link($attr,$content) {
+	if (get_admin_display_owm_link()) {
+		return get_admin_display_owm_link(); 
+	}
+	else {
+		return get_display_owm_link($attr,$content);
+	}
+}
+
+//Bypass display update date
+function get_admin_display_last_udpate() {
+	$wpc_admin_display_last_udpate_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_display_last_udpate_option ) ) {
+		foreach ($wpc_admin_display_last_udpate_option as $key => $wpc_admin_display_last_udpate_value)
+			$options[$key] = $wpc_admin_display_last_udpate_value;
+		if (isset($wpc_admin_display_last_udpate_option['wpc_display_last_update'])) {
+			return $wpc_admin_display_last_udpate_option['wpc_display_last_update'];
+		}
+	}
+};
+function get_display_last_udpate($attr,$content) {
+		extract(shortcode_atts(array( 'id' => ''), $attr));
+		$wpcloudy_display_last_update_value = get_post_meta($id,'_wpcloudy_last_update',true);
+		return $wpcloudy_display_last_update_value;
+};
+
+function get_bypass_last_update($attr,$content) {
+	if (get_admin_display_last_udpate()) {
+		return get_admin_display_last_udpate(); 
+	}
+	else {
+		return get_display_last_udpate($attr,$content);
+	}
+}
 
 //Disables CSS3 animations
 function get_admin_disable_css3_anims() {
@@ -2177,6 +2255,8 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpc_advanced_set_cache_time				= get_admin_cache_time();
 			$wpc_advanced_set_disable_cache 			= get_admin_disable_cache();
 			$wpc_advanced_api_key						= wpc_get_api_key();
+			$wpcloudy_display_owm_link					= get_bypass_owm_link($attr,$content);
+			$wpcloudy_display_last_update				= get_bypass_last_update($attr,$content);
 			
 			//variable declarations
 			$wpcloudy_select_city_name					= null;
@@ -2250,6 +2330,10 @@ function wpcloudy_display_weather($attr,$content) {
 			$wpc_html_temp_unit_metric 					= null;
 			$wpc_html_container_end 					= null;
 			$wpc_html_geolocation						= null;
+			$wpcloudy_owm_link							= null;
+			$wpcloudy_last_update						= null;
+			$wpc_html_owm_link 							= null;
+			$wpc_html_last_update						= null;
 		
 			
 			if (isset($_COOKIE['wpc-posLat'])) {
@@ -2544,6 +2628,9 @@ function wpcloudy_display_weather($attr,$content) {
 			$time_temperature		= (ceil($myweather_current->temperature[0]['value']));
 			$time_temperature_min 	= (ceil($myweather_sevendays->forecast[0]->time[0]->temperature[0]['min']));
 			$time_temperature_max 	= (ceil($myweather_sevendays->forecast[0]->time[0]->temperature[0]['max']));
+			$owm_link 				= '<a href="http://openweathermap.com/city/'.$myweather_current->city[0]['id'].'" target="_blank" title="'.__('Full weather on OpenWeatherMap','wpcloudy').'">'.__('Full weather','wpcloudy').'</a>';	
+			$last_update 			= __('Last update: ','wpcloudy').date("M-j-Y, H:i", strtotime($myweather_current->lastupdate[0]['value']));	
+
 
 			if ($wpcloudy_date_format =='12') {
 				$wpcloudy_date_php_sun 		= 'h:i A';
@@ -3230,6 +3317,13 @@ for ( i = 0, l = c.length; i < l; i++ ) {
 						  }
 						  </style>
 				';
+			}
+			
+			if ($wpcloudy_display_owm_link == 'yes') {
+				$wpc_html_owm_link .= '<div class="wpc-link-owm">'.$owm_link.'</div>';
+			}
+			if ($wpcloudy_display_last_update == 'yes') {
+				$wpc_html_last_update .= '<div class="wpc-last-update">'.$last_update.'</div>';
 			}
 
 		$wpc_html_container_end .= '</div>';

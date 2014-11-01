@@ -111,6 +111,12 @@ wp_enqueue_style('wpc-flexslider-css');
 	<?php echo $wpc_html_css3_anims; ?>
 	<?php echo $wpc_html_temp_unit_metric; ?>
 	<?php echo $wpc_html_temp_unit_imperial; ?>
+	
+	<!-- OWM Link -->
+	<?php echo $wpc_html_owm_link; ?>
+	
+	<!-- OWM Last Update -->
+	<?php echo $wpc_html_last_update; ?>
 
 <!-- End #wpc-weather -->
 <?php echo $wpc_html_container_end; ?>

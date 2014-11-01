@@ -71,6 +71,12 @@
 	
 	<!-- Weather Map -->
 	<?php echo $wpc_html_map; ?>
+	
+	<!-- OWM Link -->
+	<?php echo $wpc_html_owm_link; ?>
+	
+	<!-- OWM Last Update -->
+	<?php echo $wpc_html_last_update; ?>
 		
 	<!-- CSS -->
 	<?php echo $wpc_html_custom_css; ?>
