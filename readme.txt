@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 2.8.7
+Stable tag: 2.8.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.8.8 =
+* FIX Poland language
 = 2.8.7 =
 * NEW! Display date of last update
 * NEW! Display link to full weather (OpenWeatherMap)
