@@ -60,6 +60,19 @@
 #wpc-weather.large .now .climacon:before {
 	font-size:200px;
 }
+#wpc-weather.small .now .iconvault > span:before {
+    font-size: 60px;
+    text-indent: -30px;
+}
+#wpc-weather.medium .now .iconvault > span:before {
+    font-size: 100px;
+    line-height: 100px;
+    margin-bottom: 20px;
+}
+#wpc-weather.large .now .iconvault > span:before {
+	font-size:200px;
+	text-indent: -100px;
+}
 #wpc-weather .now .time_symbol {
 	text-align:center;
 }
@@ -77,6 +90,15 @@
 	width:200px;
 	height:200px;
 	margin-bottom: 20px;
+}
+#wpc-weather.small .now .time_symbol.iconvault {
+    height: 80px;
+}
+#wpc-weather.medium .now .time_symbol.iconvault {
+    height: 120px;
+}
+#wpc-weather.large .now .time_symbol.iconvault {
+    height: 220px;
 }
 #wpc-weather.small .now .time_temperature {
 	font-size:14px;
@@ -170,6 +192,50 @@
 	display: block;
     text-align: center;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+#wpc-weather .hours .symbol {
+    height: 30px;
+    position: relative;
+}
+#wpc-weather .hours .iconvault {
+	font-size:30px;
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	position: absolute;
+}
+#wpc-weather .hours .iconvault2 {
+	font-size:30px;
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	position: absolute;
+}
+#wpc-weather .hours .iconvault3 {
+	font-size:30px;
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	position: absolute;
 }
 
 #wpc-weather .hours .first, #wpc-weather .hours .second, #wpc-weather .hours .third, #wpc-weather .hours .fourth, #wpc-weather .hours .fifth, #wpc-weather .hours .sixth {
@@ -192,6 +258,7 @@
 #wpc-weather .forecast .symbol {
     float: left;
     width: 100px;
+    position: relative;
 }
 #wpc-weather .forecast .temp_min {
     float: right;
@@ -214,6 +281,46 @@
 	display: block;
     text-align: center;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+#wpc-weather .forecast .iconvault {
+	font-size:30px;
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	position: absolute;
+}
+#wpc-weather .forecast .iconvault2 {
+	font-size:30px;
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	position: absolute;
+}
+#wpc-weather .forecast .iconvault3 {
+	font-size:30px;
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	position: absolute;
 }
 #wpc-weather .location_name {
 	font-size:44px;
@@ -239,6 +346,43 @@
 	display: block;
     text-align: center;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+#wpc-weather .now .iconvault:before{
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	font-size: 200px;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+#wpc-weather .now .iconvault2:before{
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	font-size: 200px;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+#wpc-weather .now .iconvault3:before{
+	font-family: 'iconvault';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	font-size: 200px;
+	display: block;
+    text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 #wpc-weather #wpc-map-container {
     width: 100%;
@@ -287,6 +431,36 @@
 	content: "\e000";
 	color:#B5B5B5;
 }
+
+/* sky is clear */
+#wpc-weather .iconvault.w800:before {
+	content: "\f113";
+	color: rgb(255, 165, 0);
+}
+/* few clouds */
+#wpc-weather .iconvault.w801:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+#wpc-weather .iconvault2.w801:before {
+	content: "\f106";
+	color: rgb(204, 204, 204);
+}
+/* scattered clouds */
+#wpc-weather .iconvault.w802:before {
+	content: "\f106";
+	color: rgb(204, 204, 204);
+}
+/* broken clouds */
+#wpc-weather .iconvault.w803:before {
+	content: "\f106";
+	color: rgb(204, 204, 204);
+}
+/* overcast clouds */
+#wpc-weather .iconvault.w804:before {
+	content: "\f106";
+	color: rgb(204, 204, 204);
+}
 /*************************************************************************************************/
 /* Rain																						 	 */
 /*************************************************************************************************/
@@ -326,6 +500,103 @@
 #wpc-weather .climacon.w522:before {
 	content: "\e00c";
 }
+
+/*  light rain */
+#wpc-weather .iconvault.w500:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* moderate rain */
+#wpc-weather .iconvault2.w500:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+#wpc-weather .iconvault3.w500:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* moderate rain */
+#wpc-weather .iconvault.w501:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+#wpc-weather .iconvault2.w501:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+#wpc-weather .iconvault3.w501:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* heavy intensity rain */
+#wpc-weather .iconvault.w502:before {
+	content: "\f107";
+	color: #4681c3;
+}
+#wpc-weather .iconvault2.w502:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* very heavy rain */
+#wpc-weather .iconvault.w503:before {
+	content: "\f107";
+	color: #4681c3;
+}
+#wpc-weather .iconvault2.w503:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+#wpc-weather .iconvault3.w503:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* extreme rain */
+#wpc-weather .iconvault.w504:before {
+	content: "\f107";
+	color: #4681c3;
+}
+/* freezing rain */
+#wpc-weather .iconvault.w511:before {
+	content: "\f107";
+	color: #4681c3;
+}
+#wpc-weather .iconvault2.w511:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+#wpc-weather .iconvault3.w511:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* light intensity shower rain */
+#wpc-weather .iconvault.w520:before {
+	content: "\f104";
+}
+#wpc-weather .iconvault2.w520:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* shower rain */
+#wpc-weather .iconvault.w521:before {
+	content: "\f104";
+}
+#wpc-weather .iconvault2.w521:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+#wpc-weather .iconvault3.w521:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* heavy intensity shower rain */
+#wpc-weather .iconvault.w522:before {
+	content: "\f104";
+}
+#wpc-weather .iconvault2.w522:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+
 /*************************************************************************************************/
 /* Drizzle																					 	 */
 /*************************************************************************************************/
@@ -357,6 +628,42 @@
 #wpc-weather .climacon.w321:before {
 	content: "\e00c";
 }
+
+/* light intensity drizzle */
+#wpc-weather .iconvault.w300:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* drizzle */
+#wpc-weather .iconvault.w301:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* heavy intensity drizzle */
+#wpc-weather .iconvault.w302:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* light intensity drizzle rain */
+#wpc-weather .iconvault.w310:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* drizzle rain */
+#wpc-weather .iconvault.w311:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* heavy intensity drizzle rain */
+#wpc-weather .iconvault.w312:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
+/* shower drizzle */
+#wpc-weather .iconvault.w321:before {
+	content: "\f10a";
+	color: #82b2e4;
+}
 /*************************************************************************************************/
 /* Snow																						 	 */
 /*************************************************************************************************/
@@ -380,6 +687,44 @@
 #wpc-weather .climacon.w621:before {
 	content: "\e018";
 }
+
+/* light snow */
+#wpc-weather .iconvault.w600:before {
+	content: "\f10b";
+	color: #acd3f3;
+}
+#wpc-weather .iconvault2.w600:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* snow */
+#wpc-weather .iconvault.w601:before {
+	content: "\f10b";
+	color: #acd3f3;
+}
+/* heavy snow */
+#wpc-weather .iconvault.w602:before {
+	content: "\f10b";
+	color: #acd3f3;
+}
+#wpc-weather .iconvault2.w602:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* light sleet */
+#wpc-weather .iconvault.w611:before {
+	content: "\f10c";
+	color: #acd3f3;
+}
+#wpc-weather .iconvault2.w611:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* shower snow */
+#wpc-weather .iconvault.w621:before {
+	content: "\f10b";
+	color: #acd3f3;
+}
 /*************************************************************************************************/
 /* Atmosphere																					 */
 /*************************************************************************************************/
@@ -402,6 +747,40 @@
 /* Fog */
 #wpc-weather .climacon.w741:before {
 	content: "\e01b";
+}
+
+/* mist */
+#wpc-weather .iconvault.w701:before {
+	content: "\f108";
+	color: rgb(204, 204, 204);
+}
+#wpc-weather .iconvault2.w701:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* smoke */
+#wpc-weather .iconvault.w711:before {
+	content: "\f108";
+	color: rgb(204, 204, 204);
+}
+/* haze */
+#wpc-weather .iconvault.w721:before {
+	content: "\f108";
+	color: rgb(204, 204, 204);
+}
+/* sand/dust whirls */
+#wpc-weather .iconvault.w731:before {
+	content: "\f108";
+	color: rgb(204, 204, 204);
+}
+#wpc-weather .iconvault2.w731:before {
+	content: "\f101";
+	color: rgb(255, 165, 0);
+}
+/* Fog */
+#wpc-weather .iconvault.w741:before {
+	content: "\f108";
+	color: rgb(204, 204, 204);
 }
 /*************************************************************************************************/
 /* Extreme																					 	 */
@@ -434,8 +813,54 @@
 #wpc-weather .climacon.w906:before {
 	content: "\e012";
 }
+
+/* tornado */
+#wpc-weather .iconvault.w900:before {
+	content: "\f115";
+	color: rgb(204, 204, 204);
+}
+#wpc-weather .iconvault2.w900:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* tropical storm */
+#wpc-weather .iconvault.w901:before {
+	content: "\f115";
+	color: rgb(204, 204, 204);
+}
+#wpc-weather .iconvault2.w901:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* hurricane */
+#wpc-weather .iconvault.w902:before {
+	content: "\f115";
+	color: rgb(204, 204, 204);
+}
+#wpc-weather .iconvault2.w902:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* windy */
+#wpc-weather .iconvault.w905:before {
+	content: "\f10e";
+	color: #acd3f3;
+}
+#wpc-weather .iconvault2.w905:before {
+	content: "\f105";
+	color: #82b2e4;
+}
+/* hail */
+#wpc-weather .iconvault.w906:before {
+	content: "\f10f";
+	color: rgb(204, 204, 204);
+}
+#wpc-weather .iconvault2.w906:before {
+	content: "\f105";
+	color: #82b2e4;
+}
 /*************************************************************************************************/
-/* Thunderstorm																					 	 */
+/* Thunderstorm																				 	 */
 /*************************************************************************************************/
 /* thunderstorm with light rain */
 #wpc-weather .climacon.w200:before {
@@ -476,4 +901,55 @@
 /* thunderstorm with heavy drizzle */
 #wpc-weather .climacon.w200:before {
 	content: "\e025";
+}
+
+/* thunderstorm with light rain */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* thunderstorm with rain */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* thunderstorm with heavy rain */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* light thunderstorm */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* thunderstorm */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* heavy thunderstorm */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* ragged thunderstorm */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* thunderstorm with light drizzle */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* thunderstorm with drizzle */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
+}
+/* thunderstorm with heavy drizzle */
+#wpc-weather .iconvault.w200:before {
+	content: "\f114";
+	color: rgb(255, 165, 0);
 }
