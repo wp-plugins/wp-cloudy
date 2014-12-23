@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.9.1
+Version: 2.9.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -2231,6 +2231,22 @@ function wpc_icons_pack($attr, $content) {
 		}
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Is plugin active
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function wpc_check_active_plugin() {
+	if ( function_exists( 'wpcloudy_skin_styles_db' ) ) {
+		return $wpc_skins_active = '1';
+	}
+	else {
+		return $wpc_skins_active = '2';
+	}
+}
+add_action( 'admin_init', 'wpc_check_active_plugin' );
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Add shortcode Weather
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2891,13 +2907,13 @@ function wpcloudy_display_weather($attr,$content) {
 				';
 			}
 			
-			if ($wpcloudy_icons_pack == 'default' || !is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+			if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2' ) {
 				$display_now_start = '<div class="now">';
 					$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
 					$display_now_time_symbol = '<div class="time_symbol climacon" style="fill:'. wpc_css_text_color($wpcloudy_meta_text_color) .'">'. $time_symbol_svg .'</div>';
 					$display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
 				$display_now_end = '</div>';
-			} elseif ($wpcloudy_icons_pack == 'forecast_font' && is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+			} elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
 				$display_now_start = '<div class="now">';
 					$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
 					$display_now_time_symbol = '<div class="time_symbol iconvault">'. $time_symbol_alt .'</div>';
@@ -2945,7 +2961,7 @@ function wpcloudy_display_weather($attr,$content) {
 			}
 			
 			//Hours loop
-			if ($wpcloudy_icons_pack == 'default' || !is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+			if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
 				$display_hours_0 = '
 						<div class="first">
 							<div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
@@ -2953,7 +2969,7 @@ function wpcloudy_display_weather($attr,$content) {
 							<div class="temperature"><span class="wpc-highlight">'. $hour_temp_0 .'</span></div>
 						</div>
 				';
-			} elseif ($wpcloudy_icons_pack == 'forecast_font' && is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+			} elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
 				$display_hours_0 = '
 						<div class="first">
 							<div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
@@ -2971,7 +2987,7 @@ function wpcloudy_display_weather($attr,$content) {
 			
 			$i=1;
 			while ($i<=5) { 
-				if ($wpcloudy_icons_pack == 'default' || !is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+				if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
 					$display_hours_[$i] = '
 						<div class="'. $wpcloudy_class_hours[$i].'">
 							<div class="hour">'. $hour_time_[$i] .'</div>
@@ -2979,7 +2995,7 @@ function wpcloudy_display_weather($attr,$content) {
 							<div class="temperature">'. $hour_temp_[$i]. '</div>
 						</div>
 					';
-				} elseif ($wpcloudy_icons_pack == 'forecast_font' && is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+				} elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
 					$display_hours_[$i] = '
 						<div class="'. $wpcloudy_class_hours[$i].'">
 							<div class="hour">'. $hour_time_[$i] .'</div>
@@ -3002,7 +3018,7 @@ function wpcloudy_display_weather($attr,$content) {
 			
 			$i=1;
 			while ($i<=15) { 
-				if ($wpcloudy_icons_pack == 'default' || !is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )) {
+				if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
 					$display_forecast_[$i] = '	
 						<div class="'. $wpcloudy_class_days[$i].'">
 							<div class="day">'. $forecast_day_[$i] .'</div>
@@ -3012,7 +3028,7 @@ function wpcloudy_display_weather($attr,$content) {
 						</div>
 					';
 				}
-				elseif ($wpcloudy_icons_pack == 'forecast_font' && is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' )){
+				elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1'){
 					$display_forecast_[$i] = '	
 						<div class="'. $wpcloudy_class_days[$i].'">
 							<div class="day">'. $forecast_day_[$i] .'</div>
@@ -3253,7 +3269,7 @@ for ( i = 0, l = c.length; i < l; i++ ) {
 			<!-- WP Cloudy : WordPress weather plugin - http://wpcloudy.com/ -->
 			<div id="wpc-weather" class="wpc-'.$id.' '. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'; font-family:'. wpc_css_webfont($attr,$content) .'">';
 			
-			if ( is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' ) ) {
+			if ( wpc_check_active_plugin() == '1' ) {
 				wpc_icons_pack($attr,$content);
 			}
 
