@@ -67,3 +67,27 @@ jQuery('.countries.typeahead').typeahead(null, {
   displayKey: 'name',
   source: countries.ttAdapter()
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// States
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var states = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  limit: 10,
+  prefetch: {
+    url: '../wp-content/plugins/wp-cloudy/js/states.json',
+    filter: function(list) {
+      return jQuery.map(list, function(state) { return { name: state }; });
+    }
+  }
+});
+
+states.initialize();
+
+jQuery('.states.typeahead').typeahead(null, {
+  name: 'state',
+  displayKey: 'name',
+  source: states.ttAdapter()
+});
