@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.9.3
+Version: 2.9.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -667,182 +667,185 @@ function wpcloudy_basic($post){
 
 add_action('save_post','wpc_save_metabox');
 function wpc_save_metabox($post_id){
-	if(isset($_POST['wpcloudy_city'])){
-	  update_post_meta($post_id, '_wpcloudy_city', esc_html($_POST['wpcloudy_city']));
-	}
-	if(isset($_POST['wpcloudy_city_name'])){
-	  update_post_meta($post_id, '_wpcloudy_city_name', esc_html($_POST['wpcloudy_city_name']));
-	}
-	if(isset($_POST['wpcloudy_state_name'])){
-	  update_post_meta($post_id, '_wpcloudy_state_name', esc_html($_POST['wpcloudy_state_name']));
-	}
-	if(isset($_POST['wpcloudy_country_code'])){
-	  update_post_meta($post_id, '_wpcloudy_country_code', esc_html($_POST['wpcloudy_country_code']));
-	}
-	if(isset($_POST['wpcloudy_unit'])) {
-	  update_post_meta($post_id, '_wpcloudy_unit', $_POST['wpcloudy_unit']);
-	}
-	if(isset($_POST['wpcloudy_date_format'])) {
-	  update_post_meta($post_id, '_wpcloudy_date_format', $_POST['wpcloudy_date_format']);
-	}
-	if(isset($_POST['wpcloudy_lang'])){
-	  update_post_meta($post_id, '_wpcloudy_lang', esc_html($_POST['wpcloudy_lang']));
-	}
-	if( isset( $_POST[ 'wpcloudy_current_weather' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_current_weather', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_current_weather', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_weather' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_weather', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_weather', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_date_temp' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_date_temp', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_date_temp', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_display_temp_unit' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_display_temp_unit', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_display_temp_unit', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_sunrise_sunset' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_sunrise_sunset', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_sunrise_sunset', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_wind' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_wind', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_wind', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_humidity' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_humidity', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_humidity', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_pressure' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_pressure', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_pressure', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_cloudiness' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_cloudiness', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_cloudiness', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_precipitation' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_precipitation', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_precipitation', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_hour_forecast' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_hour_forecast', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_hour_forecast', '' );
-	}
-	if(isset($_POST['wpcloudy_hour_forecast_nd'])){
-	  update_post_meta($post_id, '_wpcloudy_hour_forecast_nd', esc_html($_POST['wpcloudy_hour_forecast_nd']));
-	}
-	if( isset( $_POST[ 'wpcloudy_temperature_min_max' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_temperature_min_max', $_POST[ 'wpcloudy_temperature_min_max' ] );
-	}
-	if( isset( $_POST[ 'wpcloudy_short_days_names' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_short_days_names', $_POST[ 'wpcloudy_short_days_names' ] );
-	}
-	if( isset( $_POST[ 'wpcloudy_forecast' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_forecast', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_forecast', '' );
-	}
-	if(isset($_POST['wpcloudy_forecast_nd'])){
-	  update_post_meta($post_id, '_wpcloudy_forecast_nd', esc_html($_POST['wpcloudy_forecast_nd']));
-	}
-	if( isset( $_POST[ 'wpcloudy_disable_anims' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_disable_anims', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_disable_anims', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_meta_bg_color' ] ) ) {
-	  update_post_meta( $post_id, '_wpcloudy_meta_bg_color', $_POST[ 'wpcloudy_meta_bg_color' ] );
-	}
-	if( isset( $_POST[ 'wpcloudy_meta_txt_color' ] ) ) {
-	  update_post_meta( $post_id, '_wpcloudy_meta_txt_color', $_POST[ 'wpcloudy_meta_txt_color' ] );
-	}
-	if( isset( $_POST[ 'wpcloudy_meta_border_color' ] ) ) {
-	  update_post_meta( $post_id, '_wpcloudy_meta_border_color', $_POST[ 'wpcloudy_meta_border_color' ] );
-	}
-	if(isset($_POST['wpcloudy_custom_css'])){
-	  update_post_meta($post_id, '_wpcloudy_custom_css', esc_html($_POST['wpcloudy_custom_css']));
-	}
-	if(isset($_POST['wpcloudy_size'])) {
-	  update_post_meta($post_id, '_wpcloudy_size', $_POST['wpcloudy_size']);
-	}
-	if( isset( $_POST[ 'wpcloudy_owm_link' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_owm_link', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_owm_link', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_last_update' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_last_update', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_last_update', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map', '' );
-	}
-	if(isset($_POST['wpcloudy_map_height'])){
-	  update_post_meta($post_id, '_wpcloudy_map_height', esc_html($_POST['wpcloudy_map_height']));
-	}
-	if(isset($_POST['wpcloudy_map_opacity'])) {
-	  update_post_meta($post_id, '_wpcloudy_map_opacity', $_POST['wpcloudy_map_opacity']);
-	}
-	if(isset($_POST['wpcloudy_map_zoom'])) {
-	  update_post_meta($post_id, '_wpcloudy_map_zoom', $_POST['wpcloudy_map_zoom']);
-	}
-	if( isset( $_POST[ 'wpcloudy_map_zoom_wheel' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_zoom_wheel', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_zoom_wheel', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_stations' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_stations', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_stations', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_clouds' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_clouds', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_clouds', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_precipitation' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_precipitation', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_precipitation', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_snow' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_snow', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_snow', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_wind' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_wind', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_wind', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_temperature' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_temperature', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_temperature', '' );
-	}
-	if( isset( $_POST[ 'wpcloudy_map_pressure' ] ) ) {
-		update_post_meta( $post_id, '_wpcloudy_map_pressure', 'yes' );
-	} else {
-		update_post_meta( $post_id, '_wpcloudy_map_pressure', '' );
+	global $post;
+	if ( 'wpc-weather' === $post->post_type) { 
+		if(isset($_POST['wpcloudy_city'])){
+		  update_post_meta($post_id, '_wpcloudy_city', esc_html($_POST['wpcloudy_city']));
+		}
+		if(isset($_POST['wpcloudy_city_name'])){
+		  update_post_meta($post_id, '_wpcloudy_city_name', esc_html($_POST['wpcloudy_city_name']));
+		}
+		if(isset($_POST['wpcloudy_state_name'])){
+		  update_post_meta($post_id, '_wpcloudy_state_name', esc_html($_POST['wpcloudy_state_name']));
+		}
+		if(isset($_POST['wpcloudy_country_code'])){
+		  update_post_meta($post_id, '_wpcloudy_country_code', esc_html($_POST['wpcloudy_country_code']));
+		}
+		if(isset($_POST['wpcloudy_unit'])) {
+		  update_post_meta($post_id, '_wpcloudy_unit', $_POST['wpcloudy_unit']);
+		}
+		if(isset($_POST['wpcloudy_date_format'])) {
+		  update_post_meta($post_id, '_wpcloudy_date_format', $_POST['wpcloudy_date_format']);
+		}
+		if(isset($_POST['wpcloudy_lang'])){
+		  update_post_meta($post_id, '_wpcloudy_lang', esc_html($_POST['wpcloudy_lang']));
+		}
+		if( isset( $_POST[ 'wpcloudy_current_weather' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_current_weather', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_current_weather', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_weather' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_weather', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_weather', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_date_temp' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_date_temp', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_date_temp', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_display_temp_unit' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_display_temp_unit', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_display_temp_unit', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_sunrise_sunset' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_sunrise_sunset', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_sunrise_sunset', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_wind' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_wind', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_wind', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_humidity' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_humidity', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_humidity', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_pressure' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_pressure', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_pressure', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_cloudiness' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_cloudiness', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_cloudiness', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_precipitation' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_precipitation', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_precipitation', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_hour_forecast' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_hour_forecast', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_hour_forecast', '' );
+		}
+		if(isset($_POST['wpcloudy_hour_forecast_nd'])){
+		  update_post_meta($post_id, '_wpcloudy_hour_forecast_nd', esc_html($_POST['wpcloudy_hour_forecast_nd']));
+		}
+		if( isset( $_POST[ 'wpcloudy_temperature_min_max' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_temperature_min_max', $_POST[ 'wpcloudy_temperature_min_max' ] );
+		}
+		if( isset( $_POST[ 'wpcloudy_short_days_names' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_short_days_names', $_POST[ 'wpcloudy_short_days_names' ] );
+		}
+		if( isset( $_POST[ 'wpcloudy_forecast' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_forecast', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_forecast', '' );
+		}
+		if(isset($_POST['wpcloudy_forecast_nd'])){
+		  update_post_meta($post_id, '_wpcloudy_forecast_nd', esc_html($_POST['wpcloudy_forecast_nd']));
+		}
+		if( isset( $_POST[ 'wpcloudy_disable_anims' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_disable_anims', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_disable_anims', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_meta_bg_color' ] ) ) {
+		  update_post_meta( $post_id, '_wpcloudy_meta_bg_color', $_POST[ 'wpcloudy_meta_bg_color' ] );
+		}
+		if( isset( $_POST[ 'wpcloudy_meta_txt_color' ] ) ) {
+		  update_post_meta( $post_id, '_wpcloudy_meta_txt_color', $_POST[ 'wpcloudy_meta_txt_color' ] );
+		}
+		if( isset( $_POST[ 'wpcloudy_meta_border_color' ] ) ) {
+		  update_post_meta( $post_id, '_wpcloudy_meta_border_color', $_POST[ 'wpcloudy_meta_border_color' ] );
+		}
+		if(isset($_POST['wpcloudy_custom_css'])){
+		  update_post_meta($post_id, '_wpcloudy_custom_css', esc_html($_POST['wpcloudy_custom_css']));
+		}
+		if(isset($_POST['wpcloudy_size'])) {
+		  update_post_meta($post_id, '_wpcloudy_size', $_POST['wpcloudy_size']);
+		}
+		if( isset( $_POST[ 'wpcloudy_owm_link' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_owm_link', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_owm_link', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_last_update' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_last_update', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_last_update', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map', '' );
+		}
+		if(isset($_POST['wpcloudy_map_height'])){
+		  update_post_meta($post_id, '_wpcloudy_map_height', esc_html($_POST['wpcloudy_map_height']));
+		}
+		if(isset($_POST['wpcloudy_map_opacity'])) {
+		  update_post_meta($post_id, '_wpcloudy_map_opacity', $_POST['wpcloudy_map_opacity']);
+		}
+		if(isset($_POST['wpcloudy_map_zoom'])) {
+		  update_post_meta($post_id, '_wpcloudy_map_zoom', $_POST['wpcloudy_map_zoom']);
+		}
+		if( isset( $_POST[ 'wpcloudy_map_zoom_wheel' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_zoom_wheel', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_zoom_wheel', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_stations' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_stations', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_stations', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_clouds' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_clouds', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_clouds', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_precipitation' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_precipitation', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_precipitation', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_snow' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_snow', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_snow', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_wind' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_wind', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_wind', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_temperature' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_temperature', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_temperature', '' );
+		}
+		if( isset( $_POST[ 'wpcloudy_map_pressure' ] ) ) {
+			update_post_meta( $post_id, '_wpcloudy_map_pressure', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_map_pressure', '' );
+		}
 	}
 }
 

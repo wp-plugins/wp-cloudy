@@ -728,7 +728,7 @@ class wpc_options
     
     public function print_section_info_support()
     {
-        print __('', 'wpcloudy');
+        print __('&nbsp;', 'wpcloudy');
     }
 
     /** 
