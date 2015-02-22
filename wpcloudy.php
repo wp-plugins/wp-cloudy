@@ -3,9 +3,9 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.9.4.1
+Version: 2.9.4.3
 Author: Benjamin DENIS
-Author URI: http://wpcloudy.com/
+Author URI: https://wpcloudy.com/
 License: GPLv2
 */
 
@@ -39,6 +39,8 @@ function weather_deactivation() {
 register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
+
+define( 'WPCLOUDY_VERSION', '2.9.4.2' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Shortcut settings page
@@ -3275,11 +3277,11 @@ for ( i = 0, l = c.length; i < l; i++ ) {
 			$wpcloudy_map 					= 	get_bypass_map($attr,$content);			
 			$wpcloudy_skin 				    =   get_post_meta($id,'_wpcloudy_skin',true);
 			$wpcloudy_css3_anims			=	get_bypass_disable_css3_anims($attr,$content);
-			$wpcloudy_map_js 				= 	get_admin_map_js();
-			//$wpc_info_version 				=	get_plugin_data( plugin_dir_path( __FILE__ ).'/wpcloudy.php');			
+			$wpcloudy_map_js 				= 	get_admin_map_js();		
+
 			
 			$wpc_html_container_start = '
-			<!-- WP Cloudy : WordPress weather plugin - http://wpcloudy.com/ -->
+			<!-- WP Cloudy : WordPress weather plugin v'.WPCLOUDY_VERSION.' - http://wpcloudy.com/ -->
 			<div id="wpc-weather" class="wpc-'.$id.' '. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'; font-family:'. wpc_css_webfont($attr,$content) .'">';
 			
 			if ( wpc_check_active_plugin() == '1' ) {
