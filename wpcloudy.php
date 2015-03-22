@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 2.9.4.3
+Version: 2.9.5
 Author: Benjamin DENIS
 Author URI: https://wpcloudy.com/
 License: GPLv2
@@ -1413,8 +1413,8 @@ function get_admin_display_humidity() {
 	if ( ! empty ( $wpc_admin_display_humidity_option ) ) {
 		foreach ($wpc_admin_display_humidity_option as $key => $wpc_admin_display_humidity_value)
 			$options[$key] = $wpc_admin_display_humidity_value;
-		if (isset($wpc_admin_display_humidity_option['wpc_display_current_weather'])) {
-			return $wpc_admin_display_humidity_option['wpc_display_current_weather'];
+		if (isset($wpc_admin_display_humidity_option['wpc_display_humidity'])) {
+			return $wpc_admin_display_humidity_option['wpc_display_humidity'];
 		}
 	}
 };

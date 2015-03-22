@@ -4,7 +4,7 @@ Donate link: https://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 2.9.4.3
+Stable tag: 2.9.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 2.9.5 =
+* FIX Humidity display
 = 2.9.4.3 =
 * INFO Adding Italian PO/MO translation (thanks to <a href="www.tosolini.info" target="_blank">www.tosolini.info</a>)
 = 2.9.4.2 =
