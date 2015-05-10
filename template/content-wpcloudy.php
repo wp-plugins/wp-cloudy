@@ -4,9 +4,11 @@
  *
  */
 ?>
+<div class="wpc-loading-spinner" style="display:none">
+	<img src="<?php echo plugins_url( 'img/ajax-loader.gif', dirname(__FILE__)); ?>" alt="loader"/>
+</div>
 <!-- Start #wpc-weather -->
 <?php echo $wpc_html_container_start; ?>
-
 	<!-- Geolocation Add-on -->
 	<?php echo $wpc_html_geolocation; ?>
 	
@@ -22,9 +24,6 @@
 	<!-- Today -->
 	<?php echo $wpc_html_today_temp_start; ?>
 		<?php echo $wpc_html_today_temp_day; ?>
-		<?php echo $wpc_html_today_time_temp_min; ?>
-		<?php echo $wpc_html_today_time_temp_max; ?>
-		<?php echo $wpc_html_today_ave_time_ave; ?>
 		<?php echo $wpc_html_today_sun; ?>
 	<?php echo $wpc_html_today_temp_end; ?>
 	
@@ -46,7 +45,7 @@
 				
 				echo $display_hours_0;
 				
-				for ($i = 0; $i < $wpcloudy_hour_forecast_nd; $i++) {
+				for ($i = 0; $i < $wpcloudy_hour_forecast_nd -1; $i++) {
 					echo $wpc_html_hour[$i];
 				};
 				

@@ -12,7 +12,9 @@ wp_enqueue_script('wpc-flexslider-js');
 wp_enqueue_style('wpc-flexslider-css');
 
 ?>
-
+<div class="wpc-loading-spinner" style="display:none">
+	<img src="<?php echo plugins_url( 'img/ajax-loader.gif', dirname(__FILE__)); ?>" alt="loader"/>
+</div>
 <!-- Start #wpc-weather -->
 <?php echo $wpc_html_container_start; ?>
 
@@ -44,12 +46,10 @@ wp_enqueue_style('wpc-flexslider-css');
 		<div class="infos">
 			<div class="wpc-flexslider">
 				<ul class="wpc-slides">
-					<?php if ( $wpc_html_today_time_temp_min || $wpc_html_today_time_temp_max || $wpc_html_today_ave_time_ave ) { ?>
+					<?php if ( $wpc_html_today_temp_day ) { ?>
 					<li>
 						<?php echo $wpc_html_today_temp_start; ?>
-						<?php echo $wpc_html_today_time_temp_min; ?>
-						<?php echo $wpc_html_today_time_temp_max; ?>
-						<?php echo $wpc_html_today_ave_time_ave; ?>
+						<?php echo $wpc_html_today_temp_day; ?>
 						<?php echo $wpc_html_today_temp_end; ?>
 					</li>
 					<?php } ?>

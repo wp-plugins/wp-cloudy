@@ -487,3 +487,33 @@
 #wpc-weather .climacon.w200:before {
 	content: "\e025";
 }
+
+/*************************************************************************************************/
+/* Responsive																				 	 */
+/*************************************************************************************************/
+@media screen and (max-width: 767px) {
+	#wpc-weather .infos .cloudiness, #wpc-weather .infos .humidity, #wpc-weather .infos .precipitation, #wpc-weather .infos .pressure, #wpc-weather .infos .wind {
+		width: 100%;
+	}
+	#wpc-weather .hours .first, #wpc-weather .hours .second, #wpc-weather .hours .third, #wpc-weather .hours .fourth, #wpc-weather .hours .fifth, #wpc-weather .hours .sixth {
+	    display: inline-block;
+	    margin: 10px 0;
+	    width: 100%;
+	}
+	#wpc-weather .forecast .day {
+	    width: inherit;
+	}
+	#wpc-weather .forecast .symbol {
+	    width: auto;
+	}
+	#wpc-weather .forecast .temp_max {
+	    float: right;
+    	text-align: right;
+	}
+	#wpc-weather .forecast .temp_min {
+	    margin-right: 0;
+	    text-align: right;
+	    width: auto;
+	    margin-left: 10px;
+	}
+}

@@ -1,4 +1,9 @@
 <?php
+// To prevent calling the plugin directly
+if ( !function_exists( 'add_action' ) ) {
+    echo 'Please don&rsquo;t call the plugin directly. Thanks :)';
+    exit;
+}
 
 class wpc_options
 {
@@ -119,7 +124,7 @@ class wpc_options
             
 		            	<?php
 							function wpc_clear_all_cache() {
-						    	if (($_GET['wpc_clear_all_cache_nonce'])) {
+						    	if (isset($_GET['wpc_clear_all_cache_nonce'])) {
 							?>
 							<div class="wpcloudy-module-actions">
 								<p>
@@ -385,7 +390,7 @@ class wpc_options
 		
 		add_settings_field(
             'wpc_display_temperature_min_max', // ID
-			__("Today date + Min-Max temperatures","wpcloudy"), // Title
+			__("Today date + current temperature","wpcloudy"), // Title
             array( $this, 'wpc_display_temperature_min_max_callback' ), // Callback
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
@@ -1171,27 +1176,18 @@ class wpc_options
 	
 	public function wpc_display_temperature_min_max_callback()
     {
-		$options = get_option( 'wpc_option_name' );    
-		 
-		$check = $options['wpc_display_temperature_min_max'];
-		
-        echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
-		if ('yes' == $check) echo 'checked="yes"'; 
-		echo ' value="yes"/>';
-		
-		echo '<label for="wpc_display_temperature_min_max">'. __( 'Display Today date + Min-Max temperatures on all weather?', 'wpcloudy' ) .'</label>';
-		
-		echo '<br><br>';
-		
-		echo '<input id="wpc_display_temperature_average" name="wpc_option_name[wpc_display_temperature_min_max]" type="radio"';
-		if ('no' == $check) echo 'checked="yes"'; 
-		echo ' value="no"/>';
-		
-		echo '<label for="wpc_display_temperature_average">'. __( 'Display Today date + average temperature on all weather?', 'wpcloudy' ) .'</label>';
-		
-		if (isset($this->options['wpc_display_temperature_min_max'])) {
-			esc_attr( $this->options['wpc_display_temperature_min_max']);
-		}
+        $options = get_option( 'wpc_option_name' );   
+        
+        $check = isset($options['wpc_display_temperature_min_max']);
+        
+        echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="checkbox"';
+        if ('1' == $check) echo 'checked="yes"'; 
+        echo ' value="1"/>';
+        echo '<label for="wpc_display_temperature_min_max">'. __( 'Display Today date on all weather?', 'wpcloudy' ) .'</label>';
+        
+        if (isset($this->options['wpc_display_temperature_min_max'])) {
+            esc_attr( $this->options['wpc_display_temperature_min_max']);
+        }
     }
 	
 	public function wpc_display_forecast_callback()

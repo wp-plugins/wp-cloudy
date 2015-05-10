@@ -3,8 +3,8 @@ Contributors: rainbowgeek
 Donate link: https://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 2.9.5.1
+Tested up to: 4.2
+Stable tag: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,16 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
+= 3.0 =
+* NEW AJAX!
+* NEW Responsive design (yeah finally!)
+* INFO Huge performance improvements
+* FIX Days names can now be translated via PO/MO files (huge request!)
+* FIX Undefined index wpc_clear_all_cache_nonce
+* FIX Remove WP Cloudy in WordPress menus
+* FIX Undefined offset in hours forecast
+* INFO Increase security
+* INFO Remove average/min-max temperature, replaced by current temperature (because datas from OWM are totally wrong)
 = 2.9.5.1 =
 * FIX Dashboard font for Skins Add-on
 * FIX Minify CSS
