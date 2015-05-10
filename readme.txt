@@ -90,6 +90,7 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 = 3.0 =
 * NEW AJAX!
 * NEW Responsive design (yeah finally!)
+* INFO Compatible with WP-Rocket, premium cache plugin
 * INFO Huge performance improvements
 * FIX Days names can now be translated via PO/MO files (huge request!)
 * FIX Undefined index wpc_clear_all_cache_nonce
