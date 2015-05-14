@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.0
+Version: 3.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -1085,7 +1085,9 @@ function wpc_get_owm_feeds($attr,$content) {
       $wpcloudy_hour_forecast_nd    				= get_bypass_display_hour_forecast_nd($attr,$content);
       $wpcloudy_forecast        					= get_bypass_display_forecast($attr,$content);
       $wpcloudy_forecast_nd     					= get_bypass_forecast_nd($attr,$content);
-      
+      $wpcloudy_map           						= get_bypass_map($attr,$content); 
+      $wpcloudy_map_js        						= get_admin_map_js();   
+
       //variable declarations
       $wpcloudy_select_city_name          			= null;
       $display_today_min_max_day          			= null;
@@ -1859,204 +1861,204 @@ function wpc_get_owm_feeds($attr,$content) {
 	   }
       
       //Map
-      
-      if ($wpcloudy_map_zoom_wheel == 'yes') {
-        $wpcloudy_map_zoom_wheel = 'var i, l, c = map.getControlsBy( "zoomWheelEnabled", true );
-for ( i = 0, l = c.length; i < l; i++ ) {
-    c[i].disableZoomWheel();
-}';
-      }
-      
-      if( $wpcloudy_map_stations ) {
-        $display_map_stations         = 'var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");';
-        $display_map_stations_layers      = 'stations,';
-      }
-      else {
-        $display_map_stations         = '';
-        $display_map_stations_layers      = '';
-      };
-      if( $wpcloudy_map_clouds ) {
-        $display_map_clouds         = 'var layer_cloud = new OpenLayers.Layer.XYZ(
-                              "clouds",
-                                "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
-                                {
-                                  isBaseLayer: false,
-                                  opacity: '. $wpcloudy_map_opacity .',
-                                  sphericalMercator: true
-                                }
-                              );
-                            ';
-        $display_map_clouds_layers        = 'layer_cloud,';
-      }
-      else {
-        $display_map_clouds           = '';
-        $display_map_clouds_layers        = '';
-      };
-      if( $wpcloudy_map_precipitation ) {
-        $display_map_precipitation        = 'var layer_precipitation = new OpenLayers.Layer.XYZ(
-                              "precipitation",
-                                "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
-                                {
-                                  isBaseLayer: false,
-                                  opacity: '. $wpcloudy_map_opacity .',
-                                  sphericalMercator: true
-                                }
-                              );
-                            ';
-        $display_map_precipitation_layers   = 'layer_precipitation,';
-      }
-      else {
-        $display_map_precipitation        = '';
-        $display_map_precipitation_layers     = '';
-      };
-      if( $wpcloudy_map_snow ) {
-        $display_map_snow           = 'var layer_snow = new OpenLayers.Layer.XYZ(
-                              "snow",
-                                "http://${s}.tile.openweathermap.org/map/snow/${z}/${x}/${y}.png", 
-                                {
-                                  isBaseLayer: false,
-                                  opacity: '. $wpcloudy_map_opacity .',
-                                  sphericalMercator: true
-                                }
-                              );
-                            ';
-        $display_map_snow_layers        = 'layer_snow,';
-      }
-      else {
-        $display_map_snow           = '';
-        $display_map_snow_layers        = '';
-      };
-      if( $wpcloudy_map_wind ) {
-        $display_map_wind             = 'var layer_wind = new OpenLayers.Layer.XYZ(
-                              "wind",
-                                "http://${s}.tile.openweathermap.org/map/wind/${z}/${x}/${y}.png",
-                                {
-                                  isBaseLayer: false,
-                                  opacity: '. $wpcloudy_map_opacity .',
-                                  sphericalMercator: true
-                                }
-                              );
-                            ';
-        $display_map_wind_layers        = 'layer_wind,';
-      }
-      else {
-        $display_map_wind           = '';
-        $display_map_wind_layers        = '';
-      };
-      if( $wpcloudy_map_temperature ) {
-        $display_map_temperature        = 'var layer_temp = new OpenLayers.Layer.XYZ(
-                              "temp",
-                                "http://${s}.tile.openweathermap.org/map/temp/${z}/${x}/${y}.png",
-                                {
-                                  isBaseLayer: false,
-                                  opacity: '. $wpcloudy_map_opacity .',
-                                  sphericalMercator: true
-                                }
-                              );
-                            ';
-        $display_map_temperature_layers     = 'layer_temp,';
-      }
-      else {
-        $display_map_temperature        = '';
-        $display_map_temperature_layers     = '';
-      };
-      if( $wpcloudy_map_pressure ) {
-        $display_map_pressure         = 'var layer_pressure = new OpenLayers.Layer.XYZ(
-                              "pressure",
-                                "http://${s}.tile.openweathermap.org/map/pressure/${z}/${x}/${y}.png",
-                                {
-                                  isBaseLayer: false,
-                                  opacity: '. $wpcloudy_map_opacity .',
-                                  sphericalMercator: true
-                                }
-                              );
-                            ';
-        $display_map_pressure_layers      = 'layer_pressure,';
-      }
-      else {
-        $display_map_pressure           = '';
-        $display_map_pressure_layers      = '';
-      };
-      
-      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) { 
+      if ($wpcloudy_map == 'yes') {
+	      if ($wpcloudy_map_zoom_wheel == 'yes') {
+	        $wpcloudy_map_zoom_wheel = 'var i, l, c = map.getControlsBy( "zoomWheelEnabled", true );
+	for ( i = 0, l = c.length; i < l; i++ ) {
+	    c[i].disableZoomWheel();
+	}';
+	      }
+	      
+	      if( $wpcloudy_map_stations ) {
+	        $display_map_stations         = 'var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");';
+	        $display_map_stations_layers      = 'stations,';
+	      }
+	      else {
+	        $display_map_stations         = '';
+	        $display_map_stations_layers      = '';
+	      };
+	      if( $wpcloudy_map_clouds ) {
+	        $display_map_clouds         = 'var layer_cloud = new OpenLayers.Layer.XYZ(
+	                              "clouds",
+	                                "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_clouds_layers        = 'layer_cloud,';
+	      }
+	      else {
+	        $display_map_clouds           = '';
+	        $display_map_clouds_layers        = '';
+	      };
+	      if( $wpcloudy_map_precipitation ) {
+	        $display_map_precipitation        = 'var layer_precipitation = new OpenLayers.Layer.XYZ(
+	                              "precipitation",
+	                                "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_precipitation_layers   = 'layer_precipitation,';
+	      }
+	      else {
+	        $display_map_precipitation        = '';
+	        $display_map_precipitation_layers     = '';
+	      };
+	      if( $wpcloudy_map_snow ) {
+	        $display_map_snow           = 'var layer_snow = new OpenLayers.Layer.XYZ(
+	                              "snow",
+	                                "http://${s}.tile.openweathermap.org/map/snow/${z}/${x}/${y}.png", 
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_snow_layers        = 'layer_snow,';
+	      }
+	      else {
+	        $display_map_snow           = '';
+	        $display_map_snow_layers        = '';
+	      };
+	      if( $wpcloudy_map_wind ) {
+	        $display_map_wind             = 'var layer_wind = new OpenLayers.Layer.XYZ(
+	                              "wind",
+	                                "http://${s}.tile.openweathermap.org/map/wind/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_wind_layers        = 'layer_wind,';
+	      }
+	      else {
+	        $display_map_wind           = '';
+	        $display_map_wind_layers        = '';
+	      };
+	      if( $wpcloudy_map_temperature ) {
+	        $display_map_temperature        = 'var layer_temp = new OpenLayers.Layer.XYZ(
+	                              "temp",
+	                                "http://${s}.tile.openweathermap.org/map/temp/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_temperature_layers     = 'layer_temp,';
+	      }
+	      else {
+	        $display_map_temperature        = '';
+	        $display_map_temperature_layers     = '';
+	      };
+	      if( $wpcloudy_map_pressure ) {
+	        $display_map_pressure         = 'var layer_pressure = new OpenLayers.Layer.XYZ(
+	                              "pressure",
+	                                "http://${s}.tile.openweathermap.org/map/pressure/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_pressure_layers      = 'layer_pressure,';
+	      }
+	      else {
+	        $display_map_pressure           = '';
+	        $display_map_pressure_layers      = '';
+	      };
+	      
+	      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) { 
 
-        $wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
-        $wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
-      
-      }
-      
-      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' ) { 
-        $wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
-        $wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
-      }
-      
-      else {
-        $wpcloudy_map_lat = $location_latitude;
-        $wpcloudy_map_lon = $location_longitude;
-      }
-      
-      $display_map = '        
-        <div id="wpc-map-container">  
-          <div id="wpc-map" style="height: '. $wpcloudy_map_height .'px"></div>
-        </div>
-        <script type="text/javascript">
-          window.onload = function init() {
-            //Center of map
-            var lat = '. $wpcloudy_map_lat .'; 
-            var lon = '. $wpcloudy_map_lon .';
-            var lonlat = new OpenLayers.LonLat(lon, lat);
-              var map = new OpenLayers.Map("wpc-map");
-            // Create overlays
-            //  OSM
-            var mapnik = new OpenLayers.Layer.OSM();
-            
-            '. $wpcloudy_map_zoom_wheel .'
-            
-            // Stations
-            '. $display_map_stations .'
+	        $wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
+	        $wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
+	      
+	      }
+	      
+	      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' ) { 
+	        $wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
+	        $wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
+	      }
+	      
+	      else {
+	        $wpcloudy_map_lat = $location_latitude;
+	        $wpcloudy_map_lon = $location_longitude;
+	      }
+	      
+	      $display_map = '        
+	        <div id="wpc-map-container">  
+	          <div id="wpc-map" style="height: '. $wpcloudy_map_height .'px"></div>
+	        </div>
+	        <script type="text/javascript">
+	        	jQuery(document).ready( function() {
+	            //Center of map
+	            var lat = '. $wpcloudy_map_lat .'; 
+	            var lon = '. $wpcloudy_map_lon .';
+	            var lonlat = new OpenLayers.LonLat(lon, lat);
+	              var map = new OpenLayers.Map("wpc-map");
+	            // Create overlays
+	            //  OSM
+	            var mapnik = new OpenLayers.Layer.OSM();
+	            
+	            '. $wpcloudy_map_zoom_wheel .'
+	            
+	            // Stations
+	            '. $display_map_stations .'
 
-            // Current weather
-            var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
-            
-            // Clouds
-            '. $display_map_clouds .'
-            
-            // Precipitation
-            '. $display_map_precipitation .'
-            
-            // Snow
-            '. $display_map_snow .'
-            
-            // Wind
-            '. $display_map_wind .'
-            
-            // Temperature
-            '. $display_map_temperature .'
-            
-            // Pressure
-            '. $display_map_pressure .'
-            
-            //Addind maps
-            map.addLayers([
-            mapnik, 
-            '. $display_map_stations_layers .' 
-            '. $display_map_clouds_layers .' 
-            '. $display_map_precipitation_layers .' 
-            '. $display_map_snow_layers .' 
-            '. $display_map_wind_layers .' 
-            '. $display_map_temperature_layers .' 
-            '. $display_map_pressure_layers .' 
-            city]);
-            map.setCenter(
-              new OpenLayers.LonLat(lon, lat).transform(
-                new OpenLayers.Projection("EPSG:4326"),
-                map.getProjectionObject()
-              ), '. $wpcloudy_map_zoom .'
-            );    
-          }
-        </script>
-      ';
-      
+	            // Current weather
+	            var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
+	            
+	            // Clouds
+	            '. $display_map_clouds .'
+	            
+	            // Precipitation
+	            '. $display_map_precipitation .'
+	            
+	            // Snow
+	            '. $display_map_snow .'
+	            
+	            // Wind
+	            '. $display_map_wind .'
+	            
+	            // Temperature
+	            '. $display_map_temperature .'
+	            
+	            // Pressure
+	            '. $display_map_pressure .'
+	            
+	            //Addind maps
+	            map.addLayers([
+	            mapnik, 
+	            '. $display_map_stations_layers .' 
+	            '. $display_map_clouds_layers .' 
+	            '. $display_map_precipitation_layers .' 
+	            '. $display_map_snow_layers .' 
+	            '. $display_map_wind_layers .' 
+	            '. $display_map_temperature_layers .' 
+	            '. $display_map_pressure_layers .' 
+	            city]);
+	            map.setCenter(
+	              new OpenLayers.LonLat(lon, lat).transform(
+	                new OpenLayers.Projection("EPSG:4326"),
+	                map.getProjectionObject()
+	              ), '. $wpcloudy_map_zoom .'
+	            );    
+	          });
+	        </script>
+	      ';
+      }
       $wpcloudy_current_weather   						=   get_bypass_display_current_weather($attr,$content);
       $wpcloudy_weather       							=   get_bypass_display_weather($attr,$content);
       $wpcloudy_date_temp       						=   get_bypass_display_date_temp($attr,$content);
@@ -2067,10 +2069,10 @@ for ( i = 0, l = c.length; i < l; i++ ) {
       $wpcloudy_precipitation     						=   get_bypass_display_precipitation($attr,$content);
       $wpcloudy_temperature_min_max 					= 	get_bypass_temp($attr,$content);
       $wpcloudy_size          							= 	get_bypass_size($attr,$content);
-      $wpcloudy_map           							=   get_bypass_map($attr,$content);     
+        
       $wpcloudy_skin            						=   get_post_meta($id,'_wpcloudy_skin',true);
       $wpcloudy_css3_anims      						= 	get_bypass_disable_css3_anims($attr,$content);
-      $wpcloudy_map_js        							=   get_admin_map_js(); 
+
 
 
 
@@ -2155,22 +2157,22 @@ for ( i = 0, l = c.length; i < l; i++ ) {
         $wpc_html_forecast_end .= '</div>';
 
       }
-      
-      if (isset($wpcloudy_map)) {
+
+      if ($wpcloudy_map =='yes') {
       
         if ($wpcloudy_map_js == '0') { //Webhost
         
-          wp_register_script("openlayers_js", plugins_url('js/OpenLayers.js', __FILE__), array(), "1.0", false);
-          wp_register_script("owm_js", plugins_url('js/OWM.OpenLayers.1.3.4.js#async', __FILE__), array(), "1.0", false); 
-          wp_register_style("openlayers_css", plugins_url('css/wpcloudy-map.min.css', __FILE__), array(), "1.0", false);
+          wp_register_script("openlayers_js", plugins_url('js/OpenLayers.js', __FILE__), array('wpc-ajax'), "1.0", false);
+          wp_register_script("owm_js", plugins_url('js/OWM.OpenLayers.1.3.6.js#async', __FILE__), array('openlayers_js'), "1.0", false); 
+          wp_register_style("openlayers_css", plugins_url('css/wpcloudy-map.min.css', __FILE__));
           wp_enqueue_script("openlayers_js");     
           wp_enqueue_script("owm_js");
           wp_enqueue_style("openlayers_css");
 
         }
         if ($wpcloudy_map_js == '1') { //OpenWeatherMap
-          wp_register_script("openlayers_js_owm", "http://openlayers.org/api/OpenLayers.js", array(), "1.0", false);
-          wp_register_script("owm_js_owm", "http://openweathermap.org/js/OWM.OpenLayers.1.3.4.js", array(), "1.0", false);  
+          wp_register_script("openlayers_js_owm", "http://openlayers.org/api/OpenLayers.js", array('wpc-ajax'), "1.0", false);
+          wp_register_script("owm_js_owm", "http://openweathermap.org/js/OWM.OpenLayers.1.3.6.js", array('openlayers_js_owm'), "1.0", false);  
           wp_enqueue_script("openlayers_js_owm");     
           wp_enqueue_script("owm_js_owm");
         } 
