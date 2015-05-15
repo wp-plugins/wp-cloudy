@@ -45,13 +45,6 @@ wp_enqueue_style('wpc-flexslider-css');
 			<?php echo $wpc_html_weather; ?>
 			<div class="wpc-flexslider">
 				<ul class="wpc-slides">
-					<?php if ( $wpc_html_today_temp_day ) { ?>
-					<li>
-						<?php echo $wpc_html_today_temp_start; ?>
-						<?php echo $wpc_html_today_temp_day; ?>
-						<?php echo $wpc_html_today_temp_end; ?>
-					</li>
-					<?php } ?>
 					<?php if ( $wpc_html_infos_wind || $wpc_html_infos_humidity || $wpc_html_infos_pressure || $wpc_html_infos_cloudiness ) { ?>
 					<li>
 						<?php echo $wpc_html_infos_wind; ?>
@@ -78,7 +71,7 @@ wp_enqueue_style('wpc-flexslider-css');
 					
 					echo $display_hours_0;
 					
-					for ($i = 0; $i < $wpcloudy_hour_forecast_nd; $i++) {
+					for ($i = 0; $i < $wpcloudy_hour_forecast_nd -1; $i++) {
 						echo $wpc_html_hour[$i];
 					};
 					
