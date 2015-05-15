@@ -191,7 +191,7 @@ class wpc_options
 					</div>
 	
 					<div class="wpcloudy-module-actions">
-						<a target="_blank" href="http://wpcloudy.com/skins" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Skins']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
+						<a target="_blank" href="http://www.wpcloudy.com/weather-skins/" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Skins']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
 					</div>
 				</div>
             </div>
