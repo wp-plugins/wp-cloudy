@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.3
+Version: 3.2.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -40,7 +40,7 @@ register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
 
-define( 'WPCLOUDY_VERSION', '3.3' );
+define( 'WPCLOUDY_VERSION', '3.0' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Shortcut settings page
@@ -64,19 +64,28 @@ function wpc_plugin_action_links($links, $file) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//Translation
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function wpcloudy_init() {
-  load_plugin_textdomain( 'wpcloudy', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' ); 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 //Admin panel + Dashboard widget
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 if ( is_admin() )
 	require_once dirname( __FILE__ ) . '/wpcloudy-admin.php';
     require_once dirname( __FILE__ ) . '/wpcloudy-widget.php';
+    
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//SVG animations + WPC Options
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+if ( !is_admin() )
+	require_once dirname( __FILE__ ) . '/wpcloudy-anim.php';
+	require_once dirname( __FILE__ ) . '/wpcloudy-options.php';
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Translation
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function wpcloudy_init() {
+  load_plugin_textdomain( 'wpcloudy', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' ); 
 }
 add_action('plugins_loaded', 'wpcloudy_init');
 
@@ -100,7 +109,7 @@ function wpcloudy_styles() {
 
 		wp_register_style('wpcloudy', plugins_url('css/wpcloudy.min.css', __FILE__));
 		wp_enqueue_style('wpcloudy');
-
+		
 		wp_register_style('wpcloudy-anim', plugins_url('css/wpcloudy-anim.min.css', __FILE__));
 }
 add_action('wp_enqueue_scripts', 'wpcloudy_styles');
@@ -121,14 +130,13 @@ add_action( 'wp_enqueue_scripts', 'wpc_add_themes_scripts', 10, 1 );
 
 //Dashboard
 function wpc_add_dashboard_scripts() {
-	wp_enqueue_script( 'wpc-ajax', plugins_url('js/wp-cloudy-ajax.js', __FILE__), array('jquery'), '', true );
-	wp_localize_script( 'wpc-ajax', 'wpcAjax', admin_url( 'admin-ajax.php' ) );
-
 	wp_register_style('wpcloudy', plugins_url('css/wpcloudy.min.css', __FILE__));
 	wp_enqueue_style('wpcloudy');
 	
 	wp_register_style('wpcloudy-anim', plugins_url('css/wpcloudy-anim.min.css', __FILE__));
+	wp_enqueue_style('wpcloudy-anim');
 	
+	require_once dirname( __FILE__ ) . '/wpcloudy-anim.php';
 }
 add_action('admin_head-index.php', 'wpc_add_dashboard_scripts');
 
@@ -660,7 +668,8 @@ function wpcloudy_basic($post){
 
 add_action('save_post','wpc_save_metabox');
 function wpc_save_metabox($post_id){
-	if ( 'wpc-weather' === get_post_type($post_id)) {
+	global $post;
+	if ( 'wpc-weather' === $post->post_type) { 
 		if(isset($_POST['wpcloudy_city'])){
 		  update_post_meta($post_id, '_wpcloudy_city', esc_html($_POST['wpcloudy_city']));
 		}
@@ -843,7 +852,8 @@ function wpc_save_metabox($post_id){
 
 add_action('save_post','wpc_clear_cache_current');
 function wpc_clear_cache_current() {
-	if ( 'wpc-weather' === get_post_type()) {
+	global $post;
+	if ( 'wpc-weather' === $post->post_type) {
         global $wpdb;
 		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_myweather%' ");
 		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_myweather%' ");
@@ -900,7 +910,7 @@ function display_today_sunrise_sunset($wpcloudy_sunrise_sunset, $sun_rise, $sun_
 	}
 }
 
-function wpc_css_webfont($attr) {
+function wpc_css_webfont($attr,$content) {
 	if(function_exists('wpcloudy_google_fonts')) {
 		extract(shortcode_atts(array( 'id' => ''), $attr));
 		$wpc_css_webfont_value = get_post_meta($id,'_wpcloudy_fonts',true);
@@ -984,7 +994,7 @@ function wpc_css_webfont($attr) {
 	}
 }
 
-function wpc_icons_pack($attr) {
+function wpc_icons_pack($attr, $content) {
 	if(function_exists('wpcloudy_icons_pack')) {
 		extract(shortcode_atts(array( 'id' => ''), $attr));
 		$wpc_icons_pack_value = get_post_meta($id,'_wpcloudy_icons',true);
@@ -1020,27 +1030,1164 @@ add_action( 'admin_init', 'wpc_check_active_plugin' );
 //Add shortcode Weather
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+add_action( 'wp_ajax_get_my_weather', 'wpc_get_owm_feeds' );
+add_action( 'wp_ajax_nopriv_get_my_weather', 'wpc_get_owm_feeds' );
 
-add_shortcode("wpc-weather", 'wpc_get_my_weather_id');
+add_shortcode("wpc-weather", 'wpc_get_owm_feeds');
 
-function wpc_get_my_weather_id($attr) {
+function wpc_get_owm_feeds($attr,$content) {
 
 	extract(shortcode_atts(array( 'id' => ''), $attr));
-	$wpc_id 										= $id;
 
-	wpc_css_webfont($attr);
-	wpc_icons_pack($attr);
+	  $wpc_id 										= $id;
+      $wpcloudy_city                				= get_post_meta($id,'_wpcloudy_city',true);
+      $wpcloudy_city_name             				= get_post_meta($id,'_wpcloudy_city_name',true);
+      $wpcloudy_state_name            				= get_post_meta($id,'_wpcloudy_state_name',true);
+      $wpcloudy_country_code            			= get_post_meta($id,'_wpcloudy_country_code',true);
+      $wpcloudy_custom_field_city_name      		= get_post_meta($id,'_wpcloudy_custom_field_city_name',true);
+      $wpcloudy_custom_field_country_name    		= get_post_meta($id,'_wpcloudy_custom_field_country_name',true);
+      $wpcloudy_custom_field_city_value    			= get_post_meta( get_the_ID(), $wpcloudy_custom_field_city_name, true );
+      $wpcloudy_custom_field_country_value    		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_country_name, true );
+      $wpcloudy_custom_field_lat_name       		= get_post_meta($id,'_wpcloudy_custom_field_lat_name',true);
+      $wpcloudy_custom_field_lon_name       		= get_post_meta($id,'_wpcloudy_custom_field_lon_name',true);
+      $wpcloudy_custom_field_lat_value      		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_lat_name, true );
+      $wpcloudy_custom_field_lon_value      		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_lon_name, true );
+      $wpcloudy_lat_lon_cf_value          			= get_post_meta( $id, '_wpcloudy_lat_lon_cf', true );
+      $wpcloudy_unit                				= get_bypass_unit($attr,$content);
+      $wpcloudy_lang                				= get_bypass_lang($attr,$content);
+      $wpcloudy_map_height            				= get_bypass_map_height($attr,$content);
+      $wpcloudy_map_opacity          				= get_bypass_map_opacity($attr,$content);
+      $wpcloudy_map_zoom              				= get_bypass_map_zoom($attr,$content);
+      $wpcloudy_map_zoom_wheel          			= get_bypass_map_zoom_wheel($attr,$content);
+      $wpcloudy_map_stations            			= get_bypass_map_layers_stations($attr,$content);
+      $wpcloudy_map_clouds            				= get_bypass_map_layers_clouds($attr,$content);
+      $wpcloudy_map_precipitation         			= get_bypass_map_layers_precipitation($attr,$content);
+      $wpcloudy_map_snow              				= get_bypass_map_layers_snow($attr,$content);
+      $wpcloudy_map_wind              				= get_bypass_map_layers_wind($attr,$content);
+      $wpcloudy_map_temperature         			= get_bypass_map_layers_temperature($attr,$content);
+      $wpcloudy_map_pressure            			= get_bypass_map_layers_pressure($attr,$content);
+      $wpcloudy_meta_border_color         			= get_bypass_color_border($attr,$content);
+      $wpcloudy_meta_bg_color           			= get_bypass_color_background($attr,$content);
+      $wpcloudy_meta_text_color         			= get_bypass_color_text($attr,$content);
+      $wpcloudy_date_format          				= get_bypass_date($attr,$content);
+      $wpcloudy_sunrise_sunset          			= get_bypass_display_sunrise_sunset($attr,$content);
+      $wpcloudy_display_temp_unit         			= get_bypass_display_temp_unit($attr,$content);
+      $wpcloudy_display_length_days_names     		= get_bypass_length_days_names($attr,$content);
+      $wpcloudy_enable_geolocation        			= get_post_meta($id,'_wpcloudy_enable_geolocation',true);
+      $wpcloudy_enable_geolocation_custom_field   	= get_post_meta($id,'_wpcloudy_enable_geolocation_custom_field',true);
+      $wpc_advanced_set_cache_time        			= get_admin_cache_time();
+      $wpc_advanced_set_disable_cache       		= get_admin_disable_cache();
+      $wpc_advanced_api_key           				= wpc_get_api_key();
+      $wpcloudy_display_owm_link          			= get_bypass_owm_link($attr,$content);
+      $wpcloudy_display_last_update       			= get_bypass_last_update($attr,$content);
+      $wpcloudy_icons_pack            				= get_post_meta($id,'_wpcloudy_icons',true);
+      $wpcloudy_hour_forecast     					= get_bypass_display_hour_forecast($attr,$content);
+      $wpcloudy_hour_forecast_nd    				= get_bypass_display_hour_forecast_nd($attr,$content);
+      $wpcloudy_forecast        					= get_bypass_display_forecast($attr,$content);
+      $wpcloudy_forecast_nd     					= get_bypass_forecast_nd($attr,$content);
+      $wpcloudy_map           						= get_bypass_map($attr,$content); 
+      $wpcloudy_map_js        						= get_admin_map_js();   
 
-	require_once dirname( __FILE__ ) . '/wpcloudy-options.php';
-	  
-	$wpcloudy_css3_anims      					= get_bypass_disable_css3_anims($wpc_id);
-	$wpcloudy_map           					= get_bypass_map($wpc_id); 
-	$wpcloudy_map_js        					= get_admin_map_js();  
-	$wpc_html_css3_anims            			= null;
+      //variable declarations
+      $wpcloudy_select_city_name          			= null;
+      $display_today_min_max_day          			= null;
+      $display_today_sun              				= null;
+      $display_today_min_max_start        			= null;
+      $display_today_min_max_end          			= null;      
+      $wpc_html_now_start             				= null;
+      $wpc_html_now_location_name         			= null;
+      $wpc_html_display_now_time_symbol       		= null;
+      $wpc_html_display_now_time_temperature    	= null;
+      $wpc_html_now_end               				= null;
+      $wpc_html_custom_css            				= null;
+      $wpc_html_css3_anims            				= null;
+      $wpc_html_temp_unit_metric          			= null;
+      $wpc_html_container_end           			= null;
+      $wpc_html_weather               				= null;
+      $wpc_html_today_temp_start          			= null;
+      $wpc_html_today_temp_day          			= null;
+      $wpc_html_today_time_temp_min         		= null;
+      $wpc_html_today_time_temp_max         		= null;
+      $wpc_html_today_sun             				= null;
+      $wpc_html_today_temp_end          			= null;
+      $wpc_html_infos_start             			= null;
+      $wpc_html_infos_wind            				= null;
+      $wpc_html_infos_humidity          			= null;
+      $wpc_html_infos_pressure          			= null;
+      $wpc_html_infos_cloudiness          			= null;
+      $wpc_html_infos_precipitation         		= null;
+      $wpc_html_infos_end             				= null;
+      $wpc_html_hour                				= null;
+      $wpc_html_hour_start            				= null;
+      $wpc_html_hour_end              				= null;
+      $wpc_html_forecast              				= null;
+      $wpc_html_map                 				= null;
+      $wpc_html_temp_unit_imperial        			= null;
+      $wpcloudy_select_city_name          			= null;
+      $display_today_min_max_day          			= null;
+      $display_today_sun              				= null;
+      $display_today_min_max_end          			= null;
+      $wpc_html_now_start             				= null;
+      $wpc_html_now_location_name         			= null;
+      $wpc_html_display_now_time_symbol       		= null;
+      $wpc_html_display_now_time_temperature    	= null;
+      $wpc_html_now_end               				= null;
+      $wpc_html_weather               				= null;
+      $wpc_html_today_temp_start          			= null;
+      $wpc_html_today_temp_day          			= null;
+      $wpc_html_today_sun             				= null;
+      $wpc_html_today_time_temp_min         		= null;
+      $wpc_html_today_time_temp_max         		= null;
+      $wpc_html_today_temp_end          			= null;
+      $wpc_html_forecast_start          			= null;
+      $wpc_html_forecast_end            			= null;
+      $wpc_html_css3_anims            				= null;
+      $wpc_html_temp_unit_metric          			= null;
+      $wpc_html_container_end           			= null;
+      $wpc_html_geolocation           				= null;
+      $wpcloudy_owm_link              				= null;
+      $wpcloudy_last_update           				= null;
+      $wpc_html_owm_link              				= null;
+      $wpc_html_last_update           				= null;
+    
+      
+      if (isset($_COOKIE['wpc-posLat'])) {
+        $wpcloudy_lat         						= $_COOKIE['wpc-posLat'];
+      }
+      if (isset($_COOKIE['wpc-posLon'])) {
+        $wpcloudy_lon         						= $_COOKIE['wpc-posLon'];
+      }
+      
+      if (isset($_COOKIE['wpc-posCityId'])) {
+        $wpcloudy_select_city_id  					= $_COOKIE['wpc-posCityId'];
+      }
+      
+      if (isset($_COOKIE['wpc-posCityName'])) {
+        $wpcloudy_select_city_name  				= $_COOKIE['wpc-posCityName'];
+      }
+  
+      switch ($wpcloudy_lang) {
+        case "fr":
+          $wpcloudy_lang_owm      = 'fr';
+          break;
+        case "en":
+          $wpcloudy_lang_owm      = 'en';
+          break;
+        case "ru":
+          $wpcloudy_lang_owm      = 'ru';
+          break;
+        case "it":
+          $wpcloudy_lang_owm      = 'it';
+          break;
+        case "sp":
+          $wpcloudy_lang_owm      = 'sp';
+          break;
+        case "ua":
+          $wpcloudy_lang_owm      = 'ua';
+          break;
+        case "de":
+          $wpcloudy_lang_owm      = 'de';
+          break;
+        case "pt":
+          $wpcloudy_lang_owm      = 'pt';
+          break;
+        case "ro":
+          $wpcloudy_lang_owm      = 'ro';
+          break;
+        case "pl":
+          $wpcloudy_lang_owm      = 'pl';
+          break;
+        case "fi":
+          $wpcloudy_lang_owm      = 'fi';
+          break;
+        case "nl":
+          $wpcloudy_lang_owm      = 'nl';
+          break;
+        case "bg":
+          $wpcloudy_lang_owm      = 'bg';
+          break;
+        case "se":
+          $wpcloudy_lang_owm      = 'se';
+          break;
+        case "zh_tw":
+          $wpcloudy_lang_owm      = 'zh_tw';
+          break;
+        case "zh_cn":
+          $wpcloudy_lang_owm      = 'zh_cn';
+          break;
+        case "tr":
+          $wpcloudy_lang_owm      = 'tr';
+          break;
+        case "cz":
+          $wpcloudy_lang_owm      = 'cz';
+          break;
+        case "gl":
+          $wpcloudy_lang_owm      = 'gl';
+          break;
+        case "vi":
+          $wpcloudy_lang_owm      = 'vi';
+          break;
+        case "ar":
+          $wpcloudy_lang_owm      = 'ar';
+          break;
+        case "mk":
+          $wpcloudy_lang_owm      = 'mk';
+          break;
+        case "sk":
+          $wpcloudy_lang_owm      = 'sk';
+          break;
+      }
+      
+      //XML : Current weather   
+      
+      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' ) { 
+        $myweather_current = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
+      }
+      
+      elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' )  {
+        $myweather_current = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
+      }
+      
+      else {
+        if ($wpc_advanced_set_disable_cache == '1') {
+          $myweather_current_url = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm", array( 'timeout' => 10)));
+          
+        }
+        else {    
+          if( $wpcloudy_enable_geolocation == 'yes' 
+            && $wpcloudy_enable_geolocation_custom_field == 'yes' 
+            && $wpcloudy_lat_lon_cf_value == 'no' 
+            && false === ( $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {            
+            $myweather_current = wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_custom_field_city_value,$wpcloudy_custom_field_country_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
+            
+            set_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+            $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) );
+          }
+          elseif( $wpcloudy_enable_geolocation == 'yes' 
+              && $wpcloudy_enable_geolocation_custom_field == 'yes' 
+              && $wpcloudy_lat_lon_cf_value == 'yes'
+              && false === ( $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {            
+            $myweather_current = wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?lat=$wpcloudy_custom_field_lat_value&lon=$wpcloudy_custom_field_lon_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"); 
+              
+            set_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+            $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) );
+          }
+          elseif ( (($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes')
+              || ($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes')
+              || ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes'))
+              && false === ( $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ) ) ) ) {  
+            $myweather_current = wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
+            set_transient( 'myweather_current_'.$wpc_id, (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+            $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ) );
+          }
+          else {
+            if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes') {
+              $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ));
+            }
+            else {
+              $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ) );
+            }
+          }
+        }
+      }
 
-	if ($wpcloudy_css3_anims == 'yes') {
+       //XML : Hourly weather      
+      if( $wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd =='' ) {
+	      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' ) {
+	        $myweather = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
+	      }
+	      elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' )  {
+	        $myweather = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
+	      }
+	      
+	      else {
+	        if ($wpc_advanced_set_disable_cache == '1') {
+	          $myweather = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm", array( 'timeout' => 10)));
+	        }
+	        else {  
+	          if( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_city_value !='' && $wpcloudy_custom_field_country_value !='' && false === ( $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) ) ) )  { 
+	            $myweather = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_custom_field_city_value,$wpcloudy_custom_field_country_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
+	            set_transient( 'myweather_'.$wpc_id.'_'.get_the_ID(), (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+	            $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) );
+	          }
+	          elseif( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_lat_value !='' && $wpcloudy_custom_field_lon_value !='' && false === ( $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {  
+	            $myweather = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast?lat=$wpcloudy_custom_field_lat_value&lon=$wpcloudy_custom_field_lon_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
+	            set_transient( 'myweather_'.$wpc_id.'_'.get_the_ID(), (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+	            $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) );
+	          }
+	          elseif ( (($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes')
+	              || ($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes')
+	              || ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes'))
+	               && false === ( $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ) ) ) ) {
+	            $myweather = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
+	            set_transient( 'myweather_'.$wpc_id, (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+	            $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ) );
+	          }
+	          else {
+	            if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes') {
+	              $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) );
+	            }
+	            else {
+	              $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ) );         
+	            }
+	          }
+	        }
+	     }
+	  }
+      
+      //XML : 16-days forecast
+      if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) {  
+	      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' ) {
+	        $myweather_sevendays = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16"));
+
+	      }
+	      
+	      elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' )  {
+	        $myweather_sevendays = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16"));
+	      }
+	      
+	      else {
+	        if ($wpc_advanced_set_disable_cache == '1') {
+	          $myweather_sevendays = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16", array( 'timeout' => 10)));  
+	          
+	        }
+	        else {    
+	          if( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_city_value !='' && $wpcloudy_custom_field_country_value !='' && false === ( $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {             
+	            $myweather_sevendays = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_custom_field_city_value,$wpcloudy_custom_field_country_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16");
+	            set_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+	            $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) );
+	          }
+	          elseif( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_lat_value !='' && $wpcloudy_custom_field_lon_value !='' && false === ( $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {              
+	            $myweather_sevendays = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?lat=$wpcloudy_custom_field_lat_value&lon=$wpcloudy_custom_field_lon_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16");
+	            set_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+	            $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) );
+	          }
+	          elseif ( (($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes')
+	              || ($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes')
+	              || ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes'))
+	              && false === ( $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ) ) ) ) {  
+	            $myweather_sevendays = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16");
+	            set_transient( 'myweather_sevendays_'.$wpc_id, (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
+	            $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ) );
+	          }
+	          else {
+	            if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes') {  
+	              $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) );
+	            }
+	            else {
+	              $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ) );
+	            }
+	          }
+	        }
+	      }
+	    }      
+      
+      $location_name      		= $myweather_current->city[0]['name'];  
+      $location_latitude    	= $myweather_current->city[0]->coord[0]['lat'];
+      $location_longitude   	= $myweather_current->city[0]->coord[0]['lon'];
+      $time_symbol      		= $myweather_current->weather[0]['value'];
+      $time_symbol_number   	= $myweather_current->weather[0]['number'];
+      $time_wind_direction  	= $myweather_current->wind[0]->direction[0]['code'];
+      $time_wind_speed    		= $myweather_current->wind[0]->speed[0]['value'];
+      $time_humidity      		= $myweather_current->humidity[0]['value'];
+      $time_pressure      		= $myweather_current->pressure[0]['value'];
+      $time_cloudiness    		= $myweather_current->clouds[0]['value'];
+      $time_precipitation   	= $myweather_current->precipitation[0]['value'];
+      $time_temperature   		= (ceil($myweather_current->temperature[0]['value']));
+      $owm_link         		= '<a href="http://openweathermap.org/city/'.$myweather_current->city[0]['id'].'" target="_blank" title="'.__('Full weather on OpenWeatherMap','wpcloudy').'">'.__('Full weather','wpcloudy').'</a>'; 
+      $last_update      		= __('Last update: ','wpcloudy').date("M-j-Y, H:i", strtotime($myweather_current->lastupdate[0]['value'])); 
+
+      if ($wpcloudy_date_format =='12') {
+        $wpcloudy_date_php_sun    = 'h:i A';
+        $wpcloudy_date_php_hours = 'h A';
+      }
+      
+      if ($wpcloudy_date_format =='24') { 
+        $wpcloudy_date_php_sun    = 'H:i';
+        $wpcloudy_date_php_hours  = 'H';    
+      }
+      
+      $utc_time_wp      = get_option('gmt_offset') * 60;      
+       
+      $sun_rise       = (string)date($wpcloudy_date_php_sun, strtotime($myweather_current->city[0]->sun[0]['rise'])+60*$utc_time_wp);
+      $sun_set        = (string)date($wpcloudy_date_php_sun, strtotime($myweather_current->city[0]->sun[0]['set'])+60*$utc_time_wp);
+                  
+      $today_day_feed   = strftime("%w", strtotime($myweather_current->lastupdate[0]['value']));
+
+
+	switch ($today_day_feed) {
+        case "0":
+          	$today_day      = __('Sunday','wpcloudy');
+          	break;
+        case "1":
+          	$today_day      = __('Monday','wpcloudy');
+          	break;
+        case "2":
+        	$today_day      = __('Tuesday','wpcloudy');
+          	break;
+        case "3":
+        	$today_day      = __('Wednesday','wpcloudy');
+          	break;
+        case "4":
+        	$today_day      = __('Thursday','wpcloudy');
+          	break;
+        case "5":
+        	$today_day      = __('Friday','wpcloudy');
+          	break;
+        case "6":
+        	$today_day      = __('Saturday','wpcloudy');
+          	break;
+  	}
+       
+      
+      //Hours loop
+      if( $wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd =='' ) {
+	      
+	      $hour_temp_0      			= (ceil($myweather->forecast[0]->time[0]->temperature[0]['value']));
+	      $hour_symbol_0      			= $myweather->forecast[0]->time[0]->symbol[0]['name'];
+	      $hour_symbol_number_0 		= $myweather->forecast[0]->time[0]->symbol[0]['number'];	      
+	      
+	      $i=1;
+	      
+	      while ($i<=5) {
+	        $hour_time_[$i]       		= date($wpcloudy_date_php_hours, strtotime($myweather->forecast[0]->time[$i]['from']));
+	        $hour_temp_[$i]       		= (ceil($myweather->forecast[0]->time[$i]->temperature[0]['value']));
+	        $hour_symbol_[$i]     		= $myweather->forecast[0]->time[$i]->symbol[0]['name'];
+	        $hour_symbol_number_[$i]  	= $myweather->forecast[0]->time[$i]->symbol[0]['number'];
+	        $i++;
+
+	      } 
+      }
+      //Forecast loop
+      if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) { 
+	          
+	      $i=1;
+	      
+	      while ($i<=15) {
+	        $forecast_day_feed      = strftime('%w', strtotime($myweather_sevendays->forecast[0]->time[$i]['day']));
+	      	if ($wpcloudy_display_length_days_names == 'yes') {
+		        switch ($forecast_day_feed) {
+			        case "0":
+			          	$wpcloudy_display_length_days_names_php      = __('Sun','wpcloudy');
+			          	break;
+			        case "1":
+			          	$wpcloudy_display_length_days_names_php      = __('Mon','wpcloudy');
+			          	break;
+			        case "2":
+			        	$wpcloudy_display_length_days_names_php      = __('Tue','wpcloudy');
+			          	break;
+			        case "3":
+			        	$wpcloudy_display_length_days_names_php      = __('Wed','wpcloudy');
+			          	break;
+			        case "4":
+			        	$wpcloudy_display_length_days_names_php      = __('Thu','wpcloudy');
+			          	break;
+			        case "5":
+			        	$wpcloudy_display_length_days_names_php      = __('Fri','wpcloudy');
+			          	break;
+			        case "6":
+			        	$wpcloudy_display_length_days_names_php      = __('Sat','wpcloudy');
+			          	break;
+			  	}
+		     }
+		      elseif ($wpcloudy_display_length_days_names == 'no') {
+		        switch ($forecast_day_feed) {
+			        case "0":
+			          	$wpcloudy_display_length_days_names_php      = __('Sunday','wpcloudy');
+			          	break;
+			        case "1":
+			          	$wpcloudy_display_length_days_names_php      = __('Monday','wpcloudy');
+			          	break;
+			        case "2":
+			        	$wpcloudy_display_length_days_names_php      = __('Tuesday','wpcloudy');
+			          	break;
+			        case "3":
+			        	$wpcloudy_display_length_days_names_php      = __('Wednesday','wpcloudy');
+			          	break;
+			        case "4":
+			        	$wpcloudy_display_length_days_names_php      = __('Thursday','wpcloudy');
+			          	break;
+			        case "5":
+			        	$wpcloudy_display_length_days_names_php      = __('Friday','wpcloudy');
+			          	break;
+			        case "6":
+			        	$wpcloudy_display_length_days_names_php      = __('Saturday','wpcloudy');
+			          	break;
+			  	}
+		      }
+		      else {
+		        switch ($forecast_day_feed) {
+			        case "0":
+			          	$wpcloudy_display_length_days_names_php      = __('Sunday','wpcloudy');
+			          	break;
+			        case "1":
+			          	$wpcloudy_display_length_days_names_php      = __('Monday','wpcloudy');
+			          	break;
+			        case "2":
+			        	$wpcloudy_display_length_days_names_php      = __('Tuesday','wpcloudy');
+			          	break;
+			        case "3":
+			        	$wpcloudy_display_length_days_names_php      = __('Wednesday','wpcloudy');
+			          	break;
+			        case "4":
+			        	$wpcloudy_display_length_days_names_php      = __('Thursday','wpcloudy');
+			          	break;
+			        case "5":
+			        	$wpcloudy_display_length_days_names_php      = __('Friday','wpcloudy');
+			          	break;
+			        case "6":
+			        	$wpcloudy_display_length_days_names_php      = __('Saturday','wpcloudy');
+			          	break;
+			  	}
+		    } 
+	        $forecast_day_[$i]      = $wpcloudy_display_length_days_names_php;
+	        $forecast_number_[$i]   = $myweather_sevendays->forecast[0]->time[$i]->symbol[0]['number'];
+	        $forecast_temp_min_[$i]   = (round($myweather_sevendays->forecast[0]->time[$i]->temperature[0]['min']));
+	        $forecast_temp_max_[$i]   = (round($myweather_sevendays->forecast[0]->time[$i]->temperature[0]['max']));
+	        $i++;
+	      } 
+
+  		}
+      
+      switch ($time_symbol_number) {
+      
+        //sun
+        case "800":
+          $time_symbol_svg = sun();
+          $time_symbol_alt = '<span class="icon-sun"></span>';
+          break;
+        case "801":
+          $time_symbol_svg = cloudSun();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-sun"></span>';
+          break;
+        case "802":
+          $time_symbol_svg = cloud();
+          $time_symbol_alt = '<span class="icon-cloud"></span>';
+          break;
+        case "803":
+          $time_symbol_svg = cloudFill();
+          $time_symbol_alt = '<span class="icon-cloud icon-fill"></span>';
+          break;
+        case "804":
+          $time_symbol_svg = cloudFill();
+          $time_symbol_alt = '<span class="icon-cloud icon-fill"></span>';
+          break;
+          
+        //rain
+        case "500":
+          $time_symbol_svg = cloudDrizzleSun();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle icon-sunny"></span>';
+          break;
+        case "501":
+          $time_symbol_svg = cloudDrizzleSun();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle icon-sunny"></span>';
+          break;
+        case "502":
+          $time_symbol_svg = cloudDrizzle();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle"></span>';
+          break;
+        case "503":
+          $time_symbol_svg = cloudDrizzleSunAlt();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle icon-sunny"></span>';
+          break;
+        case "504":
+          $time_symbol_svg = cloudDrizzleAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "511":
+          $time_symbol_svg = cloudRainSun();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-rainy icon-sunny"></span>';
+          break;
+        case "520":
+          $time_symbol_svg = cloudRain();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-rainy"></span>';
+          break;
+        case "521":
+          $time_symbol_svg = cloudSunRainAlt();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-showers icon-sunny"></span>';
+          break;
+        case "522":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-showers"></span>';
+          break;
+          
+        //drizzle
+        case "300":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "301":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "302":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "310":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "311":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "312":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+        case "321":
+          $time_symbol_svg = cloudRainAlt();
+          $time_symbol_alt = '<span class="icon-drizzle"></span>';
+          break;
+          
+        //snow
+        case "600":
+          $time_symbol_svg = cloudSnowSun();
+          $time_symbol_alt = '<span class="icon-snowy icon-sunny"></span>';
+          break;
+        case "601":
+          $time_symbol_svg = cloudSnow();
+          $time_symbol_alt = '<span class="icon-snowy"></span>';
+          break;
+        case "602":
+          $time_symbol_svg = cloudSnowSunAlt();
+          $time_symbol_alt = '<span class="icon-snowy icon-sunny"></span>';
+          break;
+        case "611":
+          $time_symbol_svg = cloudSnow();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-sleet"></span>';
+          break;
+        case "621":
+          $time_symbol_svg = cloudSnowAlt();
+          $time_symbol_alt = '<span class="icon-snowy"></span>';
+          break;
+          
+        //atmosphere
+        case "701":
+          $time_symbol_svg = cloudFogSunAlt();
+          $time_symbol_alt = '<span class="icon-mist icon-sunny"></span>';
+          break;
+        case "711":
+          $time_symbol_svg = cloudFogAlt();
+          $time_symbol_alt = '<span class="icon-mist"></span>';
+          break;
+        case "721":
+          $time_symbol_svg = cloudFogAlt();
+          $time_symbol_alt = '<span class="icon-mist"></span>';
+          break;
+        case "731":
+          $time_symbol_svg = cloudFogSun();
+          $time_symbol_alt = '<span class="icon-mist icon-sunny"></span>';
+          break;
+        case "741":
+          $time_symbol_svg = cloudFog();
+          $time_symbol_alt = '<span class="icon-mist"></span>';
+          break;
+          
+        //extreme
+        case "900":
+          $time_symbol_svg = tornado();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
+          break;
+        case "901":
+          $time_symbol_svg = wind();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
+          break;
+        case "902":
+          $time_symbol_svg = wind();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
+          break;
+        case "905":
+          $time_symbol_svg = wind();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
+          break;
+        case "906":
+          $time_symbol_svg = cloudHailAlt();
+          $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-hail"></span>';
+          break;
+          
+        //thunderstorm
+        case "200":
+          $time_symbol_svg = cloudLightning();
+          $time_symbol_alt = '<span class="icon-thunder"></span>';
+          break;
+      }
+    
+      $wpcloudy_custom_css  = get_post_meta($id,'_wpcloudy_custom_css',true);
+      
+      if ($wpcloudy_custom_css) {
+        $display_custom_css   = '
+          <style>
+            '. $wpcloudy_custom_css .'
+          </style>
+        ';
+      }
+      
+      if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2' ) {
+        $display_now_start = '<div class="now">';
+          $display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
+          $display_now_time_symbol = '<div class="time_symbol climacon" style="fill:'. wpc_css_text_color($wpcloudy_meta_text_color) .'">'. $time_symbol_svg .'</div>';
+          $display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
+        $display_now_end = '</div>';
+      } elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
+        $display_now_start = '<div class="now">';
+          $display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
+          $display_now_time_symbol = '<div class="time_symbol iconvault">'. $time_symbol_alt .'</div>';
+          $display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
+        $display_now_end = '</div>';
+      }
+      $display_weather = '
+        <div class="short_condition">'. $time_symbol .'</div>
+      ';
+      
+      $display_today_min_max_start  .=  '<div class="today">';
+      $display_today_min_max_day    .=  '<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>';
+      $display_today_sun        .=  display_today_sunrise_sunset($wpcloudy_sunrise_sunset, $sun_rise, $sun_set);
+      $display_today_min_max_end    .=  '</div>';
+      
+      $display_wind = '
+        <div class="wind">'. __( 'Wind', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_wind_direction .' '. $time_wind_speed .'</span></div>
+      ';
+      $display_humidity = '
+        <div class="humidity">'. __( 'Humidity', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_humidity .' %</span></div>
+      ';
+      $display_pressure = '
+        <div class="pressure">'. __( 'Pressure', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_pressure .' hPa</span></div>
+      ';
+      $display_cloudiness = '
+        <div class="cloudiness">'. __( 'Cloudiness', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_cloudiness .' %</span></div>
+      ';
+      if ($time_precipitation != '') {
+        $display_precipitation = '
+          <div class="precipitation">'. __( 'Precipitation', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_precipitation .' mm</span></div>
+        ';
+      }
+      elseif ($time_precipitation == '') {
+        $display_precipitation = '
+          <div class="precipitation">'. __( 'Precipitation', 'wpcloudy' ) .'<span class="wpc-highlight">0 mm</span></div>
+        ';
+      }
+      
+      //Hours loop
+      if ($wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd == '' ) {
+	      if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
+	        $display_hours_0 = '
+	            <div class="first">
+	              <div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
+	              <div class="symbol climacon w'. $hour_symbol_number_0 .'"><span>'. $hour_symbol_0 .'</span></div>
+	              <div class="temperature"><span class="wpc-highlight">'. $hour_temp_0 .'</span></div>
+	            </div>
+	        ';
+	      } elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
+	        $display_hours_0 = '
+	            <div class="first">
+	              <div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
+	              <div class="symbol">
+	                <div class="iconvault w'. $hour_symbol_number_0 .'"><span>'. $hour_symbol_0 .'</span></div>
+	                <div class="iconvault2 w'. $hour_symbol_number_0 .'"></div>
+	                <div class="iconvault3 w'. $hour_symbol_number_0 .'"></div>
+	              </div>
+	              <div class="temperature"><span class="wpc-highlight">'. $hour_temp_0 .'</span></div>
+	            </div>
+	        ';
+	      }
+	      
+	      $wpcloudy_class_hours = array(1 => "second", 2 => "third", 3 => "fourth", 4 => "fifth", 5 => "sixth");
+	      
+	      $i=1;
+	      while ($i<=5) { 
+	        if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
+	          $display_hours_[$i] = '
+	            <div class="'. $wpcloudy_class_hours[$i].'">
+	              <div class="hour">'. $hour_time_[$i] .'</div>
+	              <div class="symbol climacon w'. $hour_symbol_number_[$i] .'"><span>'. $hour_symbol_[$i] .'</span></div>
+	              <div class="temperature">'. $hour_temp_[$i]. '</div>
+	            </div>
+	          ';
+	        } elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
+	          $display_hours_[$i] = '
+	            <div class="'. $wpcloudy_class_hours[$i].'">
+	              <div class="hour">'. $hour_time_[$i] .'</div>
+	              <div class="symbol">
+	                <div class="iconvault w'. $hour_symbol_number_[$i] .'"><span>'. $hour_symbol_[$i] .'</span></div>
+	                <div class="iconvault2 w'. $hour_symbol_number_[$i] .'"></div>
+	                <div class="iconvault3 w'. $hour_symbol_number_[$i] .'"></div>
+	              </div>
+	              <div class="temperature">'. $hour_temp_[$i]. '</div>
+	            </div>
+	          ';
+	        }
+	      
+	        $i++;
+
+	      } 
+	  }
+      
+      //Forecast loop
+      if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) {
+	      $wpcloudy_class_days = array(1 => "first", 2 => "second", 3 => "third", 4 => "fourth", 5 => "fifth", 6 => "sixth", 7 => "seventh", 8 => "eighth", 9 => "ninth", 10 => "tenth", 11 => "eleventh", 12 => "twelfth", 13 => "thirteenth", 14 => "fourteenth", 15 => "fifteenth");
+	      
+	      $i=1;
+	      while ($i<=15) { 
+	        if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
+	          $display_forecast_[$i] = '  
+	            <div class="'. $wpcloudy_class_days[$i].'">
+	              <div class="day">'. $forecast_day_[$i] .'</div>
+	              <div class="symbol climacon w'. $forecast_number_[$i] .'"></div>              
+	              <div class="temp_min">'. $forecast_temp_min_[$i] .'</div>
+	              <div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_[$i] .'</span></div>
+	            </div>
+	          ';
+	        }
+	        elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1'){
+	          $display_forecast_[$i] = '  
+	            <div class="'. $wpcloudy_class_days[$i].'">
+	              <div class="day">'. $forecast_day_[$i] .'</div>
+	              <div class="symbol">
+	                <div class="iconvault w'. $forecast_number_[$i] .'"></div>
+	                <div class="iconvault2 w'. $forecast_number_[$i] .'"></div>
+	                <div class="iconvault3 w'. $forecast_number_[$i] .'"></div>
+	              </div>
+	              <div class="temp_min">'. $forecast_temp_min_[$i] .'</div>
+	              <div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_[$i] .'</span></div>
+	            </div>
+	          ';
+	        }
+	      
+	        $i++;
+
+	      }
+	   }
+      
+      //Map
+      if ($wpcloudy_map == 'yes') {
+
+      
+        if ($wpcloudy_map_js == '0') { //Webhost
+        
+          wp_register_script("openlayers_js", plugins_url('js/OpenLayers.js', __FILE__), array('wpc-ajax'), "1.0", false);
+          wp_register_script("owm_js", plugins_url('js/OWM.OpenLayers.1.3.6.js', __FILE__), array('openlayers_js'), "1.0", false); 
+          wp_register_style("openlayers_css", plugins_url('css/wpcloudy-map.min.css', __FILE__));
+          wp_enqueue_script("openlayers_js");     
+          wp_enqueue_script("owm_js");
+          wp_enqueue_style("openlayers_css");
+
+        }
+        if ($wpcloudy_map_js == '1') { //OpenWeatherMap
+          wp_register_script("openlayers_js_owm", "http://openlayers.org/api/OpenLayers.js", array('wpc-ajax'), "1.0", false);
+          wp_register_script("owm_js_owm", "http://openweathermap.org/js/OWM.OpenLayers.1.3.6.js", array('openlayers_js_owm'), "1.0", false);  
+          wp_enqueue_script("openlayers_js_owm");     
+          wp_enqueue_script("owm_js_owm");
+        } 
+	      if ($wpcloudy_map_zoom_wheel == 'yes') {
+	        $wpcloudy_map_zoom_wheel = 'var i, l, c = map.getControlsBy( "zoomWheelEnabled", true );
+	for ( i = 0, l = c.length; i < l; i++ ) {
+	    c[i].disableZoomWheel();
+	}';
+	      }
+	      
+	      if( $wpcloudy_map_stations ) {
+	        $display_map_stations         = 'var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");';
+	        $display_map_stations_layers      = 'stations,';
+	      }
+	      else {
+	        $display_map_stations         = '';
+	        $display_map_stations_layers      = '';
+	      };
+	      if( $wpcloudy_map_clouds ) {
+	        $display_map_clouds         = 'var layer_cloud = new OpenLayers.Layer.XYZ(
+	                              "clouds",
+	                                "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_clouds_layers        = 'layer_cloud,';
+	      }
+	      else {
+	        $display_map_clouds           = '';
+	        $display_map_clouds_layers        = '';
+	      };
+	      if( $wpcloudy_map_precipitation ) {
+	        $display_map_precipitation        = 'var layer_precipitation = new OpenLayers.Layer.XYZ(
+	                              "precipitation",
+	                                "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_precipitation_layers   = 'layer_precipitation,';
+	      }
+	      else {
+	        $display_map_precipitation        = '';
+	        $display_map_precipitation_layers     = '';
+	      };
+	      if( $wpcloudy_map_snow ) {
+	        $display_map_snow           = 'var layer_snow = new OpenLayers.Layer.XYZ(
+	                              "snow",
+	                                "http://${s}.tile.openweathermap.org/map/snow/${z}/${x}/${y}.png", 
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_snow_layers        = 'layer_snow,';
+	      }
+	      else {
+	        $display_map_snow           = '';
+	        $display_map_snow_layers        = '';
+	      };
+	      if( $wpcloudy_map_wind ) {
+	        $display_map_wind             = 'var layer_wind = new OpenLayers.Layer.XYZ(
+	                              "wind",
+	                                "http://${s}.tile.openweathermap.org/map/wind/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_wind_layers        = 'layer_wind,';
+	      }
+	      else {
+	        $display_map_wind           = '';
+	        $display_map_wind_layers        = '';
+	      };
+	      if( $wpcloudy_map_temperature ) {
+	        $display_map_temperature        = 'var layer_temp = new OpenLayers.Layer.XYZ(
+	                              "temp",
+	                                "http://${s}.tile.openweathermap.org/map/temp/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_temperature_layers     = 'layer_temp,';
+	      }
+	      else {
+	        $display_map_temperature        = '';
+	        $display_map_temperature_layers     = '';
+	      };
+	      if( $wpcloudy_map_pressure ) {
+	        $display_map_pressure         = 'var layer_pressure = new OpenLayers.Layer.XYZ(
+	                              "pressure",
+	                                "http://${s}.tile.openweathermap.org/map/pressure/${z}/${x}/${y}.png",
+	                                {
+	                                  isBaseLayer: false,
+	                                  opacity: '. $wpcloudy_map_opacity .',
+	                                  sphericalMercator: true
+	                                }
+	                              );
+	                            ';
+	        $display_map_pressure_layers      = 'layer_pressure,';
+	      }
+	      else {
+	        $display_map_pressure           = '';
+	        $display_map_pressure_layers      = '';
+	      };
+	      
+	      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) { 
+
+	        $wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
+	        $wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
+	      
+	      }
+	      
+	      if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' ) { 
+	        $wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
+	        $wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
+	      }
+	      
+	      else {
+	        $wpcloudy_map_lat = $location_latitude;
+	        $wpcloudy_map_lon = $location_longitude;
+	      }
+	      
+	      $display_map = '        
+	        <div id="wpc-map-container">  
+	          <div id="wpc-map" style="height: '. $wpcloudy_map_height .'px"></div>
+	        </div>
+	        <script type="text/javascript">
+	        	jQuery(document).ready( function() {
+	            //Center of map
+	            var lat = '. $wpcloudy_map_lat .'; 
+	            var lon = '. $wpcloudy_map_lon .';
+	            var lonlat = new OpenLayers.LonLat(lon, lat);
+	              var map = new OpenLayers.Map("wpc-map");
+	            // Create overlays
+	            //  OSM
+	            var mapnik = new OpenLayers.Layer.OSM();
+	            
+	            '. $wpcloudy_map_zoom_wheel .'
+	            
+	            // Stations
+	            '. $display_map_stations .'
+
+	            // Current weather
+	            var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
+	            
+	            // Clouds
+	            '. $display_map_clouds .'
+	            
+	            // Precipitation
+	            '. $display_map_precipitation .'
+	            
+	            // Snow
+	            '. $display_map_snow .'
+	            
+	            // Wind
+	            '. $display_map_wind .'
+	            
+	            // Temperature
+	            '. $display_map_temperature .'
+	            
+	            // Pressure
+	            '. $display_map_pressure .'
+	            
+	            //Addind maps
+	            map.addLayers([
+	            mapnik, 
+	            '. $display_map_stations_layers .' 
+	            '. $display_map_clouds_layers .' 
+	            '. $display_map_precipitation_layers .' 
+	            '. $display_map_snow_layers .' 
+	            '. $display_map_wind_layers .' 
+	            '. $display_map_temperature_layers .' 
+	            '. $display_map_pressure_layers .' 
+	            city]);
+	            map.setCenter(
+	              new OpenLayers.LonLat(lon, lat).transform(
+	                new OpenLayers.Projection("EPSG:4326"),
+	                map.getProjectionObject()
+	              ), '. $wpcloudy_map_zoom .'
+	            );    
+	          });
+	        </script>
+	      ';
+      }
+      $wpcloudy_current_weather   						=   get_bypass_display_current_weather($attr,$content);
+      $wpcloudy_weather       							=   get_bypass_display_weather($attr,$content);
+      $wpcloudy_date_temp       						=   get_bypass_display_date_temp($attr,$content);
+      $wpcloudy_wind          							=   get_bypass_display_wind($attr,$content);
+      $wpcloudy_humidity        						=   get_bypass_display_humidity($attr,$content);
+      $wpcloudy_pressure        						=   get_bypass_display_pressure($attr,$content);
+      $wpcloudy_cloudiness      						=   get_bypass_display_cloudiness($attr,$content);
+      $wpcloudy_precipitation     						=   get_bypass_display_precipitation($attr,$content);
+      $wpcloudy_temperature_min_max 					= 	get_bypass_temp($attr,$content);
+      $wpcloudy_size          							= 	get_bypass_size($attr,$content);
+        
+      $wpcloudy_skin            						=   get_post_meta($id,'_wpcloudy_skin',true);
+      $wpcloudy_css3_anims      						= 	get_bypass_disable_css3_anims($attr,$content);
+
+
+
+
+
+	$wpc_html_container_start = '
+      <!-- WP Cloudy : WordPress weather plugin v'.WPCLOUDY_VERSION.' - http://wpcloudy.com/ -->
+      <div id="wpc-weather" class="wpc-'.$id.' '. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'; font-family:'. wpc_css_webfont($attr,$content) .'">';
+      
+      if ( wpc_check_active_plugin() == '1' ) {
+        wpc_icons_pack($attr,$content);
+      }
+
+      if(function_exists('wpc_geolocation_form')) {
+        if ( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes') { 
+          $wpc_html_geolocation .=  wpc_geolocation_form($attr,$content);
+        }
+      }
+      
+      if( $wpcloudy_current_weather ) {
+        $wpc_html_now_start           .= $display_now_start;
+        $wpc_html_now_location_name       .= $display_now_location_name;
+        $wpc_html_display_now_time_symbol     .= $display_now_time_symbol;
+        $wpc_html_display_now_time_temperature  .= $display_now_time_temperature;
+        $wpc_html_now_end             .= $display_now_end;
+        
+      }
+      
+      if( $wpcloudy_weather ) {
+        $wpc_html_weather .= $display_weather;
+      }
+  
+      if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == 'yes' ) {
+        $wpc_html_today_temp_start  .= $display_today_min_max_start;
+        $wpc_html_today_temp_day  .= $display_today_min_max_day;
+        $wpc_html_today_sun       .= $display_today_sun;
+        $wpc_html_today_temp_end  .= $display_today_min_max_end;
+
+      }      
+      
+      if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness || $wpcloudy_precipitation ) {
+        
+        $wpc_html_infos_start .= '<div class="infos">';
+
+        if( $wpcloudy_wind ) {
+          $wpc_html_infos_wind      .= $display_wind;
+        }
+        
+        if( $wpcloudy_humidity ) {
+          $wpc_html_infos_humidity    .= $display_humidity;
+        } 
+        
+        if( $wpcloudy_pressure ) {
+          $wpc_html_infos_pressure    .= $display_pressure;
+        } 
+        
+        if( $wpcloudy_cloudiness ) {
+          $wpc_html_infos_cloudiness    .= $display_cloudiness;
+        }
+        
+        if( $wpcloudy_precipitation ) {
+          $wpc_html_infos_precipitation   .= $display_precipitation;
+        }  
+        
+        $wpc_html_infos_end .= '</div>';
+      
+      };
+      if( $wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd =='' ) {
+        
+        $wpc_html_hour_start .= '<div class="hours" style="border-color:'. $wpcloudy_meta_border_color .';">';
+              
+        $wpc_html_hour = array( $display_hours_[1], $display_hours_[2], $display_hours_[3], $display_hours_[4], $display_hours_[5] );
+        
+        $wpc_html_hour_end .= '</div>';
+      } 
+
+      if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) {
+      
+        $wpc_html_forecast_start .= '<div class="forecast">';
+        
+        $wpc_html_forecast = array( $display_forecast_[1], $display_forecast_[2], $display_forecast_[3], $display_forecast_[4], $display_forecast_[5], $display_forecast_[6], $display_forecast_[7], $display_forecast_[8], $display_forecast_[9], $display_forecast_[10], $display_forecast_[11], $display_forecast_[12], $display_forecast_[13], $display_forecast_[14], $display_forecast_[15] );
+        
+        $wpc_html_forecast_end .= '</div>';
+
+      }
+
+      if ($wpcloudy_map =='yes') {
+        
+        $wpc_html_map .= $display_map;
+      }
+
+      if (isset($display_custom_css)) {
+        $wpc_html_custom_css .= $display_custom_css;
+      }
+      
+      if ($wpcloudy_css3_anims == '1') {
         $wpc_html_css3_anims .= '<style>
-              .wpc-'.$wpc_id.' {
+              .wpc-'.$id.' * {
                 /*CSS transitions*/
                 -o-transition-property: none !important;
                 -moz-transition-property: none !important;
@@ -1062,1321 +2209,91 @@ function wpc_get_my_weather_id($attr) {
               }
               </style>
             ';
-          echo $wpc_html_css3_anims;
+      }
+      if (!$wpcloudy_css3_anims == '1') {
+        wp_enqueue_style('wpcloudy-anim');
       }
       
-     if ($wpcloudy_css3_anims != 'yes') {
-    	wp_enqueue_style('wpcloudy-anim');
-    }
-
-    //Map
-      if ($wpcloudy_map == 'yes') {
+      if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'metric') {
+        $wpc_html_temp_unit_metric .= '<style>
+              #wpc-weather.small .now .time_temperature:after,
+              #wpc-weather .forecast .temp_max:after,
+              #wpc-weather .forecast .temp_min:after,
+              #wpc-weather .hours .temperature:after,
+              #wpc-weather .today .time_temperature_max:after,
+              #wpc-weather .today .time_temperature_min:after,
+              #wpc-weather .now .time_temperature:after,
+              #wpc-weather .today .time_temperature_ave:after {
+                content:"\e03e";
+                font-family: "Climacons-Font";
+                font-size: 24px;
+                margin-left: 2px;
+                vertical-align: top;
+              }
+              </style>
+        ';
+      }
       
-        if ($wpcloudy_map_js == '0') { //Webhost
-        
-          wp_register_script("openlayers_js", plugins_url('js/OpenLayers.js', __FILE__), array('wpc-ajax'), "1.0", false);
-          wp_register_script("owm_js", plugins_url('js/OWM.OpenLayers.1.3.6.js', __FILE__), array('openlayers_js'), "1.0", false); 
-          wp_register_style("openlayers_css", plugins_url('css/wpcloudy-map.min.css', __FILE__));
-          wp_enqueue_script("openlayers_js");     
-          wp_enqueue_script("owm_js");
-          wp_enqueue_style("openlayers_css");
+      if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'imperial') {
+        $wpc_html_temp_unit_imperial .= '<style>
+              #wpc-weather.small .now .time_temperature:after,
+              #wpc-weather .forecast .temp_max:after,
+              #wpc-weather .forecast .temp_min:after,
+              #wpc-weather .hours .temperature:after,
+              #wpc-weather .today .time_temperature_max:after,
+              #wpc-weather .today .time_temperature_min:after,
+              #wpc-weather .now .time_temperature:after,
+              #wpc-weather .today .time_temperature_ave:after {
+                content: "\e03f";
+                font-family: "Climacons-Font";
+                font-size: 24px;
+                margin-left: 2px;
+                vertical-align: top;
+              }
+              </style>
+        ';
+      }
+      
+      if ($wpcloudy_display_owm_link == 'yes') {
+        $wpc_html_owm_link .= '<div class="wpc-link-owm">'.$owm_link.'</div>';
+      }
+      if ($wpcloudy_display_last_update == 'yes') {
+        $wpc_html_last_update .= '<div class="wpc-last-update">'.$last_update.'</div>';
+      }
 
-        }
-        if ($wpcloudy_map_js == '1') { //OpenWeatherMap
-          wp_register_script("openlayers_js_owm", "http://openlayers.org/api/OpenLayers.js", array('wpc-ajax'), "1.0", false);
-          wp_register_script("owm_js_owm", "http://openweathermap.org/js/OWM.OpenLayers.1.3.6.js", array('openlayers_js_owm'), "1.0", false);  
-          wp_enqueue_script("openlayers_js_owm");     
-          wp_enqueue_script("owm_js_owm");
-        } 
+    $wpc_html_container_end .= '</div>';
+
+	$wpc_theme_files = array('wp-cloudy/content-wpcloudy.php');
+    $wpc_exists_in_theme = locate_template($wpc_theme_files, false);
+          
+    if ( $wpc_exists_in_theme != '' ) {//Bypass dans theme actif
+      ob_start();
+      include get_template_directory() . '/wp-cloudy/content-wpcloudy.php';
+      return ob_get_clean();
     }
-
-	return '<div id="wpc-weather-id" class="wpc-weather-id" data_id="'.$wpc_id.'" data-map="'.$wpcloudy_map.'" data-detect-geolocation="'.$_COOKIE['wpc-detectGeolocation'].'" data-manual-geolocation="'.$_COOKIE['wpc-manualGeolocation'].'" data-wpc-lat="'.$_COOKIE['wpc-posLat'].'" data-wpc-lon="'.$_COOKIE['wpc-posLon'].'" data-wpc-city-id="'.$_COOKIE['wpc-posCityId'].'" data-wpc-city-name="'.$_COOKIE['wpc-posCityName'].'" data-custom-font="'.wpc_css_webfont($attr).'"></div>';
+    elseif ( $wpcloudy_skin == 'theme1' ) {//Theme1 actif
+      ob_start();
+      include dirname( __FILE__ ) . '/template/content-wpcloudy-theme1.php';
+      return ob_get_clean();
+    }
+    elseif ( $wpcloudy_skin == 'theme2' ) {//Theme2 actif
+      ob_start();
+      include dirname( __FILE__ ) . '/template/content-wpcloudy-theme2.php';
+      return ob_get_clean();
+    } 
+    else { //Default
+      ob_start();
+      include ( dirname( __FILE__ ) . '/template/content-wpcloudy.php');
+      return ob_get_clean();
+    }
+    $data['wpc_weather'] = $wpc_html_container_start;
+	wp_send_json_success( $data );
 }
 
-add_action( 'wp_ajax_wpc_get_my_weather', 'wpc_get_my_weather' );
-add_action( 'wp_ajax_nopriv_wpc_get_my_weather', 'wpc_get_my_weather' );
 
-function wpc_get_my_weather($attr) {
-
-	if ( isset( $_POST['wpc_param'] ) ) {
-		$id = $_POST['wpc_param'];
-
-		require_once dirname( __FILE__ ) . '/wpcloudy-options.php';
-		require_once dirname( __FILE__ ) . '/wpcloudy-anim.php';
-		
-		
-		if ( isset( $_POST['wpc_param3']) || isset($_POST['wpc_param4']) || isset($_POST['wpc_param5']) || isset($_POST['wpc_param6']) || isset($_POST['wpc_param7']) || isset($_POST['wpc_param8']) || isset($_POST['wpc_param9']) ) {
-			$_COOKIE['wpc-detectGeolocation'] 		= $_POST['wpc_param3'];
-			$_COOKIE['wpc-manualGeolocation'] 		= $_POST['wpc_param4'];
-			$_COOKIE['wpc-posLat']					= $_POST['wpc_param5'];
-			$_COOKIE['wpc-posLon'] 					= $_POST['wpc_param6'];
-			$_COOKIE['wpc-posCityId'] 				= $_POST['wpc_param7'];
-			$_COOKIE['wpc-posCityName'] 			= $_POST['wpc_param8'];
-			$wpc_css_webfont 						= $_POST['wpc_param9'];
-		}
-
-	  	$wpc_id 									= $id;
-	  	$wpcloudy_city                				= get_post_meta($id,'_wpcloudy_city',true);
-		$wpcloudy_city_name             			= get_post_meta($id,'_wpcloudy_city_name',true);
-		$wpcloudy_state_name            			= get_post_meta($id,'_wpcloudy_state_name',true);
-		$wpcloudy_country_code            			= get_post_meta($id,'_wpcloudy_country_code',true);
-		$wpcloudy_custom_field_city_name      		= get_post_meta($id,'_wpcloudy_custom_field_city_name',true);
-		$wpcloudy_custom_field_country_name    		= get_post_meta($id,'_wpcloudy_custom_field_country_name',true);
-		$wpcloudy_custom_field_city_value    		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_city_name, true );
-		$wpcloudy_custom_field_country_value    	= get_post_meta( get_the_ID(), $wpcloudy_custom_field_country_name, true );
-		$wpcloudy_custom_field_lat_name       		= get_post_meta($id,'_wpcloudy_custom_field_lat_name',true);
-		$wpcloudy_custom_field_lon_name       		= get_post_meta($id,'_wpcloudy_custom_field_lon_name',true);
-		$wpcloudy_custom_field_lat_value      		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_lat_name, true );
-		$wpcloudy_custom_field_lon_value      		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_lon_name, true );
-		$wpcloudy_lat_lon_cf_value          		= get_post_meta( $id, '_wpcloudy_lat_lon_cf', true );
-		$wpcloudy_unit                				= get_bypass_unit($attr);
-		$wpcloudy_lang                				= get_bypass_lang($attr);
-		$wpcloudy_map_height            			= get_bypass_map_height($attr);
-		$wpcloudy_map_opacity          				= get_bypass_map_opacity($attr);
-		$wpcloudy_map_zoom              			= get_bypass_map_zoom($attr);
-		$wpcloudy_map_zoom_wheel          			= get_bypass_map_zoom_wheel($attr);
-		$wpcloudy_map_stations            			= get_bypass_map_layers_stations($attr);
-		$wpcloudy_map_clouds            			= get_bypass_map_layers_clouds($attr);
-		$wpcloudy_map_precipitation         		= get_bypass_map_layers_precipitation($attr);
-		$wpcloudy_map_snow              			= get_bypass_map_layers_snow($attr);
-		$wpcloudy_map_wind              			= get_bypass_map_layers_wind($attr);
-		$wpcloudy_map_temperature         			= get_bypass_map_layers_temperature($attr);
-		$wpcloudy_map_pressure            			= get_bypass_map_layers_pressure($attr);
-		$wpcloudy_meta_border_color         		= get_bypass_color_border($attr);
-		$wpcloudy_meta_bg_color           			= get_bypass_color_background($attr);
-		$wpcloudy_meta_text_color         			= get_bypass_color_text($attr);
-		$wpcloudy_date_format          				= get_bypass_date($attr);
-		$wpcloudy_sunrise_sunset          			= get_bypass_display_sunrise_sunset($attr);
-		$wpcloudy_display_temp_unit         		= get_bypass_display_temp_unit($attr);
-		$wpcloudy_display_length_days_names     	= get_bypass_length_days_names($attr);
-		$wpcloudy_enable_geolocation        		= get_post_meta($id,'_wpcloudy_enable_geolocation',true);
-		$wpcloudy_enable_geolocation_custom_field   = get_post_meta($id,'_wpcloudy_enable_geolocation_custom_field',true);
-		$wpc_advanced_set_cache_time        		= get_admin_cache_time();
-		$wpc_advanced_set_disable_cache       		= get_admin_disable_cache();
-		$wpc_advanced_api_key           			= wpc_get_api_key();
-		$wpcloudy_display_owm_link          		= get_bypass_owm_link($attr);
-		$wpcloudy_display_last_update       		= get_bypass_last_update($attr);
-		$wpcloudy_icons_pack            			= get_post_meta($id,'_wpcloudy_icons',true);
-		$wpcloudy_hour_forecast     				= get_bypass_display_hour_forecast($attr);
-		$wpcloudy_hour_forecast_nd    				= get_bypass_display_hour_forecast_nd($attr);
-		$wpcloudy_forecast        					= get_bypass_display_forecast($attr);
-		$wpcloudy_forecast_nd     					= get_bypass_forecast_nd($attr); 
-
-		//variable declarations
-		$wpcloudy_select_city_name          		= null;
-		$display_today_min_max_day          		= null;
-		$display_today_sun              			= null;
-		$display_today_min_max_start        		= null;
-		$display_today_min_max_end          		= null;      
-		$wpc_html_now_start             			= null;
-		$wpc_html_now_location_name         		= null;
-		$wpc_html_display_now_time_symbol       	= null;
-		$wpc_html_display_now_time_temperature    	= null;
-		$wpc_html_now_end               			= null;
-		$wpc_html_custom_css            			= null;
-		$wpc_html_temp_unit_metric          		= null;
-		$wpc_html_container_end           			= null;
-		$wpc_html_weather               			= null;
-		$wpc_html_today_temp_start          		= null;
-		$wpc_html_today_temp_day          			= null;
-		$wpc_html_today_time_temp_min         		= null;
-		$wpc_html_today_time_temp_max         		= null;
-		$wpc_html_today_sun             			= null;
-		$wpc_html_today_temp_end          			= null;
-		$wpc_html_infos_start             			= null;
-		$wpc_html_infos_wind            			= null;
-		$wpc_html_infos_humidity          			= null;
-		$wpc_html_infos_pressure          			= null;
-		$wpc_html_infos_cloudiness          		= null;
-		$wpc_html_infos_precipitation         		= null;
-		$wpc_html_infos_end             			= null;
-		$wpc_html_hour                				= null;
-		$wpc_html_hour_start            			= null;
-		$wpc_html_hour_end              			= null;
-		$wpc_html_forecast              			= null;
-		$wpc_html_map                 				= null;
-		$wpc_html_temp_unit_imperial        		= null;
-		$wpc_html_css3_anims            			= null;
-		$wpcloudy_select_city_name          		= null;
-		$display_today_min_max_day          		= null;
-		$display_today_sun              			= null;
-		$display_today_min_max_end          		= null;
-		$wpc_html_now_start             			= null;
-		$wpc_html_now_location_name         		= null;
-		$wpc_html_display_now_time_symbol       	= null;
-		$wpc_html_display_now_time_temperature    	= null;
-		$wpc_html_now_end               			= null;
-		$wpc_html_weather               			= null;
-		$wpc_html_today_temp_start          		= null;
-		$wpc_html_today_temp_day          			= null;
-		$wpc_html_today_sun             			= null;
-		$wpc_html_today_time_temp_min         		= null;
-		$wpc_html_today_time_temp_max         		= null;
-		$wpc_html_today_temp_end          			= null;
-		$wpc_html_forecast_start          			= null;
-		$wpc_html_forecast_end            			= null;
-		$wpc_html_temp_unit_metric          		= null;
-		$wpc_html_container_end           			= null;
-		$wpc_html_geolocation           			= null;
-		$wpcloudy_owm_link              			= null;
-		$wpcloudy_last_update           			= null;
-		$wpc_html_owm_link              			= null;
-		$wpc_html_last_update           			= null;
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		if (isset($_COOKIE['wpc-posLat'])) {
-			$wpcloudy_lat         					= $_COOKIE['wpc-posLat'];
-		}
-		if (isset($_COOKIE['wpc-posLon'])) {
-			$wpcloudy_lon         					= $_COOKIE['wpc-posLon'];
-		}
-		if (isset($_COOKIE['wpc-posCityId'])) {
-			$wpcloudy_select_city_id  				= $_COOKIE['wpc-posCityId'];
-		}
-		if (isset($_COOKIE['wpc-posCityName'])) {
-			$wpcloudy_select_city_name  			= $_COOKIE['wpc-posCityName'];
-		}
-	  
-		switch ($wpcloudy_lang) {
-			case "fr":
-			  $wpcloudy_lang_owm      = 'fr';
-			  break;
-			case "en":
-			  $wpcloudy_lang_owm      = 'en';
-			  break;
-			case "ru":
-			  $wpcloudy_lang_owm      = 'ru';
-			  break;
-			case "it":
-			  $wpcloudy_lang_owm      = 'it';
-			  break;
-			case "sp":
-			  $wpcloudy_lang_owm      = 'sp';
-			  break;
-			case "ua":
-			  $wpcloudy_lang_owm      = 'ua';
-			  break;
-			case "de":
-			  $wpcloudy_lang_owm      = 'de';
-			  break;
-			case "pt":
-			  $wpcloudy_lang_owm      = 'pt';
-			  break;
-			case "ro":
-			  $wpcloudy_lang_owm      = 'ro';
-			  break;
-			case "pl":
-			  $wpcloudy_lang_owm      = 'pl';
-			  break;
-			case "fi":
-			  $wpcloudy_lang_owm      = 'fi';
-			  break;
-			case "nl":
-			  $wpcloudy_lang_owm      = 'nl';
-			  break;
-			case "bg":
-			  $wpcloudy_lang_owm      = 'bg';
-			  break;
-			case "se":
-			  $wpcloudy_lang_owm      = 'se';
-			  break;
-			case "zh_tw":
-			  $wpcloudy_lang_owm      = 'zh_tw';
-			  break;
-			case "zh_cn":
-			  $wpcloudy_lang_owm      = 'zh_cn';
-			  break;
-			case "tr":
-			  $wpcloudy_lang_owm      = 'tr';
-			  break;
-			case "cz":
-			  $wpcloudy_lang_owm      = 'cz';
-			  break;
-			case "gl":
-			  $wpcloudy_lang_owm      = 'gl';
-			  break;
-			case "vi":
-			  $wpcloudy_lang_owm      = 'vi';
-			  break;
-			case "ar":
-			  $wpcloudy_lang_owm      = 'ar';
-			  break;
-			case "mk":
-			  $wpcloudy_lang_owm      = 'mk';
-			  break;
-			case "sk":
-			  $wpcloudy_lang_owm      = 'sk';
-			  break;
-		}
-
-        //XML : Current weather   
-        if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' ) { 
-        	$use_errors = libxml_use_internal_errors(true);
-        	$myweather_current = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
-        	if (!$myweather_current) {
-          		_e('Unable to retrieve weather data','wpcloudy');
-			}
-          	libxml_clear_errors();
-			libxml_use_internal_errors($use_errors);
-        }
-
-        elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' )  {
-        	$use_errors = libxml_use_internal_errors(true);
-        	$myweather_current = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
-        	if (!$myweather_current) {
-          		_e('Unable to retrieve weather data','wpcloudy');
-			}
-          	libxml_clear_errors();
-			libxml_use_internal_errors($use_errors);
-        }
-
-        else {
-	        if ($wpc_advanced_set_disable_cache == '1') {
-	        	$use_errors = libxml_use_internal_errors(true);
-	          	$myweather_current = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
-	          	if (!$myweather_current) {
-	          		_e('Unable to retrieve weather data','wpcloudy');
-				}
-	          	libxml_clear_errors();
-				libxml_use_internal_errors($use_errors);
-	        }
-	        else {    
-		      	if( $wpcloudy_enable_geolocation == 'yes' 
-		        && $wpcloudy_enable_geolocation_custom_field == 'yes' 
-		        && $wpcloudy_lat_lon_cf_value == 'no' 
-		        && false === ( $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {            
-			        $use_errors = libxml_use_internal_errors(true);
-			        $myweather_current = wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_custom_field_city_value,$wpcloudy_custom_field_country_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
-			    	if ($myweather_current) {
-						set_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
-						$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) );
-					}
-		          	libxml_clear_errors();
-					libxml_use_internal_errors($use_errors);
-	        	}
-	        	elseif( $wpcloudy_enable_geolocation == 'yes' 
-				&& $wpcloudy_enable_geolocation_custom_field == 'yes' 
-				&& $wpcloudy_lat_lon_cf_value == 'yes'
-				&& false === ( $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {            
-			        $use_errors = libxml_use_internal_errors(true);
-			        $myweather_current = wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?lat=$wpcloudy_custom_field_lat_value&lon=$wpcloudy_custom_field_lon_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"); 
-			        if ($myweather_current) {
-						set_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
-			        	$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ) );
-					}
-			        libxml_clear_errors();
-					libxml_use_internal_errors($use_errors);
-				}
-	          	elseif ( (($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes')
-				|| ($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes')
-				|| ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes'))
-				&& false === ( $myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ) ) ) ) {  
-		            $use_errors = libxml_use_internal_errors(true);
-		            $myweather_current = wp_remote_fopen("http://api.openweathermap.org/data/2.5/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
-		            if (!$myweather_current) {
-		            }else {
-						set_transient( 'myweather_current_'.$wpc_id, (string)$myweather_current, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
-	            		$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ) );
-					}
-	            	libxml_clear_errors();
-					libxml_use_internal_errors($use_errors);
-	      		}
-	      		else {
-		            if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes') {
-		              	$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id.'_'.get_the_ID() ));
-		            }
-		            else {
-		              	$myweather_current = @simplexml_load_string(get_transient( 'myweather_current_'.$wpc_id ) );
-		            }
-	          	}
-	        }
-	    }
-
-        //XML : Hourly weather      
-        if( $wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd =='' ) {
-          	if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' ) {
-            	$use_errors = libxml_use_internal_errors(true);
-            	$myweather = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
-            	if (!$myweather) {
-          			_e('Unable to retrieve weather data','wpcloudy');
-				}
-				libxml_clear_errors();
-				libxml_use_internal_errors($use_errors);
-          	}
-          	elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' )  {
-            	$use_errors = libxml_use_internal_errors(true);
-            	$myweather = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm"));
-            	if (!$myweather) {
-          			_e('Unable to retrieve weather data','wpcloudy');
-				}
-				libxml_clear_errors();
-				libxml_use_internal_errors($use_errors);
-          	}
-          	else {
-        		if ($wpc_advanced_set_disable_cache == '1') {
-              		$use_errors = libxml_use_internal_errors(true);
-              		$myweather = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm", array( 'timeout' => 10)));
-              		if (!$myweather) {
-	          			_e('Unable to retrieve weather data','wpcloudy');
-					}
-					libxml_clear_errors();
-					libxml_use_internal_errors($use_errors);
-            	}
-            	else {  
-	              	if( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_city_value !='' && $wpcloudy_custom_field_country_value !='' && false === ( $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) ) ) )  { 
-                		$use_errors = libxml_use_internal_errors(true);
-                		$myweather = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_custom_field_city_value,$wpcloudy_custom_field_country_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
-	                	if ($myweather) {
-							set_transient( 'myweather_'.$wpc_id.'_'.get_the_ID(), (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );		                	
-	                		$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) );
-						}
-						libxml_clear_errors();
-						libxml_use_internal_errors($use_errors);
-	              	}
-	              	elseif( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_lat_value !='' && $wpcloudy_custom_field_lon_value !='' && false === ( $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {  
-	                	$use_errors = libxml_use_internal_errors(true);
-	                	$myweather = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast?lat=$wpcloudy_custom_field_lat_value&lon=$wpcloudy_custom_field_lon_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
-		                if ($myweather) {
-		                	set_transient( 'myweather_'.$wpc_id.'_'.get_the_ID(), (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
-		                	$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) );
-	                	}
-	                	libxml_clear_errors();
-						libxml_use_internal_errors($use_errors);
-	              	}
-	              	elseif ( (($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes')
-	                || ($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes')
-	                || ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes'))
-	                && false === ( $myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ) ) ) ) {
-	                	$use_errors = libxml_use_internal_errors(true);
-	                	$myweather = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/weather?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm");
-		                if (!$myweather) {
-		                }else {
-		                	set_transient( 'myweather_'.$wpc_id, (string)$myweather, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );		                	
-		                	$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ) );
-	                	}
-	                	libxml_clear_errors();
-						libxml_use_internal_errors($use_errors);
-	              	}
-	              	else {
-	            		if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes') {
-	                  		$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id.'_'.get_the_ID() ) );
-	                	}
-		            	else {
-		                	$myweather = @simplexml_load_string(get_transient( 'myweather_'.$wpc_id ) );         
-		                }
-		            }
-		        }
-		    }
-		}
-
-        //XML : 16-days forecast
-        if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) {  
-      		if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' ) {
-            	$use_errors = libxml_use_internal_errors(true);
-            	$myweather_sevendays = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?lat=$wpcloudy_lat&lon=$wpcloudy_lon&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16"));
-            	if (!$myweather_sevendays) {
-          			_e('Unable to retrieve weather data','wpcloudy');
-                } 
-            	libxml_clear_errors();
-				libxml_use_internal_errors($use_errors);
-        	}
-        	elseif( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes' )  {
-            	$use_errors = libxml_use_internal_errors(true);
-            	$myweather_sevendays = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?id=$wpcloudy_select_city_id&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16"));
-            	if (!$myweather_sevendays) {
-          			_e('Unable to retrieve weather data','wpcloudy');
-                } 
-            	libxml_clear_errors();
-				libxml_use_internal_errors($use_errors);
-        	}
-          	else {
-            	if ($wpc_advanced_set_disable_cache == '1') {
-              		$use_errors = libxml_use_internal_errors(true);
-              		$myweather_sevendays = @simplexml_load_string(wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16", array( 'timeout' => 10)));  
-              		if (!$myweather_sevendays) {
-	          			_e('Unable to retrieve weather data','wpcloudy');
-	                } 
-	            	libxml_clear_errors();
-					libxml_use_internal_errors($use_errors);
-              	}
-            	else {    
-	              	if( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_city_value !='' && $wpcloudy_custom_field_country_value !='' && false === ( $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {             
-	                	$use_errors = libxml_use_internal_errors(true);
-	                	$myweather_sevendays = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_custom_field_city_value,$wpcloudy_custom_field_country_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16");
-	                	if ($myweather_sevendays) {
-		                	set_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );	                	
-	                		$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) );
-		                }
-		            	libxml_clear_errors();
-						libxml_use_internal_errors($use_errors);
-	              	}
-	              	elseif( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes' && $wpcloudy_custom_field_lat_value !='' && $wpcloudy_custom_field_lon_value !='' && false === ( $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) ) ) )  {              
-	                	$use_errors = libxml_use_internal_errors(true);
-	                	$myweather_sevendays = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?lat=$wpcloudy_custom_field_lat_value&lon=$wpcloudy_custom_field_lon_value&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16");
-	                	if ($myweather_sevendays) {
-		                	set_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID(), (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );
-		                	$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) );
-	              		}
-	              		libxml_clear_errors();
-						libxml_use_internal_errors($use_errors);
-	              	}
-	             	elseif ( (($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes')
-	                || ($wpcloudy_enable_geolocation != 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes')
-	                || ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes'))
-	                && false === ( $myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ) ) ) ) {  
-	             		$use_errors = libxml_use_internal_errors(true);
-	                	$myweather_sevendays = wp_remote_fopen("http://api.openweathermap.org/data/2.5/forecast/daily?q=$wpcloudy_city,$wpcloudy_state_name,$wpcloudy_country_code&mode=xml&units=$wpcloudy_unit&APPID=$wpc_advanced_api_key&lang=$wpcloudy_lang_owm&cnt=16");
-	                	if (!$myweather_sevendays) {
-
-	                	} else {
-		                	set_transient( 'myweather_sevendays_'.$wpc_id, (string)$myweather_sevendays, $wpc_advanced_set_cache_time * MINUTE_IN_SECONDS );	                	
-		                	$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ) );
-	              		}
-	              		libxml_clear_errors();
-						libxml_use_internal_errors($use_errors);
-	              	}
-	            	else {
-	                	if ($wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field == 'yes') {  
-	                  		$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id.'_'.get_the_ID() ) );
-	                	}
-		                else {
-		                	$myweather_sevendays = @simplexml_load_string(get_transient( 'myweather_sevendays_'.$wpc_id ) );
-		                }
-	            	}
-	        	}
-	    	}
-		}   
-
-		$location_name      					= $myweather_current->city[0]['name'];  
-		$location_latitude    					= $myweather_current->city[0]->coord[0]['lat'];
-		$location_longitude   					= $myweather_current->city[0]->coord[0]['lon'];
-		$time_symbol      						= $myweather_current->weather[0]['value'];
-		$time_symbol_number   					= $myweather_current->weather[0]['number'];
-		$time_wind_direction  					= $myweather_current->wind[0]->direction[0]['code'];
-		$time_wind_speed    					= $myweather_current->wind[0]->speed[0]['value'];
-		$time_humidity      					= $myweather_current->humidity[0]['value'];
-		$time_pressure      					= $myweather_current->pressure[0]['value'];
-		$time_cloudiness    					= $myweather_current->clouds[0]['value'];
-		$time_precipitation   					= $myweather_current->precipitation[0]['value'];
-		$time_temperature   					= (ceil($myweather_current->temperature[0]['value']));
-		$owm_link         						= '<a href="http://openweathermap.org/city/'.$myweather_current->city[0]['id'].'" target="_blank" title="'.__('Full weather on OpenWeatherMap','wpcloudy').'">'.__('Full weather','wpcloudy').'</a>'; 
-		$last_update      						= __('Last update: ','wpcloudy').date("M-j-Y, H:i", strtotime($myweather_current->lastupdate[0]['value'])); 
-
-		if ($wpcloudy_date_format =='12') {
-			$wpcloudy_date_php_sun    = 'h:i A';
-			$wpcloudy_date_php_hours = 'h A';
-		}
-
-		if ($wpcloudy_date_format =='24') { 
-			$wpcloudy_date_php_sun    = 'H:i';
-			$wpcloudy_date_php_hours  = 'H';    
-		}
-
-		$utc_time_wp      						= get_option('gmt_offset') * 60;      
-
-		$sun_rise       						= (string)date($wpcloudy_date_php_sun, strtotime($myweather_current->city[0]->sun[0]['rise'])+60*$utc_time_wp);
-		$sun_set        						= (string)date($wpcloudy_date_php_sun, strtotime($myweather_current->city[0]->sun[0]['set'])+60*$utc_time_wp);
-		          
-		$today_day_feed   						= strftime("%w", strtotime($myweather_current->lastupdate[0]['value']));
-
-		switch ($today_day_feed) {
-	        case "0":
-	          	$today_day      = __('Sunday','wpcloudy');
-	          	break;
-	        case "1":
-	          	$today_day      = __('Monday','wpcloudy');
-	          	break;
-	        case "2":
-	        	$today_day      = __('Tuesday','wpcloudy');
-	          	break;
-	        case "3":
-	        	$today_day      = __('Wednesday','wpcloudy');
-	          	break;
-	        case "4":
-	        	$today_day      = __('Thursday','wpcloudy');
-	          	break;
-	        case "5":
-	        	$today_day      = __('Friday','wpcloudy');
-	          	break;
-	        case "6":
-	        	$today_day      = __('Saturday','wpcloudy');
-	          	break;
-	  	}
-	       
-	      
-		//Hours loop
-		if( $wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd =='' ) {  
-			$hour_temp_0      			= (ceil($myweather->forecast[0]->time[0]->temperature[0]['value']));
-		  	$hour_symbol_0      			= $myweather->forecast[0]->time[0]->symbol[0]['name'];
-		  	$hour_symbol_number_0 		= $myweather->forecast[0]->time[0]->symbol[0]['number'];	      
-		  
-		  	$i=1;
-		  
-		  	while ($i<=5) {
-		    	$hour_time_[$i]       		= date($wpcloudy_date_php_hours, strtotime($myweather->forecast[0]->time[$i]['from']));
-		    	$hour_temp_[$i]       		= (ceil($myweather->forecast[0]->time[$i]->temperature[0]['value']));
-		    	$hour_symbol_[$i]     		= $myweather->forecast[0]->time[$i]->symbol[0]['name'];
-		    	$hour_symbol_number_[$i]  	= $myweather->forecast[0]->time[$i]->symbol[0]['number'];
-		    	$i++;
-		  	} 
-		}
-		
-		//Forecast loop
-		if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) { 
-			      
-			$i=1;
-			  
-			while ($i<=15) {
-				$forecast_day_feed      = strftime('%w', strtotime($myweather_sevendays->forecast[0]->time[$i]['day']));
-			  		if ($wpcloudy_display_length_days_names == 'yes') {
-			        	switch ($forecast_day_feed) {
-				        	case "0":
-				          		$wpcloudy_display_length_days_names_php      = __('Sun','wpcloudy');
-				          		break;
-				        	case "1":
-				          		$wpcloudy_display_length_days_names_php      = __('Mon','wpcloudy');
-				          		break;
-				        	case "2":
-				        		$wpcloudy_display_length_days_names_php      = __('Tue','wpcloudy');
-				          		break;
-				        	case "3":
-				        		$wpcloudy_display_length_days_names_php      = __('Wed','wpcloudy');
-				          		break;
-				        	case "4":
-				        		$wpcloudy_display_length_days_names_php      = __('Thu','wpcloudy');
-				          		break;
-				        	case "5":
-				        		$wpcloudy_display_length_days_names_php      = __('Fri','wpcloudy');
-				          		break;
-				        	case "6":
-				        		$wpcloudy_display_length_days_names_php      = __('Sat','wpcloudy');
-				    	      	break;
-				  		}
-			     	}
-			      	elseif ($wpcloudy_display_length_days_names == 'no') {
-			        	switch ($forecast_day_feed) {
-				        	case "0":
-				          		$wpcloudy_display_length_days_names_php      = __('Sunday','wpcloudy');
-				          		break;
-				        	case "1":
-				          		$wpcloudy_display_length_days_names_php      = __('Monday','wpcloudy');
-				          		break;
-				        	case "2":
-				        		$wpcloudy_display_length_days_names_php      = __('Tuesday','wpcloudy');
-				          		break;
-				        case "3":
-				        	$wpcloudy_display_length_days_names_php      = __('Wednesday','wpcloudy');
-				          	break;
-				        	case "4":
-				        		$wpcloudy_display_length_days_names_php      = __('Thursday','wpcloudy');
-				          		break;
-				        	case "5":
-				        		$wpcloudy_display_length_days_names_php      = __('Friday','wpcloudy');
-				          		break;
-				        	case "6":
-				        		$wpcloudy_display_length_days_names_php      = __('Saturday','wpcloudy');
-				          		break;
-				  		}
-			      	}
-			      	else {
-			        	switch ($forecast_day_feed) {
-				        	case "0":
-				          		$wpcloudy_display_length_days_names_php      = __('Sunday','wpcloudy');
-				          		break;
-				        	case "1":
-				          		$wpcloudy_display_length_days_names_php      = __('Monday','wpcloudy');
-				          		break;
-				        	case "2":
-				        		$wpcloudy_display_length_days_names_php      = __('Tuesday','wpcloudy');
-				          		break;
-				        	case "3":
-				        		$wpcloudy_display_length_days_names_php      = __('Wednesday','wpcloudy');
-				          		break;
-				        	case "4":
-				        		$wpcloudy_display_length_days_names_php      = __('Thursday','wpcloudy');
-				          		break;
-				        	case "5":
-				        		$wpcloudy_display_length_days_names_php      = __('Friday','wpcloudy');
-				          		break;
-				        	case "6":
-				        		$wpcloudy_display_length_days_names_php      = __('Saturday','wpcloudy');
-				          		break;
-				  		}
-			    	} 
-				    $forecast_day_[$i]      	= $wpcloudy_display_length_days_names_php;
-				    $forecast_number_[$i]   	= $myweather_sevendays->forecast[0]->time[$i]->symbol[0]['number'];
-				    $forecast_temp_min_[$i]   	= (round($myweather_sevendays->forecast[0]->time[$i]->temperature[0]['min']));
-				    $forecast_temp_max_[$i]   	= (round($myweather_sevendays->forecast[0]->time[$i]->temperature[0]['max']));
-				    $i++;
-			  	}
-			}
-
-			switch ($time_symbol_number) {
-
-			//sun
-			case "800":
-			  $time_symbol_svg = sun();
-			  $time_symbol_alt = '<span class="icon-sun"></span>';
-			  break;
-			case "801":
-			  $time_symbol_svg = cloudSun();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-sun"></span>';
-			  break;
-			case "802":
-			  $time_symbol_svg = cloud();
-			  $time_symbol_alt = '<span class="icon-cloud"></span>';
-			  break;
-			case "803":
-			  $time_symbol_svg = cloudFill();
-			  $time_symbol_alt = '<span class="icon-cloud icon-fill"></span>';
-			  break;
-			case "804":
-			  $time_symbol_svg = cloudFill();
-			  $time_symbol_alt = '<span class="icon-cloud icon-fill"></span>';
-			  break;
-			  
-			//rain
-			case "500":
-			  $time_symbol_svg = cloudDrizzleSun();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle icon-sunny"></span>';
-			  break;
-			case "501":
-			  $time_symbol_svg = cloudDrizzleSun();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle icon-sunny"></span>';
-			  break;
-			case "502":
-			  $time_symbol_svg = cloudDrizzle();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle"></span>';
-			  break;
-			case "503":
-			  $time_symbol_svg = cloudDrizzleSunAlt();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-drizzle icon-sunny"></span>';
-			  break;
-			case "504":
-			  $time_symbol_svg = cloudDrizzleAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "511":
-			  $time_symbol_svg = cloudRainSun();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-rainy icon-sunny"></span>';
-			  break;
-			case "520":
-			  $time_symbol_svg = cloudRain();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-rainy"></span>';
-			  break;
-			case "521":
-			  $time_symbol_svg = cloudSunRainAlt();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-showers icon-sunny"></span>';
-			  break;
-			case "522":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-showers"></span>';
-			  break;
-			  
-			//drizzle
-			case "300":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "301":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "302":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "310":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "311":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "312":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			case "321":
-			  $time_symbol_svg = cloudRainAlt();
-			  $time_symbol_alt = '<span class="icon-drizzle"></span>';
-			  break;
-			  
-			//snow
-			case "600":
-			  $time_symbol_svg = cloudSnowSun();
-			  $time_symbol_alt = '<span class="icon-snowy icon-sunny"></span>';
-			  break;
-			case "601":
-			  $time_symbol_svg = cloudSnow();
-			  $time_symbol_alt = '<span class="icon-snowy"></span>';
-			  break;
-			case "602":
-			  $time_symbol_svg = cloudSnowSunAlt();
-			  $time_symbol_alt = '<span class="icon-snowy icon-sunny"></span>';
-			  break;
-			case "611":
-			  $time_symbol_svg = cloudSnow();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-sleet"></span>';
-			  break;
-			case "621":
-			  $time_symbol_svg = cloudSnowAlt();
-			  $time_symbol_alt = '<span class="icon-snowy"></span>';
-			  break;
-			  
-			//atmosphere
-			case "701":
-			  $time_symbol_svg = cloudFogSunAlt();
-			  $time_symbol_alt = '<span class="icon-mist icon-sunny"></span>';
-			  break;
-			case "711":
-			  $time_symbol_svg = cloudFogAlt();
-			  $time_symbol_alt = '<span class="icon-mist"></span>';
-			  break;
-			case "721":
-			  $time_symbol_svg = cloudFogAlt();
-			  $time_symbol_alt = '<span class="icon-mist"></span>';
-			  break;
-			case "731":
-			  $time_symbol_svg = cloudFogSun();
-			  $time_symbol_alt = '<span class="icon-mist icon-sunny"></span>';
-			  break;
-			case "741":
-			  $time_symbol_svg = cloudFog();
-			  $time_symbol_alt = '<span class="icon-mist"></span>';
-			  break;
-			  
-			//extreme
-			case "900":
-			  $time_symbol_svg = tornado();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
-			  break;
-			case "901":
-			  $time_symbol_svg = wind();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
-			  break;
-			case "902":
-			  $time_symbol_svg = wind();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
-			  break;
-			case "905":
-			  $time_symbol_svg = wind();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-windy"></span>';
-			  break;
-			case "906":
-			  $time_symbol_svg = cloudHailAlt();
-			  $time_symbol_alt = '<span class="icon-basecloud"></span><span class="icon-hail"></span>';
-			  break;
-			  
-			//thunderstorm
-			case "200":
-			  $time_symbol_svg = cloudLightning();
-			  $time_symbol_alt = '<span class="icon-thunder"></span>';
-			  break;
-			}
-
-			$wpcloudy_custom_css  = get_post_meta($id,'_wpcloudy_custom_css',true);
-
-			if ($wpcloudy_custom_css) {
-			$display_custom_css   = '
-			  <style>
-			    '. $wpcloudy_custom_css .'
-			  </style>
-			';
-			}
-
-			if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2' ) {
-				$display_now_start = '<div class="now">';
-				$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
-				$display_now_time_symbol = '<div class="time_symbol climacon" style="fill:'. wpc_css_text_color($wpcloudy_meta_text_color) .'">'. $time_symbol_svg .'</div>';
-				$display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
-				$display_now_end = '</div>';
-			} elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
-				$display_now_start = '<div class="now">';
-				$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
-				$display_now_time_symbol = '<div class="time_symbol iconvault">'. $time_symbol_alt .'</div>';
-				$display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
-				$display_now_end = '</div>';
-			}
-			$display_weather = '
-			<div class="short_condition">'. $time_symbol .'</div>
-			';
-
-			$display_today_min_max_start  .=  '<div class="today">';
-			$display_today_min_max_day    .=  '<div class="day"><span class="wpc-highlight">'. $today_day .'</span> '. __( 'Today', 'wpcloudy' ) .'</div>';
-			$display_today_sun        .=  display_today_sunrise_sunset($wpcloudy_sunrise_sunset, $sun_rise, $sun_set);
-			$display_today_min_max_end    .=  '</div>';
-
-			$display_wind = '
-			<div class="wind">'. __( 'Wind', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_wind_direction .' '. $time_wind_speed .'</span></div>
-			';
-			$display_humidity = '
-			<div class="humidity">'. __( 'Humidity', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_humidity .' %</span></div>
-			';
-			$display_pressure = '
-			<div class="pressure">'. __( 'Pressure', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_pressure .' hPa</span></div>
-			';
-			$display_cloudiness = '
-			<div class="cloudiness">'. __( 'Cloudiness', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_cloudiness .' %</span></div>
-			';
-			if ($time_precipitation != '') {
-				$display_precipitation = '
-				<div class="precipitation">'. __( 'Precipitation', 'wpcloudy' ) .'<span class="wpc-highlight">'. $time_precipitation .' mm</span></div>
-				';
-			}
-			elseif ($time_precipitation == '') {
-				$display_precipitation = '
-				<div class="precipitation">'. __( 'Precipitation', 'wpcloudy' ) .'<span class="wpc-highlight">0 mm</span></div>
-				';
-			}
-
-			//Hours loop
-			if ($wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd == '' ) {
-				if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
-			    	$display_hours_0 = '
-				        <div class="first">
-					        <div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
-					        <div class="symbol climacon w'. $hour_symbol_number_0 .'"><span>'. $hour_symbol_0 .'</span></div>
-					        <div class="temperature"><span class="wpc-highlight">'. $hour_temp_0 .'</span></div>
-				        </div>
-				    ';
-			} elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
-			    $display_hours_0 = '
-			        <div class="first">
-						<div class="hour"><span class="wpc-highlight">'. __( 'Now', 'wpcloudy' ) .'</span></div>
-						<div class="symbol">
-							<div class="iconvault w'. $hour_symbol_number_0 .'"><span>'. $hour_symbol_0 .'</span></div>
-							<div class="iconvault2 w'. $hour_symbol_number_0 .'"></div>
-							<div class="iconvault3 w'. $hour_symbol_number_0 .'"></div>
-						</div>
-						<div class="temperature"><span class="wpc-highlight">'. $hour_temp_0 .'</span></div>
-			        </div>
-			    ';
-			}
-			  
-			$wpcloudy_class_hours = array(1 => "second", 2 => "third", 3 => "fourth", 4 => "fifth", 5 => "sixth");
-			  
-			$i=1;
-			while ($i<=5) { 
-			    if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
-					$display_hours_[$i] = '
-					<div class="'. $wpcloudy_class_hours[$i].'">
-						<div class="hour">'. $hour_time_[$i] .'</div>
-						<div class="symbol climacon w'. $hour_symbol_number_[$i] .'"><span>'. $hour_symbol_[$i] .'</span></div>
-						<div class="temperature">'. $hour_temp_[$i]. '</div>
-					</div>
-				';
-			    } elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
-			    	$display_hours_[$i] = '
-			        	<div class="'. $wpcloudy_class_hours[$i].'">
-							<div class="hour">'. $hour_time_[$i] .'</div>
-								<div class="symbol">
-									<div class="iconvault w'. $hour_symbol_number_[$i] .'"><span>'. $hour_symbol_[$i] .'</span></div>
-									<div class="iconvault2 w'. $hour_symbol_number_[$i] .'"></div>
-									<div class="iconvault3 w'. $hour_symbol_number_[$i] .'"></div>
-								</div>
-							<div class="temperature">'. $hour_temp_[$i]. '</div>
-						</div>
-			      	';
-			    }
-			$i++;
-			} 
-		}
-
-		//Forecast loop
-		if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) {
-			$wpcloudy_class_days = array(1 => "first", 2 => "second", 3 => "third", 4 => "fourth", 5 => "fifth", 6 => "sixth", 7 => "seventh", 8 => "eighth", 9 => "ninth", 10 => "tenth", 11 => "eleventh", 12 => "twelfth", 13 => "thirteenth", 14 => "fourteenth", 15 => "fifteenth");
-			  
-			$i=1;
-			while ($i<=15) { 
-				if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2') {
-			    	$display_forecast_[$i] = '  
-			       		<div class="'. $wpcloudy_class_days[$i].'">
-			          		<div class="day">'. $forecast_day_[$i] .'</div>
-			          		<div class="symbol climacon w'. $forecast_number_[$i] .'"></div>              
-			          		<div class="temp_min">'. $forecast_temp_min_[$i] .'</div>
-			          		<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_[$i] .'</span></div>
-			        	</div>
-			      	';
-			    }
-			    elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1'){
-			    	$display_forecast_[$i] = '  
-			        	<div class="'. $wpcloudy_class_days[$i].'">
-			          		<div class="day">'. $forecast_day_[$i] .'</div>
-			          		<div class="symbol">
-				            	<div class="iconvault w'. $forecast_number_[$i] .'"></div>
-				            	<div class="iconvault2 w'. $forecast_number_[$i] .'"></div>
-				            	<div class="iconvault3 w'. $forecast_number_[$i] .'"></div>
-			          		</div>
-			          		<div class="temp_min">'. $forecast_temp_min_[$i] .'</div>
-			          		<div class="temp_max"><span class="wpc-highlight">'. $forecast_temp_max_[$i] .'</span></div>
-			        	</div>
-			      	';
-			    }
-			    $i++;
-			}
-		}
-
-	    //Map
-		if ( isset( $_POST['wpc_param2'] ) ) {
-			$wpcloudy_map = $_POST['wpc_param2'];
-	      	if ($wpcloudy_map == 'yes') {
-		    	if ($wpcloudy_map_zoom_wheel == 'yes') {
-			        $wpcloudy_map_zoom_wheel = 'var i, l, c = map.getControlsBy( "zoomWheelEnabled", true );
-					for ( i = 0, l = c.length; i < l; i++ ) {
-			    		c[i].disableZoomWheel();
-					}';
-			    }
-		      
-		    	if( $wpcloudy_map_stations ) {
-		        	$display_map_stations         = 'var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");';
-		        	$display_map_stations_layers      = 'stations,';
-		      	}
-		      	else {
-		        	$display_map_stations         = '';
-		        	$display_map_stations_layers      = '';
-		      	};
-		      	if( $wpcloudy_map_clouds ) {
-		        	$display_map_clouds         = 'var layer_cloud = new OpenLayers.Layer.XYZ(
-		                              "clouds",
-		                                "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
-		                                {
-		                                  isBaseLayer: false,
-		                                  opacity: '. $wpcloudy_map_opacity .',
-		                                  sphericalMercator: true
-		                                }
-		                              );
-		                            ';
-		        	$display_map_clouds_layers        = 'layer_cloud,';
-		      	}
-		      	else {
-		        	$display_map_clouds           = '';
-		        	$display_map_clouds_layers        = '';
-		      	};
-		      	if( $wpcloudy_map_precipitation ) {
-		        	$display_map_precipitation        = 'var layer_precipitation = new OpenLayers.Layer.XYZ(
-		                              "precipitation",
-		                                "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
-		                                {
-		                                  isBaseLayer: false,
-		                                  opacity: '. $wpcloudy_map_opacity .',
-		                                  sphericalMercator: true
-		                                }
-		                              );
-		                            ';
-		        	$display_map_precipitation_layers   = 'layer_precipitation,';
-		      	}
-		      	else {
-		        	$display_map_precipitation        = '';
-		        	$display_map_precipitation_layers     = '';
-		      	};
-		      	if( $wpcloudy_map_snow ) {
-		        	$display_map_snow           = 'var layer_snow = new OpenLayers.Layer.XYZ(
-		                              "snow",
-		                                "http://${s}.tile.openweathermap.org/map/snow/${z}/${x}/${y}.png", 
-		                                {
-		                                  isBaseLayer: false,
-		                                  opacity: '. $wpcloudy_map_opacity .',
-		                                  sphericalMercator: true
-		                                }
-		                              );
-		                            ';
-		        	$display_map_snow_layers        = 'layer_snow,';
-		      	}
-		      	else {
-		        	$display_map_snow           = '';
-		        	$display_map_snow_layers        = '';
-		      	};
-		      	if( $wpcloudy_map_wind ) {
-		        	$display_map_wind             = 'var layer_wind = new OpenLayers.Layer.XYZ(
-		                              "wind",
-		                                "http://${s}.tile.openweathermap.org/map/wind/${z}/${x}/${y}.png",
-		                                {
-		                                  isBaseLayer: false,
-		                                  opacity: '. $wpcloudy_map_opacity .',
-		                                  sphericalMercator: true
-		                                }
-		                              );
-		                            ';
-		        	$display_map_wind_layers        = 'layer_wind,';
-		      	}
-		      	else {
-		        	$display_map_wind           = '';
-		        	$display_map_wind_layers        = '';
-		      	};
-		      	if( $wpcloudy_map_temperature ) {
-		        	$display_map_temperature        = 'var layer_temp = new OpenLayers.Layer.XYZ(
-		                              "temp",
-		                                "http://${s}.tile.openweathermap.org/map/temp/${z}/${x}/${y}.png",
-		                                {
-		                                  isBaseLayer: false,
-		                                  opacity: '. $wpcloudy_map_opacity .',
-		                                  sphericalMercator: true
-		                                }
-		                              );
-		                            ';
-		        	$display_map_temperature_layers     = 'layer_temp,';
-		      	}
-		      	else {
-		        	$display_map_temperature        = '';
-		        	$display_map_temperature_layers     = '';
-		      	};
-		      	if( $wpcloudy_map_pressure ) {
-		        	$display_map_pressure         = 'var layer_pressure = new OpenLayers.Layer.XYZ(
-		                              "pressure",
-		                                "http://${s}.tile.openweathermap.org/map/pressure/${z}/${x}/${y}.png",
-		                                {
-		                                  isBaseLayer: false,
-		                                  opacity: '. $wpcloudy_map_opacity .',
-		                                  sphericalMercator: true
-		                                }
-		                              );
-		                            ';
-		        	$display_map_pressure_layers      = 'layer_pressure,';
-		      	}
-		      	else {
-		        	$display_map_pressure           = '';
-		        	$display_map_pressure_layers      = '';
-		      	};
-		      	if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-detectGeolocation']=='1' ) { 
-		        	$wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
-		        	$wpcloudy_map_lon = $_COOKIE['wpc-posLon'];		      
-		      	}		      
-		      	if( $wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' ) { 
-		        	$wpcloudy_map_lat = $_COOKIE['wpc-posLat'];
-		        	$wpcloudy_map_lon = $_COOKIE['wpc-posLon'];
-		      	}
-		      	else {
-		        	$wpcloudy_map_lat = $location_latitude;
-		        	$wpcloudy_map_lon = $location_longitude;
-		      	}
-		      	$display_map = '        
-			        <div id="wpc-map-container">  
-			          <div id="wpc-map" style="height: '. $wpcloudy_map_height .'px"></div>
-			        </div>
-			        <script type="text/javascript">
-			        	jQuery(document).ready( function() {
-			            //Center of map
-			            var lat = '. $wpcloudy_map_lat .'; 
-			            var lon = '. $wpcloudy_map_lon .';
-			            var lonlat = new OpenLayers.LonLat(lon, lat);
-			              var map = new OpenLayers.Map("wpc-map");
-			            // Create overlays
-			            //  OSM
-			            var mapnik = new OpenLayers.Layer.OSM();
-			            
-			            '. $wpcloudy_map_zoom_wheel .'
-			            
-			            // Stations
-			            '. $display_map_stations .'
-
-			            // Current weather
-			            var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
-			            
-			            // Clouds
-			            '. $display_map_clouds .'
-			            
-			            // Precipitation
-			            '. $display_map_precipitation .'
-			            
-			            // Snow
-			            '. $display_map_snow .'
-			            
-			            // Wind
-			            '. $display_map_wind .'
-			            
-			            // Temperature
-			            '. $display_map_temperature .'
-			            
-			            // Pressure
-			            '. $display_map_pressure .'
-			            
-			            //Addind maps
-			            map.addLayers([
-			            mapnik, 
-			            '. $display_map_stations_layers .' 
-			            '. $display_map_clouds_layers .' 
-			            '. $display_map_precipitation_layers .' 
-			            '. $display_map_snow_layers .' 
-			            '. $display_map_wind_layers .' 
-			            '. $display_map_temperature_layers .' 
-			            '. $display_map_pressure_layers .' 
-			            city]);
-			            map.setCenter(
-			              new OpenLayers.LonLat(lon, lat).transform(
-			                new OpenLayers.Projection("EPSG:4326"),
-			                map.getProjectionObject()
-			              ), '. $wpcloudy_map_zoom .'
-			            );    
-			          });
-			        </script>
-			    ';
-			}
-		}
-		$wpcloudy_current_weather   						=   get_bypass_display_current_weather($attr);
-		$wpcloudy_weather       							=   get_bypass_display_weather($attr);
-		$wpcloudy_date_temp       							=   get_bypass_display_date_temp($attr);
-		$wpcloudy_wind          							=   get_bypass_display_wind($attr);
-		$wpcloudy_humidity        							=   get_bypass_display_humidity($attr);
-		$wpcloudy_pressure        							=   get_bypass_display_pressure($attr);
-		$wpcloudy_cloudiness      							=   get_bypass_display_cloudiness($attr);
-		$wpcloudy_precipitation     						=   get_bypass_display_precipitation($attr);
-		$wpcloudy_temperature_min_max 						= 	get_bypass_temp($attr);
-		$wpcloudy_size          							= 	get_bypass_size($attr);
-		$wpcloudy_skin            							=   get_post_meta($id,'_wpcloudy_skin',true);
-
-		$wpc_html_container_start = '
-		<!-- WP Cloudy : WordPress weather plugin v'.WPCLOUDY_VERSION.' - http://wpcloudy.com/ -->
-		<div id="wpc-weather" class="wpc-'.$id.' '. $wpcloudy_size .' '. $wpcloudy_skin .'" style="'. wpc_css_background($wpcloudy_meta_bg_color) .'; color:'. wpc_css_text_color($wpcloudy_meta_text_color) .';'. wpc_css_border($wpcloudy_meta_border_color) .'; font-family:'. $wpc_css_webfont .'">';
-	      
-    	if ( wpc_check_active_plugin() == '1' ) {
-	    	wpc_icons_pack($attr);
-	    }
-
-	    if(function_exists('wpc_geolocation_form')) {
-	    	if ( $wpcloudy_enable_geolocation == 'yes' && $wpcloudy_enable_geolocation_custom_field != 'yes') { 
-	        	$wpc_html_geolocation .=  wpc_geolocation_form($attr);
-	    	}
-	    }
-	      
-	    if( $wpcloudy_current_weather ) {
-	        $wpc_html_now_start           			.= $display_now_start;
-	        $wpc_html_now_location_name       		.= $display_now_location_name;
-	        $wpc_html_display_now_time_symbol    	.= $display_now_time_symbol;
-	        $wpc_html_display_now_time_temperature  .= $display_now_time_temperature;
-	        $wpc_html_now_end             			.= $display_now_end;
-	    }
-	     
-	    if( $wpcloudy_weather ) {
-	    	$wpc_html_weather .= $display_weather;
-	    }
-	  
-	    if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == 'yes' ) {
-	    	$wpc_html_today_temp_start  .= $display_today_min_max_start;
-	        $wpc_html_today_temp_day  .= $display_today_min_max_day;
-	        $wpc_html_today_sun       .= $display_today_sun;
-	        $wpc_html_today_temp_end  .= $display_today_min_max_end;
-	    }      
-	      
-	    if( $wpcloudy_wind || $wpcloudy_humidity || $wpcloudy_pressure || $wpcloudy_cloudiness || $wpcloudy_precipitation ) {    
-	    	$wpc_html_infos_start .= '<div class="infos">';
-
-	        if( $wpcloudy_wind ) {
-	        	$wpc_html_infos_wind      .= $display_wind;
-	        }
-	        
-	        if( $wpcloudy_humidity ) {
-	        	$wpc_html_infos_humidity    .= $display_humidity;
-	        } 
-	        
-	        if( $wpcloudy_pressure ) {
-	        	$wpc_html_infos_pressure    .= $display_pressure;
-	        } 
-	        
-	        if( $wpcloudy_cloudiness ) {
-	        	$wpc_html_infos_cloudiness    .= $display_cloudiness;
-	        }
-	        
-	        if( $wpcloudy_precipitation ) {
-	        	$wpc_html_infos_precipitation   .= $display_precipitation;
-	        }  
-	        
-	        $wpc_html_infos_end .= '</div>';  
-	    };
-	      
-	    if( $wpcloudy_hour_forecast && !$wpcloudy_hour_forecast_nd =='' ) {    
-	    	$wpc_html_hour_start .= '<div class="hours" style="border-color:'. $wpcloudy_meta_border_color .';">';      
-	        $wpc_html_hour = array( $display_hours_[1], $display_hours_[2], $display_hours_[3], $display_hours_[4], $display_hours_[5] );	        
-	        $wpc_html_hour_end .= '</div>';
-	    } 
-
-	    if ($wpcloudy_forecast && !$wpcloudy_forecast_nd == '' ) {  
-	    	$wpc_html_forecast_start .= '<div class="forecast">';
-	        $wpc_html_forecast = array( $display_forecast_[1], $display_forecast_[2], $display_forecast_[3], $display_forecast_[4], $display_forecast_[5], $display_forecast_[6], $display_forecast_[7], $display_forecast_[8], $display_forecast_[9], $display_forecast_[10], $display_forecast_[11], $display_forecast_[12], $display_forecast_[13], $display_forecast_[14], $display_forecast_[15] );
-	        $wpc_html_forecast_end .= '</div>';
-	    }
-
-	    if ( isset( $_POST['wpc_param2'] ) ) {
-			$wpcloudy_map = $_POST['wpc_param2'];
-		    if ($wpcloudy_map =='yes') {
-		        $wpc_html_map .= $display_map;
-		    }
-		}
-
-	    if (isset($display_custom_css)) {
-	    	$wpc_html_custom_css .= $display_custom_css;
-	    }
-	      
-	    if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'metric') {
-	    	$wpc_html_temp_unit_metric .= '
-	    		<style>
-	            	#wpc-weather.small .now .time_temperature:after,
-	              	#wpc-weather .forecast .temp_max:after,
-	              	#wpc-weather .forecast .temp_min:after,
-	              	#wpc-weather .hours .temperature:after,
-	              	#wpc-weather .today .time_temperature_max:after,
-	              	#wpc-weather .today .time_temperature_min:after,
-	              	#wpc-weather .now .time_temperature:after,
-	              	#wpc-weather .today .time_temperature_ave:after {
-		                content:"\e03e";
-		                font-family: "Climacons-Font";
-		                font-size: 24px;
-		                margin-left: 2px;
-		                vertical-align: top;
-	              	}
-	            </style>
-	        ';
-	    }
-	      
-	    if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'imperial') {
-	        $wpc_html_temp_unit_imperial .= '
-	        	<style>
-	            	#wpc-weather.small .now .time_temperature:after,
-	              	#wpc-weather .forecast .temp_max:after,
-	              	#wpc-weather .forecast .temp_min:after,
-	              	#wpc-weather .hours .temperature:after,
-	              	#wpc-weather .today .time_temperature_max:after,
-	              	#wpc-weather .today .time_temperature_min:after,
-	              	#wpc-weather .now .time_temperature:after,
-	              	#wpc-weather .today .time_temperature_ave:after {
-		                content: "\e03f";
-		                font-family: "Climacons-Font";
-		                font-size: 24px;
-		                margin-left: 2px;
-		                vertical-align: top;
-	              	}
-	            </style>
-	        ';
-	    }
-	      
-	    if ($wpcloudy_display_owm_link == 'yes') {
-	    	$wpc_html_owm_link .= '<div class="wpc-link-owm">'.$owm_link.'</div>';
-	    }
-	    if ($wpcloudy_display_last_update == 'yes') {
-	    	$wpc_html_last_update .= '<div class="wpc-last-update">'.$last_update.'</div>';
-	    }
-
-	    $wpc_html_container_end .= '</div>';
-
-		$wpc_theme_files = array('wp-cloudy/content-wpcloudy.php');
-	    $wpc_exists_in_theme = locate_template($wpc_theme_files, false);
-	          
-	    if ( $wpc_exists_in_theme != '' ) {//Bypass dans theme actif
-	      include get_template_directory() . '/wp-cloudy/content-wpcloudy.php';
-	    }
-	    elseif ( $wpcloudy_skin == 'theme1' ) {//Theme1 actif
-	      include dirname( __FILE__ ) . '/template/content-wpcloudy-theme1.php';
-	    }
-	    elseif ( $wpcloudy_skin == 'theme2' ) {//Theme2 actif
-	      include dirname( __FILE__ ) . '/template/content-wpcloudy-theme2.php';
-	    } 
-	    else { //Default
-	      include ( dirname( __FILE__ ) . '/template/content-wpcloudy.php');
-	    }
-	}
-	die();
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Fix shortcode bug in widget text
