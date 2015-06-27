@@ -31,18 +31,18 @@ function get_admin_unit() {
 	}
 };
 
-function get_unit($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
-		$wpc_unit_value = get_post_meta($id,'_wpcloudy_unit',true);
-		return $wpc_unit_value;
+function get_unit($attr) {
+	$id = (int)$_POST['wpc_param'];
+	$wpc_unit_value = get_post_meta($id,'_wpcloudy_unit',true);
+	return $wpc_unit_value;
 };
 
-function get_bypass_unit($attr,$content) {
+function get_bypass_unit($attr) {
 	if (get_admin_unit() && (get_admin_bypass_unit())) {
 		return get_admin_unit(); 
 	}
 	else {
-		return get_unit($attr,$content);
+		return get_unit($attr);
 	}
 }	
 //Bypass Date format
@@ -69,18 +69,18 @@ function get_admin_date() {
 	}
 };
 
-function get_date($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_date($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_date_value = get_post_meta($id,'_wpcloudy_date_format',true);
 		return $wpc_date_value;
 };
 
-function get_bypass_date($attr,$content) {
+function get_bypass_date($attr) {
 	if (get_admin_date() && (get_admin_bypass_date())) {
 		return get_admin_date(); 
 	}
 	else {
-		return get_date($attr,$content);
+		return get_date($attr);
 	}
 }	
 //Bypass Forecast Days
@@ -107,18 +107,18 @@ function get_admin_forecast_nd() {
 	}
 };
 
-function get_forecast_nd($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_forecast_nd($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_forecast_nd_value = get_post_meta($id,'_wpcloudy_forecast_nd',true);
 		return $wpc_forecast_nd_value;
 };
 
-function get_bypass_forecast_nd($attr,$content) {
+function get_bypass_forecast_nd($attr) {
 	if (get_admin_forecast_nd() && (get_admin_bypass_forecast_nd())) {
 		return get_admin_forecast_nd(); 
 	}
 	else {
-		return get_forecast_nd($attr,$content);
+		return get_forecast_nd($attr);
 	}
 }	
 
@@ -133,18 +133,18 @@ function get_admin_display_owm_link() {
 		}
 	}
 };
-function get_display_owm_link($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_owm_link($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpcloudy_display_owm_link_value = get_post_meta($id,'_wpcloudy_owm_link',true);
 		return $wpcloudy_display_owm_link_value;
 };
 
-function get_bypass_owm_link($attr,$content) {
+function get_bypass_owm_link($attr) {
 	if (get_admin_display_owm_link()) {
 		return get_admin_display_owm_link(); 
 	}
 	else {
-		return get_display_owm_link($attr,$content);
+		return get_display_owm_link($attr);
 	}
 }
 
@@ -159,21 +159,20 @@ function get_admin_display_last_udpate() {
 		}
 	}
 };
-function get_display_last_udpate($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_last_udpate($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpcloudy_display_last_update_value = get_post_meta($id,'_wpcloudy_last_update',true);
 		return $wpcloudy_display_last_update_value;
 };
 
-function get_bypass_last_update($attr,$content) {
+function get_bypass_last_update($attr) {
 	if (get_admin_display_last_udpate()) {
 		return get_admin_display_last_udpate(); 
 	}
 	else {
-		return get_display_last_udpate($attr,$content);
+		return get_display_last_udpate($attr);
 	}
 }
-
 //Disables CSS3 animations
 function get_admin_disable_css3_anims() {
 	$wpc_admin_disable_css3_anims_option = get_option("wpc_option_name");
@@ -185,18 +184,17 @@ function get_admin_disable_css3_anims() {
 		}
 	}
 };
-function get_disable_css3_anims($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
-		$wpcloudy_disable_anims_value = get_post_meta($id,'_wpcloudy_disable_anims',true);
+function get_disable_css3_anims($wpc_id) {
+		$wpcloudy_disable_anims_value = get_post_meta($wpc_id,'_wpcloudy_disable_anims',true);
 		return $wpcloudy_disable_anims_value;
 };
 
-function get_bypass_disable_css3_anims($attr,$content) {
+function get_bypass_disable_css3_anims($wpc_id) {
 	if (get_admin_disable_css3_anims()) {
-		return get_admin_disable_css3_anims(); 
+		return get_admin_disable_css3_anims();
 	}
 	else {
-		return get_disable_css3_anims($attr,$content);
+		return get_disable_css3_anims($wpc_id);
 	}
 }
 
@@ -209,6 +207,34 @@ function get_admin_map_js() {
 		if (isset($wpc_admin_map_js_option['wpc_map_js'])) {
 			return $wpc_admin_map_js_option['wpc_map_js'];
 		}
+	}
+};
+//Bypass Map
+function get_admin_bypass_map() {
+	$wpc_admin_bypass_map_option = get_option("wpc_option_name");
+	if ( ! empty ( $wpc_admin_bypass_map_option ) ) {
+		foreach ($wpc_admin_bypass_map_option as $key => $wpc_admin_bypass_map_value)
+			$options[$key] = $wpc_admin_bypass_map_value;
+		if (isset($wpc_admin_bypass_map_option['wpc_map_display'])) {
+			return $wpc_admin_bypass_map_option['wpc_map_display'];
+		}
+	}
+};
+
+function get_map($wpc_id) {
+		$wpc_map_value = get_post_meta($wpc_id,'_wpcloudy_map',true);
+		
+		if ($wpc_map_value == 'yes') {
+			return $wpc_map_value;
+		}
+};
+
+function get_bypass_map($wpc_id) {
+	if (get_admin_bypass_map()) {
+		return get_admin_bypass_map(); 
+	}
+	else {
+		return get_map($wpc_id);
 	}
 };
 
@@ -270,18 +296,18 @@ function get_admin_color_background() {
 	}
 };
 
-function get_color_background($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_color_background($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_bg_color_value = get_post_meta($id,'_wpcloudy_meta_bg_color',true);
 		return $wpc_bg_color_value;
 };
 
-function get_bypass_color_background($attr,$content) {
+function get_bypass_color_background($attr) {
 	if (get_admin_color_background()) {
 		return get_admin_color_background(); 
 	}
 	else {
-		return get_color_background($attr,$content);
+		return get_color_background($attr);
 	}
 }
 
@@ -298,18 +324,18 @@ function get_admin_color_text() {
 	}
 };
 
-function get_color_text($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_color_text($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_text_color_value = get_post_meta($id,'_wpcloudy_meta_txt_color',true);
 		return $wpc_text_color_value;
 };
 
-function get_bypass_color_text($attr,$content) {
+function get_bypass_color_text($attr) {
 	if (get_admin_color_text()) {
 		return get_admin_color_text(); 
 	}
 	else {
-		return get_color_text($attr,$content);
+		return get_color_text($attr);
 	}
 }
 
@@ -326,18 +352,18 @@ function get_admin_color_border() {
 	}
 };
 
-function get_color_border($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_color_border($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_color_border_value = get_post_meta($id,'_wpcloudy_meta_border_color',true);
 		return $wpc_color_border_value;
 };
 
-function get_bypass_color_border($attr,$content) {
+function get_bypass_color_border($attr) {
 	if (get_admin_color_border()) {
 		return get_admin_color_border(); 
 	}
 	else {
-		return get_color_border($attr,$content);
+		return get_color_border($attr);
 	}
 }
 
@@ -354,18 +380,18 @@ function get_admin_display_current_weather() {
 	}
 };
 
-function get_display_current_weather($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_current_weather($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_current_weather_value = get_post_meta($id,'_wpcloudy_current_weather',true);
 		return $wpc_display_current_weather_value;
 };
 
-function get_bypass_display_current_weather($attr,$content) {
+function get_bypass_display_current_weather($attr) {
 	if (get_admin_display_current_weather()) {
 		return get_admin_display_current_weather(); 
 	}
 	else {
-		return get_display_current_weather($attr,$content);
+		return get_display_current_weather($attr);
 	}
 }
 
@@ -382,18 +408,18 @@ function get_admin_display_weather() {
 	}
 };
 
-function get_display_weather($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_weather($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_weather_value = get_post_meta($id,'_wpcloudy_weather',true);
 		return $wpc_display_weather_value;
 };
 
-function get_bypass_display_weather($attr,$content) {
+function get_bypass_display_weather($attr) {
 	if (get_admin_display_weather()) {
 		return get_admin_display_weather(); 
 	}
 	else {
-		return get_display_weather($attr,$content);
+		return get_display_weather($attr);
 	}
 }
 
@@ -410,18 +436,18 @@ function get_admin_display_date_temp() {
 	}
 };
 
-function get_display_date_temp($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_date_temp($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_date_temp_value = get_post_meta($id,'_wpcloudy_date_temp',true);
 		return $wpc_display_date_temp_value;
 };
 
-function get_bypass_display_date_temp($attr,$content) {
+function get_bypass_display_date_temp($attr) {
 	if (get_admin_display_date_temp()) {
 		return get_admin_display_date_temp(); 
 	}
 	else {
-		return get_display_date_temp($attr,$content);
+		return get_display_date_temp($attr);
 	}
 }
 
@@ -438,18 +464,18 @@ function get_admin_display_sunrise_sunset() {
 	}
 };
 
-function get_display_sunrise_sunset($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_sunrise_sunset($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_sunrise_sunset_value = get_post_meta($id,'_wpcloudy_sunrise_sunset',true);
 		return $wpc_display_sunrise_sunset_value;
 };
 
-function get_bypass_display_sunrise_sunset($attr,$content) {
+function get_bypass_display_sunrise_sunset($attr) {
 	if (get_admin_display_sunrise_sunset()) {
 		return get_admin_display_sunrise_sunset(); 
 	}
 	else {
-		return get_display_sunrise_sunset($attr,$content);
+		return get_display_sunrise_sunset($attr);
 	}
 }
 
@@ -466,18 +492,18 @@ function get_admin_display_temp_unit() {
 	}
 };
 
-function get_display_temp_unit($attr,$content) {
-	extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_temp_unit($attr) {
+	$id = (int)$_POST['wpc_param'];
 	$wpc_display_temp_unit_value = get_post_meta($id,'_wpcloudy_display_temp_unit',true);
 	return $wpc_display_temp_unit_value;
 };
 
-function get_bypass_display_temp_unit($attr,$content) {
+function get_bypass_display_temp_unit($attr) {
 	if (get_admin_display_temp_unit()) {
 		return get_admin_display_temp_unit(); 
 	}
 	else {
-		return get_display_temp_unit($attr,$content);
+		return get_display_temp_unit($attr);
 	}
 }
 
@@ -494,18 +520,18 @@ function get_admin_display_wind() {
 	}
 };
 
-function get_display_wind($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_wind($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_wind_value = get_post_meta($id,'_wpcloudy_wind',true);
 		return $wpc_display_wind_value;
 };
 
-function get_bypass_display_wind($attr,$content) {
+function get_bypass_display_wind($attr) {
 	if (get_admin_display_wind()) {
 		return get_admin_display_wind(); 
 	}
 	else {
-		return get_display_wind($attr,$content);
+		return get_display_wind($attr);
 	}
 }
 
@@ -522,18 +548,18 @@ function get_admin_display_humidity() {
 	}
 };
 
-function get_display_humidity($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_humidity($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_humidity_value = get_post_meta($id,'_wpcloudy_humidity',true);
 		return $wpc_display_humidity_value;
 };
 
-function get_bypass_display_humidity($attr,$content) {
+function get_bypass_display_humidity($attr) {
 	if (get_admin_display_humidity()) {
 		return get_admin_display_humidity(); 
 	}
 	else {
-		return get_display_humidity($attr,$content);
+		return get_display_humidity($attr);
 	}
 }
 
@@ -550,18 +576,18 @@ function get_admin_display_pressure() {
 	}
 };
 
-function get_display_pressure($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_pressure($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_pressure_value = get_post_meta($id,'_wpcloudy_pressure',true);
 		return $wpc_display_pressure_value;
 };
 
-function get_bypass_display_pressure($attr,$content) {
+function get_bypass_display_pressure($attr) {
 	if (get_admin_display_pressure()) {
 		return get_admin_display_pressure(); 
 	}
 	else {
-		return get_display_pressure($attr,$content);
+		return get_display_pressure($attr);
 	}
 }
 
@@ -578,18 +604,18 @@ function get_admin_display_cloudiness() {
 	}
 };
 
-function get_display_cloudiness($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_cloudiness($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_cloudiness_value = get_post_meta($id,'_wpcloudy_cloudiness',true);
 		return $wpc_display_cloudiness_value;
 };
 
-function get_bypass_display_cloudiness($attr,$content) {
+function get_bypass_display_cloudiness($attr) {
 	if (get_admin_display_cloudiness()) {
 		return get_admin_display_cloudiness(); 
 	}
 	else {
-		return get_display_cloudiness($attr,$content);
+		return get_display_cloudiness($attr);
 	}
 }
 
@@ -606,18 +632,18 @@ function get_admin_display_precipitation() {
 	}
 };
 
-function get_display_precipitation($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_precipitation($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_precipitation_value = get_post_meta($id,'_wpcloudy_precipitation',true);
 		return $wpc_display_precipitation_value;
 };
 
-function get_bypass_display_precipitation($attr,$content) {
+function get_bypass_display_precipitation($attr) {
 	if (get_admin_display_precipitation()) {
 		return get_admin_display_precipitation(); 
 	}
 	else {
-		return get_display_precipitation($attr,$content);
+		return get_display_precipitation($attr);
 	}
 }
 
@@ -634,18 +660,18 @@ function get_admin_display_hour_forecast() {
 	}
 };
 
-function get_display_hour_forecast($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_hour_forecast($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_hour_forecast_value = get_post_meta($id,'_wpcloudy_hour_forecast',true);
 		return $wpc_display_hour_forecast_value;
 };
 
-function get_bypass_display_hour_forecast($attr,$content) {
+function get_bypass_display_hour_forecast($attr) {
 	if (get_admin_display_hour_forecast()) {
 		return get_admin_display_hour_forecast(); 
 	}
 	else {
-		return get_display_hour_forecast($attr,$content);
+		return get_display_hour_forecast($attr);
 	}
 }
 
@@ -672,18 +698,18 @@ function get_admin_display_hour_forecast_nd() {
 	}
 };
 
-function get_display_hour_forecast_nd($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_hour_forecast_nd($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_hour_forecast_nd_value = get_post_meta($id,'_wpcloudy_hour_forecast_nd',true);
 		return $wpc_display_hour_forecast_nd_value;
 };
 
-function get_bypass_display_hour_forecast_nd($attr,$content) {
+function get_bypass_display_hour_forecast_nd($attr) {
 	if (get_admin_display_hour_forecast_nd() && (get_admin_bypass_hour_forecast_nd())) {
 		return get_admin_display_hour_forecast_nd(); 
 	}
 	else {
-		return get_display_hour_forecast_nd($attr,$content);
+		return get_display_hour_forecast_nd($attr);
 	}
 }
 
@@ -711,18 +737,18 @@ function get_admin_display_temp() {
 	}
 };
 
-function get_display_temp($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_temp($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_temperature_min_max_value = get_post_meta($id,'_wpcloudy_temperature_min_max',true);
 		return $wpc_display_temperature_min_max_value;
 };
 
-function get_bypass_temp($attr,$content) {
+function get_bypass_temp($attr) {
 	if (get_admin_display_temp() && (get_admin_bypass_temp())) {
 		return get_admin_display_temp(); 
 	}
 	else {
-		return get_display_temp($attr,$content);
+		return get_display_temp($attr);
 	}
 };
 
@@ -751,18 +777,18 @@ function get_admin_display_length_days_names() {
 	}
 };
 
-function get_display_length_days_names($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_length_days_names($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpcloudy_short_days_names_value = get_post_meta($id,'_wpcloudy_short_days_names',true);
 		return $wpcloudy_short_days_names_value;
 };
 
-function get_bypass_length_days_names($attr,$content) {
+function get_bypass_length_days_names($attr) {
 	if (get_admin_bypass_length_days_names() && get_admin_display_length_days_names()) {
 		return get_admin_display_length_days_names(); 
 	}
 	else {
-		return get_display_length_days_names($attr,$content);
+		return get_display_length_days_names($attr);
 	}
 };
 
@@ -780,18 +806,18 @@ function get_admin_display_forecast() {
 	}
 };
 
-function get_display_forecast($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_display_forecast($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_display_forecast_value = get_post_meta($id,'_wpcloudy_forecast',true);
 		return $wpc_display_forecast_value;
 };
 
-function get_bypass_display_forecast($attr,$content) {
+function get_bypass_display_forecast($attr) {
 	if (get_admin_display_forecast()) {
 		return get_admin_display_forecast(); 
 	}
 	else {
-		return get_display_forecast($attr,$content);
+		return get_display_forecast($attr);
 	}
 };
 
@@ -820,50 +846,22 @@ function get_admin_size() {
 	}
 };
 
-function get_size($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_size($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_size_value = get_post_meta($id,'_wpcloudy_size',true);
 		return $wpc_size_value;
 };
 
-function get_bypass_size($attr,$content) {
+function get_bypass_size($attr) {
 	if (get_admin_unit() && (get_admin_bypass_size())) {
 		return get_admin_size(); 
 	}
 	else {
-		return get_size($attr,$content);
+		return get_size($attr);
 	}
 };
 
-//Bypass Map
-function get_admin_bypass_map() {
-	$wpc_admin_bypass_map_option = get_option("wpc_option_name");
-	if ( ! empty ( $wpc_admin_bypass_map_option ) ) {
-		foreach ($wpc_admin_bypass_map_option as $key => $wpc_admin_bypass_map_value)
-			$options[$key] = $wpc_admin_bypass_map_value;
-		if (isset($wpc_admin_bypass_map_option['wpc_map_display'])) {
-			return $wpc_admin_bypass_map_option['wpc_map_display'];
-		}
-	}
-};
 
-function get_map($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
-		$wpc_map_value = get_post_meta($id,'_wpcloudy_map',true);
-		
-		if ($wpc_map_value == 'yes') {
-			return $wpc_map_value;
-		}
-};
-
-function get_bypass_map($attr,$content) {
-	if (get_admin_bypass_map()) {
-		return get_admin_bypass_map(); 
-	}
-	else {
-		return get_map($attr,$content);
-	}
-};
 
 //Bypass Map Height
 function get_admin_bypass_map_height() {
@@ -877,18 +875,18 @@ function get_admin_bypass_map_height() {
 	}
 };
 
-function get_map_height($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_height($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_height_value = get_post_meta($id,'_wpcloudy_map_height',true);
 		return $wpc_map_height_value;
 };
 
-function get_bypass_map_height($attr,$content) {
+function get_bypass_map_height($attr) {
 	if (get_admin_bypass_map_height()) {
 		return get_admin_bypass_map_height(); 
 	}
 	else {
-		return get_map_height($attr,$content);
+		return get_map_height($attr);
 	}
 };
 
@@ -916,18 +914,18 @@ function get_admin_map_opacity() {
 	}
 };
 
-function get_map_opacity($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_opacity($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_opacity_value = get_post_meta($id,'_wpcloudy_map_opacity',true);
 		return $wpc_map_opacity_value;
 };
 
-function get_bypass_map_opacity($attr,$content) {
+function get_bypass_map_opacity($attr) {
 	if (get_admin_map_opacity() && (get_admin_bypass_map_opacity())) {
 		return get_admin_map_opacity(); 
 	}
 	else {
-		return get_map_opacity($attr,$content);
+		return get_map_opacity($attr);
 	}
 };
 
@@ -955,18 +953,18 @@ function get_admin_map_zoom() {
 	}
 };
 
-function get_map_zoom($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_zoom($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_zoom_value = get_post_meta($id,'_wpcloudy_map_zoom',true);
 		return $wpc_map_zoom_value;
 };
 
-function get_bypass_map_zoom($attr,$content) {
+function get_bypass_map_zoom($attr) {
 	if (get_admin_map_zoom() && (get_admin_bypass_map_zoom())) {
 		return get_admin_map_zoom(); 
 	}
 	else {
-		return get_map_zoom($attr,$content);
+		return get_map_zoom($attr);
 	}
 };
 
@@ -983,18 +981,18 @@ function get_admin_map_zoom_wheel() {
 	}
 };
 
-function get_map_zoom_wheel($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_zoom_wheel($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_zoom_wheel_value = get_post_meta($id,'_wpcloudy_map_zoom_wheel',true);
 		return $wpc_map_zoom_wheel_value;
 };
 
-function get_bypass_map_zoom_wheel($attr,$content) {
+function get_bypass_map_zoom_wheel($attr) {
 	if (get_admin_map_zoom_wheel()) {
 		return get_admin_map_zoom_wheel(); 
 	}
 	else {
-		return get_map_zoom_wheel($attr,$content);
+		return get_map_zoom_wheel($attr);
 	}
 };
 
@@ -1012,18 +1010,18 @@ function get_admin_map_layers_stations() {
 	}
 };
 
-function get_map_layers_stations($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_stations($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_stations_value = get_post_meta($id,'_wpcloudy_map_stations',true);
 		return $wpc_map_layers_stations_value;
 };
 
-function get_bypass_map_layers_stations($attr,$content) {
+function get_bypass_map_layers_stations($attr) {
 	if (get_admin_map_layers_stations()) {
 		return get_admin_map_layers_stations(); 
 	}
 	else {
-		return get_map_layers_stations($attr,$content);
+		return get_map_layers_stations($attr);
 	}
 };
 
@@ -1040,18 +1038,18 @@ function get_admin_map_layers_clouds() {
 	}
 };
 
-function get_map_layers_clouds($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_clouds($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_clouds_value = get_post_meta($id,'_wpcloudy_map_clouds',true);
 		return $wpc_map_layers_clouds_value;
 };
 
-function get_bypass_map_layers_clouds($attr,$content) {
+function get_bypass_map_layers_clouds($attr) {
 	if (get_admin_map_layers_clouds()) {
 		return get_admin_map_layers_clouds(); 
 	}
 	else {
-		return get_map_layers_clouds($attr,$content);
+		return get_map_layers_clouds($attr);
 	}
 };
 
@@ -1068,18 +1066,18 @@ function get_admin_map_layers_precipitation() {
 	}
 };
 
-function get_map_layers_precipitation($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_precipitation($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_precipitation_value = get_post_meta($id,'_wpcloudy_map_precipitation',true);
 		return $wpc_map_layers_precipitation_value;
 };
 
-function get_bypass_map_layers_precipitation($attr,$content) {
+function get_bypass_map_layers_precipitation($attr) {
 	if (get_admin_map_layers_precipitation()) {
 		return get_admin_map_layers_precipitation(); 
 	}
 	else {
-		return get_map_layers_precipitation($attr,$content);
+		return get_map_layers_precipitation($attr);
 	}
 };
 
@@ -1096,18 +1094,18 @@ function get_admin_map_layers_snow() {
 	}
 };
 
-function get_map_layers_snow($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_snow($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_snow_value = get_post_meta($id,'_wpcloudy_map_snow',true);
 		return $wpc_map_layers_snow_value;
 };
 
-function get_bypass_map_layers_snow($attr,$content) {
+function get_bypass_map_layers_snow($attr) {
 	if (get_admin_map_layers_snow()) {
 		return get_admin_map_layers_snow(); 
 	}
 	else {
-		return get_map_layers_snow($attr,$content);
+		return get_map_layers_snow($attr);
 	}
 };
 
@@ -1124,18 +1122,18 @@ function get_admin_map_layers_wind() {
 	}
 };
 
-function get_map_layers_wind($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_wind($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_wind_value = get_post_meta($id,'_wpcloudy_map_wind',true);
 		return $wpc_map_layers_wind_value;
 };
 
-function get_bypass_map_layers_wind($attr,$content) {
+function get_bypass_map_layers_wind($attr) {
 	if (get_admin_map_layers_wind()) {
 		return get_admin_map_layers_wind(); 
 	}
 	else {
-		return get_map_layers_wind($attr,$content);
+		return get_map_layers_wind($attr);
 	}
 };
 
@@ -1152,18 +1150,18 @@ function get_admin_map_layers_temperature() {
 	}
 };
 
-function get_map_layers_temperature($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_temperature($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_temperature_value = get_post_meta($id,'_wpcloudy_map_temperature',true);
 		return $wpc_map_layers_temperature_value;
 };
 
-function get_bypass_map_layers_temperature($attr,$content) {
+function get_bypass_map_layers_temperature($attr) {
 	if (get_admin_map_layers_temperature()) {
 		return get_admin_map_layers_temperature(); 
 	}
 	else {
-		return get_map_layers_temperature($attr,$content);
+		return get_map_layers_temperature($attr);
 	}
 };
 
@@ -1180,18 +1178,18 @@ function get_admin_map_layers_pressure() {
 	}
 };
 
-function get_map_layers_pressure($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_map_layers_pressure($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_map_layers_pressure_value = get_post_meta($id,'_wpcloudy_map_pressure',true);
 		return $wpc_map_layers_pressure_value;
 };
 
-function get_bypass_map_layers_pressure($attr,$content) {
+function get_bypass_map_layers_pressure($attr) {
 	if (get_admin_map_layers_pressure()) {
 		return get_admin_map_layers_pressure(); 
 	}
 	else {
-		return get_map_layers_pressure($attr,$content);
+		return get_map_layers_pressure($attr);
 	}
 };
 
@@ -1221,17 +1219,17 @@ function get_admin_lang() {
 	}
 };
 
-function get_lang($attr,$content) {
-		extract(shortcode_atts(array( 'id' => ''), $attr));
+function get_lang($attr) {
+		$id = (int)$_POST['wpc_param'];
 		$wpc_lang_value = get_post_meta($id,'_wpcloudy_lang',true);
 		return $wpc_lang_value;
 };
 
-function get_bypass_lang($attr,$content) {
+function get_bypass_lang($attr) {
 	if (get_admin_lang() && (get_admin_bypass_lang())) {
 		return get_admin_lang(); 
 	}
 	else {
-		return get_lang($attr,$content);
+		return get_lang($attr);
 	}
 }	

@@ -531,6 +531,14 @@ class wpc_options
             'wpc-settings-admin-advanced', // Page
             'wpc_setting_section_advanced' // Section           
         );
+
+        add_settings_field(
+            'wpc_advanced_modal_js', // ID
+           __("Disable Bootstrap Modal JS?","wpcloudy"), // Title
+            array( $this, 'wpc_advanced_modal_js_callback' ), // Callback
+            'wpc-settings-admin-advanced', // Page
+            'wpc_setting_section_advanced' // Section           
+        );
 		
 		//MAP SECTION =============================================================================
 
@@ -1363,8 +1371,8 @@ class wpc_options
 		$check = isset($options['wpc_advanced_disable_css3_anims']);
 		
         echo '<input id="wpc_advanced_disable_css3_anims" name="wpc_option_name[wpc_advanced_disable_css3_anims]" type="checkbox"';
-		if ('1' == $check) echo 'checked="yes"'; 
-		echo ' value="1"/>';
+		if ('yes' == $check) echo 'checked="yes"'; 
+		echo ' value="yes"/>';
 		echo '<label for="wpc_advanced_disable_css3_anims">'. __( 'Disable CSS3 animations, transformations and transitions?', 'wpcloudy' ) .'</label>';
 		 
 		if (isset($this->options['wpc_advanced_disable_css3_anims'])) {  
@@ -1461,17 +1469,32 @@ class wpc_options
 		printf(
 		'<input name="wpc_option_name[wpc_advanced_cache_time]" type="text" value="%s" />',
 		esc_attr( $this->options['wpc_advanced_cache_time'])
-		
 		);
 	}
 	
-	public function wpc_advanced_api_key_callback()
+    public function wpc_advanced_api_key_callback()
     {
-		printf(
-		'<input name="wpc_option_name[wpc_advanced_api_key]" type="text" value="%s" />',
-		esc_attr( $this->options['wpc_advanced_api_key'])
-		
-		);
+        printf(
+        '<input name="wpc_option_name[wpc_advanced_api_key]" type="text" value="%s" />',
+        esc_attr( $this->options['wpc_advanced_api_key'])
+        );
+    }	
+
+    public function wpc_advanced_modal_js_callback()
+    {
+
+        $options = get_option( 'wpc_option_name' );  
+        
+        $check = isset($options['wpc_advanced_modal_js']);
+        
+        echo '<input id="wpc_advanced_modal_js" name="wpc_option_name[wpc_advanced_modal_js]" type="checkbox"';
+        if ('yes' == $check) echo 'checked="yes"'; 
+        echo ' value="yes"/>';
+        echo '<label for="wpc_advanced_modal_js">'. __( 'Disable Bootstrap Modal JS? (disable this if you already include Bootstrap JS in your theme)', 'wpcloudy' ) .'</label>';
+        
+        if (isset($this->options['wpc_advanced_modal_js'])) {
+            esc_attr( $this->options['wpc_advanced_modal_js']);
+        }
 	}
 	
 	public function wpc_map_display_callback()
@@ -1481,8 +1504,8 @@ class wpc_options
 		$check = isset($options['wpc_map_display']);
 		
         echo '<input id="wpc_map_display" name="wpc_option_name[wpc_map_display]" type="checkbox"';
-		if ('1' == $check) echo 'checked="yes"'; 
-		echo ' value="1"/>';
+		if ('yes' == $check) echo 'checked="yes"'; 
+		echo ' value="yes"/>';
 		echo '<label for="wpc_map_display">'. __( 'Enable map on all weather?', 'wpcloudy' ) .'</label>';
 		
 		if (isset($this->options['wpc_map_display'])) {

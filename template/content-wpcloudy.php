@@ -76,7 +76,7 @@
 	
 	<!-- OWM Last Update -->
 	<?php echo $wpc_html_last_update; ?>
-		
+
 	<!-- CSS -->
 	<?php echo $wpc_html_custom_css; ?>
 	<?php echo $wpc_html_css3_anims; ?>
