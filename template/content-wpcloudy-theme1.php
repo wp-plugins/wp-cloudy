@@ -4,14 +4,6 @@
  *
  */
 ?>
-<?php
-
-
-wp_enqueue_script('jquery');
-wp_enqueue_script('wpc-flexslider-js');	
-wp_enqueue_style('wpc-flexslider-css');
-
-?>
 <div class="wpc-loading-spinner" style="display:none">
 	<img src="<?php echo plugins_url( 'img/ajax-loader.gif', dirname(__FILE__)); ?>" alt="loader"/>
 </div>
@@ -127,7 +119,7 @@ wp_enqueue_style('wpc-flexslider-css');
 	jQuery( ".wpc-btn-toggle-infos" ).click(function() {
 		jQuery( ".wpc-toggle-infos" ).toggleClass( "wpc-slide-down" );
 	});
-	jQuery(window).load(function() {
+	jQuery(window).ready(function() {
 		jQuery('.wpc-flexslider').flexslider({
 			namespace: "wpc-",
 			selector: ".wpc-slides > li",
