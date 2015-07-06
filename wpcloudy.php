@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.3
+Version: 3.3.1
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -870,7 +870,7 @@ function wpc_css_border($wpcloudy_meta_border_color) {
 	}
 };
 
-function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field ) {
+function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city_proper, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field ) {
 
 	if ($wpcloudy_enable_geolocation == 'yes' && $_COOKIE['wpc-manualGeolocation']=='1' && $wpcloudy_enable_geolocation_custom_field != 'yes') {	
 		return $wpcloudy_select_city_name;
@@ -887,8 +887,8 @@ function wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name,
 	if( $wpcloudy_city_name && $wpcloudy_enable_geolocation == '') {
 		return $wpcloudy_city_name;
 	}
-	if( $wpcloudy_city && $wpcloudy_enable_geolocation == '') {
-		return $wpcloudy_city;
+	if( $wpcloudy_city_proper && $wpcloudy_enable_geolocation == '') {
+		return $wpcloudy_city_proper;
 	}
 };
 
@@ -1123,10 +1123,11 @@ function wpc_get_my_weather($attr) {
 		}
 
 	  	$wpc_id 									= $id;
-	  	$wpcloudy_city                				= get_post_meta($id,'_wpcloudy_city',true);
+	  	$wpcloudy_city                				= str_replace(' ', '+', get_post_meta($id,'_wpcloudy_city',true));
+	  	$wpcloudy_city_proper          				= get_post_meta($id,'_wpcloudy_city',true);
 		$wpcloudy_city_name             			= get_post_meta($id,'_wpcloudy_city_name',true);
-		$wpcloudy_state_name            			= get_post_meta($id,'_wpcloudy_state_name',true);
-		$wpcloudy_country_code            			= get_post_meta($id,'_wpcloudy_country_code',true);
+		$wpcloudy_state_name            			= str_replace(' ', '+', get_post_meta($id,'_wpcloudy_state_name',true));
+		$wpcloudy_country_code            			= str_replace(' ', '+', get_post_meta($id,'_wpcloudy_country_code',true));
 		$wpcloudy_custom_field_city_name      		= get_post_meta($id,'_wpcloudy_custom_field_city_name',true);
 		$wpcloudy_custom_field_country_name    		= get_post_meta($id,'_wpcloudy_custom_field_country_name',true);
 		$wpcloudy_custom_field_city_value    		= get_post_meta( get_the_ID(), $wpcloudy_custom_field_city_name, true );
@@ -1895,13 +1896,13 @@ function wpc_get_my_weather($attr) {
 
 			if ($wpcloudy_icons_pack == 'default' || wpc_check_active_plugin() == '2' ) {
 				$display_now_start = '<div class="now">';
-				$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
+				$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city_proper, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
 				$display_now_time_symbol = '<div class="time_symbol climacon" style="fill:'. wpc_css_text_color($wpcloudy_meta_text_color) .'">'. $time_symbol_svg .'</div>';
 				$display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
 				$display_now_end = '</div>';
 			} elseif ($wpcloudy_icons_pack == 'forecast_font' && wpc_check_active_plugin() == '1') {
 				$display_now_start = '<div class="now">';
-				$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
+				$display_now_location_name = '<div class="location_name">'. wpcloudy_city_name($wpcloudy_city_name, $wpcloudy_city_proper, $location_name, $wpcloudy_select_city_name, $wpcloudy_enable_geolocation, $wpcloudy_enable_geolocation_custom_field, $wpcloudy_custom_field_city_value, $wpcloudy_custom_field_country_value, $wpcloudy_enable_geolocation_custom_field)  .'</div>';
 				$display_now_time_symbol = '<div class="time_symbol iconvault">'. $time_symbol_alt .'</div>';
 				$display_now_time_temperature = '<div class="time_temperature">'. $time_temperature .'</div>';
 				$display_now_end = '</div>';
