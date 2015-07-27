@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.3.1
+Version: 3.3.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -40,7 +40,7 @@ register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
 
-define( 'WPCLOUDY_VERSION', '3.3' );
+define( 'WPCLOUDY_VERSION', '3.3.2' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Shortcut settings page
@@ -1879,6 +1879,51 @@ function wpc_get_my_weather($attr) {
 			  
 			//thunderstorm
 			case "200":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+			
+			case "201":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+						
+			case "202":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+						
+			case "210":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+						
+			case "211":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+			
+			case "212":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+			
+			case "221":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+			
+			case "230":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+			
+			case "231":
+			  $time_symbol_svg = cloudLightning();
+			  $time_symbol_alt = '<span class="icon-thunder"></span>';
+			  break;
+			
+			case "232":
 			  $time_symbol_svg = cloudLightning();
 			  $time_symbol_alt = '<span class="icon-thunder"></span>';
 			  break;
