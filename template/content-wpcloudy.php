@@ -7,7 +7,7 @@
 <div class="wpc-loading-spinner" style="display:none">
 	<img src="<?php echo plugins_url( 'img/ajax-loader.gif', dirname(__FILE__)); ?>" alt="loader"/>
 </div>
-<?php echo $_COOKIE['wpc-detectGeolocation']; ?>
+
 <!-- Start #wpc-weather -->
 <?php echo $wpc_html_container_start; ?>
 	<!-- Geolocation Add-on -->

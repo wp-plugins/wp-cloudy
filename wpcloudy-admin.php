@@ -57,144 +57,189 @@ class wpc_options
         ?>      
         <?php $wpc_info_version = get_plugin_data( plugin_dir_path( __FILE__ ).'/wpcloudy.php'); ?>
         
-            <div id="wpcloudy-header">
-				<div id="wpcloudy-clouds">
-					<h3>
-						<?php _e( 'WP Cloudy', 'wpcloudy' ); ?>
-					</h3>
-					<span class="wpc-info-version"><?php print_r($wpc_info_version['Version']); ?></span>
-					<div id="wpcloudy-notice">
-						<p><?php _e( 'Not just another WordPress Weather plugin!', 'wpcloudy' ); ?></p>
-						<p class="small">
-							<a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank">
-								<div class="dashicons dashicons-wordpress"></div>
-								<?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?>
-							</a>
-							|
-							<a href="http://wpcloudy.com/" target="_blank">
-								<div class="dashicons dashicons-info"></div>
-								<?php _e( 'Plugin website', 'wpcloudy' ); ?>
-							</a>
-							|
-							<a href="http://twitter.com/wpcloudy" target="_blank">
-								<div class="dashicons dashicons-twitter"></div>
-								<?php _e( 'Follow us on Twitter!', 'wpcloudy' ); ?>
-							</a>
-						</p>
-					</div>
+        <div id="wpcloudy-header">
+			<div id="wpcloudy-clouds">
+				<h3>
+					<?php _e( 'WP Cloudy', 'wpcloudy' ); ?>
+				</h3>
+				<span class="wpc-info-version"><?php print_r($wpc_info_version['Version']); ?></span>
+				<div id="wpcloudy-notice">
+					<p><?php _e( 'Not just another WordPress Weather plugin!', 'wpcloudy' ); ?></p>
+					<p class="small">
+						<a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank">
+							<div class="dashicons dashicons-wordpress"></div>
+							<?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?>
+						</a>
+						|
+						<a href="http://wpcloudy.com/" target="_blank">
+							<div class="dashicons dashicons-info"></div>
+							<?php _e( 'Plugin website', 'wpcloudy' ); ?>
+						</a>
+						|
+						<a href="http://twitter.com/wpcloudy" target="_blank">
+							<div class="dashicons dashicons-twitter"></div>
+							<?php _e( 'Follow us on Twitter!', 'wpcloudy' ); ?>
+						</a>
+					</p>
 				</div>
 			</div>
+		</div>
 			
-            <form method="post" action="options.php" class="wpcloudy-settings">
-                <?php settings_fields( 'wpc_cloudy_option_group' ); ?>
-                
-                <div id="wpcloudy-tabs">
-	                <h2 class="nav-tab-wrapper hide-if-no-js">
-	                	<ul>
-							<li><a href="#tab_basic" class="nav-tab"><?php _e( 'Basic options', 'wpcloudy' ); ?></a></li>
-							<li><a href="#tab_display" class="nav-tab"><?php _e( 'Display options', 'wpcloudy' ); ?></a></li>
-							<li><a href="#tab_advanced" class="nav-tab"><?php _e( 'Advanced options', 'wpcloudy' ); ?></a></li>
-							<li><a href="#tab_map" class="nav-tab"><?php _e( 'Map options', 'wpcloudy' ); ?></a></li>
-							<li><a href="#tab_support" class="nav-tab"><?php _e( 'Support', 'wpcloudy' ); ?></a></li>
-	                	</ul>
-					</h2>
-	               
-					<div id="wpcloudy-tabs-settings">
-						<div class="wpc-tab" id="tab_basic"><?php do_settings_sections( 'wpc-settings-admin-basic' ); ?></div>
-						<div class="wpc-tab" id="tab_display"><?php do_settings_sections( 'wpc-settings-admin-display' ); ?></div>
-						<div class="wpc-tab" id="tab_advanced"><?php do_settings_sections( 'wpc-settings-admin-advanced' ); ?></div>
-						<div class="wpc-tab" id="tab_map"><?php do_settings_sections( 'wpc-settings-admin-map' ); ?></div>
-						<div class="wpc-tab" id="tab_support"><?php do_settings_sections( 'wpc-settings-admin-support' ); ?></div>
+        <?php
+            function wpc_settings_admin_export() {
+                ?>
+                <div id="wpc_export_form" class="metabox-holder">
+                    <div class="postbox">
+                        <h3><span><?php _e( 'Export Settings' ); ?></span></h3>
+                        <div class="inside">
+                            <p><?php _e( 'Export the plugin settings for this site as a .json file. This allows you to easily import the configuration into another site.' ); ?></p>
+                            <form method="post">
+                                <p><input type="hidden" name="wpc_action" value="wpc_export_settings" /></p>
+                                <p>
+                                    <?php wp_nonce_field( 'wpc_export_nonce', 'wpc_export_nonce' ); ?>
+                                    <?php submit_button( __( 'Export' ), 'secondary', 'submit', false ); ?>
+                                </p>
+                            </form>
+                        </div><!-- .inside -->
+                    </div><!-- .postbox -->
+
+                    <div class="postbox">
+                        <h3><span><?php _e( 'Import Settings' ); ?></span></h3>
+                        <div class="inside">
+                            <p><?php _e( 'Import the plugin settings from a .json file. This file can be obtained by exporting the settings on another site using the form above.' ); ?></p>
+                            <form method="post" enctype="multipart/form-data">
+                                <p>
+                                    <input type="file" name="wpc_import_file"/>
+                                </p>
+                                <p>
+                                    <input type="hidden" name="wpc_action" value="wpc_import_settings" />
+                                    <?php wp_nonce_field( 'wpc_import_nonce', 'wpc_import_nonce' ); ?>
+                                    <?php submit_button( __( 'Import' ), 'secondary', 'submit', false ); ?>
+                                </p>
+                            </form>
+                        </div><!-- .inside -->
+                    </div><!-- .postbox -->
+                </div><!-- .metabox-holder -->
+                <?php
+
+            }
+        ?>
+
+        <?php wpc_settings_admin_export(); ?>
+
+        <form method="post" action="options.php" class="wpcloudy-settings">
+            <?php settings_fields( 'wpc_cloudy_option_group' ); ?>
+            
+            <div id="wpcloudy-tabs">
+                <h2 class="nav-tab-wrapper hide-if-no-js">
+                	<ul>
+						<li><a href="#tab_basic" class="nav-tab"><?php _e( 'Basic', 'wpcloudy' ); ?></a></li>
+						<li><a href="#tab_display" class="nav-tab"><?php _e( 'Display', 'wpcloudy' ); ?></a></li>
+						<li><a href="#tab_advanced" class="nav-tab"><?php _e( 'Advanced', 'wpcloudy' ); ?></a></li>
+						<li><a href="#tab_map" class="nav-tab"><?php _e( 'Map', 'wpcloudy' ); ?></a></li>
+                        <li><a href="#tab_export" class="nav-tab"><?php _e( 'Import/Export', 'wpcloudy' ); ?></a></li>
+						<li><a href="#tab_support" class="nav-tab"><?php _e( 'Support', 'wpcloudy' ); ?></a></li>
+                	</ul>
+				</h2>
+               
+				<div id="wpcloudy-tabs-settings">
+					<div class="wpc-tab" id="tab_basic"><?php do_settings_sections( 'wpc-settings-admin-basic' ); ?></div>
+					<div class="wpc-tab" id="tab_display"><?php do_settings_sections( 'wpc-settings-admin-display' ); ?></div>
+					<div class="wpc-tab" id="tab_advanced"><?php do_settings_sections( 'wpc-settings-admin-advanced' ); ?></div>
+					<div class="wpc-tab" id="tab_map"><?php do_settings_sections( 'wpc-settings-admin-map' ); ?></div>
+                    <div class="wpc-tab" id="tab_export"></div>
+					<div class="wpc-tab" id="tab_support"><?php do_settings_sections( 'wpc-settings-admin-support' ); ?></div>
+				</div>
+            </div>
+            <script>jQuery("#wpc_export_form").detach().appendTo('#tab_export')</script>    
+             <?php submit_button( __( 'Save changes' ), 'primary', 'submit', false ); ?>
+        </form>
+
+        <div class="wpcloudy-sidebar">	
+        
+        	<div id="wpcloudy-cache" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
+				<h3><?php _e('WP Cloudy cache','wpcloudy'); ?></h3>
+				<div class="wpcloudy-module-description">  
+					<div class="module-image">
+						<div class="dashicons dashicons-trash"></div>
+						<p><span class="module-image-badge"><?php _e('cache system','wpcloudy'); ?></span></p>
 					</div>
-                </div>
-                
-				<?php submit_button(); ?>
-            </form>
-            <div class="wpcloudy-sidebar">	
-            
-            	<div id="wpcloudy-cache" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
-					<h3><?php _e('WP Cloudy cache','wpcloudy'); ?></h3>
-					<div class="wpcloudy-module-description">  
-						<div class="module-image">
-							<div class="dashicons dashicons-trash"></div>
-							<p><span class="module-image-badge"><?php _e('cache system','wpcloudy'); ?></span></p>
-						</div>
-						
-						<p><?php _e('Click this button to refresh weather cache.','wpcloudy'); ?></p>
-            
-		            	<?php
-							function wpc_clear_all_cache() {
-						    	if (isset($_GET['wpc_clear_all_cache_nonce'])) {
-							?>
-							<div class="wpcloudy-module-actions">
-								<p>
-								    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache_nonce');?>"
-								        class="button button-primary">
-								        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
-									</a>
-								</p>
-							</div>
-							
-							<?php
-			
-						    } else {
-						        
-							?>
-							<div class="wpcloudy-module-actions">
-							    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache');?>"
+					
+					<p><?php _e('Click this button to refresh weather cache.','wpcloudy'); ?></p>
+        
+	            	<?php
+						function wpc_clear_all_cache() {
+					    	if (isset($_GET['wpc_clear_all_cache_nonce'])) {
+						?>
+						<div class="wpcloudy-module-actions">
+							<p>
+							    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache_nonce');?>"
 							        class="button button-primary">
 							        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
 								</a>
-							</div>
+							</p>
+						</div>
 						
-							<?php
-								global $wpdb;
-								$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_myweather%' ");
-								$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_myweather%' ");
-							}
-						};
+						<?php
+		
+					    } else {
+					        
 						?>
-						<?php echo wpc_clear_all_cache(); ?>   
-					</div>    
-				</div>
-				
-            	<div id="wpcloudy-geolocation" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
-					<h3><?php _e('WP Cloudy Geolocation','wpcloudy'); ?></h3>
-					<div class="wpcloudy-module-description">
-						<div class="module-image">
-							<div class="dashicons dashicons-location-alt"></div>
-							<p><span class="module-image-badge"><?php _e('$ 39','wpcloudy'); ?></span></p>
-							<?php if ( is_plugin_active( 'wpcloudy-geolocation-addon/wpcloudy-geolocation-addon.php' ) ) {
-								echo '<div class="enabled"><div class="dashicons dashicons-yes"></div>'.__('Enabled','').'</div>';
-							}; ?>
+						<div class="wpcloudy-module-actions">
+						    <a href="<?php print wp_nonce_url(admin_url('options-general.php?page=wpc-settings-admin'), 'wpc_clear_all_cache_action', 'wpc_clear_all_cache');?>"
+						        class="button button-primary">
+						        <?php esc_html_e('Clear cache!', 'wpcloudy');?>
+							</a>
 						</div>
+					
+						<?php
+							global $wpdb;
+							$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_myweather%' ");
+							$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_myweather%' ");
+						}
+					};
+					?>
+					<?php echo wpc_clear_all_cache(); ?>   
+				</div>    
+			</div>
+			
+        	<div id="wpcloudy-geolocation" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
+				<h3><?php _e('WP Cloudy Geolocation','wpcloudy'); ?></h3>
+				<div class="wpcloudy-module-description">
+					<div class="module-image">
+						<div class="dashicons dashicons-location-alt"></div>
+						<p><span class="module-image-badge"><?php _e('$ 39','wpcloudy'); ?></span></p>
+						<?php if ( is_plugin_active( 'wpcloudy-geolocation-addon/wpcloudy-geolocation-addon.php' ) ) {
+							echo '<div class="enabled"><div class="dashicons dashicons-yes"></div>'.__('Enabled','').'</div>';
+						}; ?>
+					</div>
 
-						<p><?php _e('Geolocated weather for your visitors.','wpcloudy'); ?></p>
-					</div>
-	
-					<div class="wpcloudy-module-actions">
-						<a target="_blank" href="http://wpcloudy.com/geolocation" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Geolocation']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
-					</div>
+					<p><?php _e('Geolocated weather for your visitors.','wpcloudy'); ?></p>
 				</div>
-				<div id="wpcloudy-skins" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
-					<h3><?php _e('WP Cloudy Skins','wpcloudy'); ?></h3>
-					<div class="wpcloudy-module-description">
-						<div class="module-image">
-							<div class="dashicons dashicons-admin-appearance"></div>
-							<p><span class="module-image-badge"><?php _e('$ 10','wpcloudy'); ?></span></p>
-							<?php if ( is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' ) ) {
-								echo '<div class="enabled"><div class="dashicons dashicons-yes"></div>'.__('Enabled','').'</div>';
-							}; ?>
-						</div>
 
-						<p><?php _e('10 beautiful skins for your weather.','wpcloudy'); ?></p>
-					</div>
-	
-					<div class="wpcloudy-module-actions">
-						<a target="_blank" href="http://www.wpcloudy.com/weather-skins/" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Skins']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
-					</div>
+				<div class="wpcloudy-module-actions">
+					<a target="_blank" href="http://wpcloudy.com/geolocation" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Geolocation']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
 				</div>
-            </div>
+			</div>
+			<div id="wpcloudy-skins" class="wpcloudy-module wpcloudy-inactive" style="height: 177px;">
+				<h3><?php _e('WP Cloudy Skins','wpcloudy'); ?></h3>
+				<div class="wpcloudy-module-description">
+					<div class="module-image">
+						<div class="dashicons dashicons-admin-appearance"></div>
+						<p><span class="module-image-badge"><?php _e('$ 10','wpcloudy'); ?></span></p>
+						<?php if ( is_plugin_active( 'wpcloudy-skin-addon/wpcloudy-skin-addon.php' ) ) {
+							echo '<div class="enabled"><div class="dashicons dashicons-yes"></div>'.__('Enabled','').'</div>';
+						}; ?>
+					</div>
+
+					<p><?php _e('10 beautiful skins for your weather.','wpcloudy'); ?></p>
+				</div>
+
+				<div class="wpcloudy-module-actions">
+					<a target="_blank" href="http://www.wpcloudy.com/weather-skins/" onclick="_gaq.push(['_trackEvent', 'WP Cloudy Admin', 'Learn more', 'Skins']);" class="button-secondary more-info-link"><?php _e('Learn more','wpcloudy'); ?></a>
+				</div>
+			</div>
+        </div>
         <?php
     }
 
@@ -667,9 +712,9 @@ class wpc_options
             array( $this, 'wpc_map_layers_pressure_callback' ), // Callback
             'wpc-settings-admin-map', // Page
             'wpc_setting_section_map' // Section           
-        );
-        
-        //SUPPORT SECTION============================================================================
+        );          
+
+        //SUPPORT SECTION==========================================================================
 		add_settings_section( 
             'wpc_setting_section_support', // ID
             '', // Title
@@ -710,7 +755,7 @@ class wpc_options
 		$input['wpc_advanced_api'] = sanitize_text_field( $input['wpc_advanced_api'] );
 		
 		if( !empty( $input['wpc_map_height'] ) )
-		$input['wpc_map_height'] = sanitize_text_field( $input['wpc_map_height'] );
+        $input['wpc_map_height'] = sanitize_text_field( $input['wpc_map_height'] );
 		
         return $input;
     }
@@ -1817,7 +1862,7 @@ class wpc_options
 			esc_attr( $this->options['wpc_map_layers_pressure']);
 		}
     }
-    
+
     public function wpc_support_info_callback()
     {
 		echo '

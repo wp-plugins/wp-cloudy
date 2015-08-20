@@ -223,9 +223,10 @@
 .wpcloudy-sidebar {
     float: left;
     margin-left: 20px;
-    position: relative;
-    top: -180px;
+    position: absolute;
+    top: 15px;
     width: 250px;
+    right: 15px;
 }
 .wpcloudy-sidebar .button {
 	font-family: "Open Sans",sans-serif;

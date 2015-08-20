@@ -1233,3 +1233,6 @@ function get_bypass_lang($attr) {
 		return get_lang($attr);
 	}
 }	
+
+
+

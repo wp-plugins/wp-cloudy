@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.3.2
+Version: 3.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -40,7 +40,7 @@ register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
 
-define( 'WPCLOUDY_VERSION', '3.3.2' );
+define( 'WPCLOUDY_VERSION', '3.4' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Shortcut settings page
@@ -76,6 +76,7 @@ function wpcloudy_init() {
 
 if ( is_admin() )
 	require_once dirname( __FILE__ ) . '/wpcloudy-admin.php';
+	require_once dirname( __FILE__ ) . '/wpcloudy-export.php';
     require_once dirname( __FILE__ ) . '/wpcloudy-widget.php';
 }
 add_action('plugins_loaded', 'wpcloudy_init');
@@ -2412,30 +2413,44 @@ function wpc_get_my_weather($attr) {
 
 	    $wpc_html_container_end .= '</div>';
 
-		$wpc_theme_files = array('wp-cloudy/content-wpcloudy.php');
-	    $wpc_exists_in_theme = locate_template($wpc_theme_files, false);
-	          
-	    if ( $wpc_exists_in_theme != '' ) {//Bypass dans theme actif
+		$wpc_theme_files 			= array('wp-cloudy/content-wpcloudy.php');
+		$wpc_theme_files_theme1 	= array('wp-cloudy/content-wpcloudy-theme1.php');
+		$wpc_theme_files_theme2 	= array('wp-cloudy/content-wpcloudy-theme2.php');
+	    $wpc_exists_in_theme 		= locate_template($wpc_theme_files, false);
+	    $wpc_exists_in_theme1 		= locate_template($wpc_theme_files_theme1, false);
+	    $wpc_exists_in_theme2		= locate_template($wpc_theme_files_theme2, false);
+	    
+	    if ( $wpc_exists_in_theme != '' && $wpcloudy_skin != 'theme1' && $wpcloudy_skin != 'theme2' ) {//Bypass dans theme actif
 	    	ob_start();
-	    	include get_template_directory() . '/wp-cloudy/content-wpcloudy.php';
+	    	include get_stylesheet_directory() . '/wp-cloudy/content-wpcloudy.php';
 	    	$wpc_html = ob_get_clean();
 	    }
 	    elseif ( $wpcloudy_skin == 'theme1' ) {//Theme1 actif
 	    	ob_start();
-	    	include dirname( __FILE__ ) . '/template/content-wpcloudy-theme1.php';
-	    	$wpc_html = ob_get_clean();
+	    	if ( $wpc_exists_in_theme1 != '' ) {
+		    	include get_stylesheet_directory() . '/wp-cloudy/content-wpcloudy-theme1.php';
+		    	$wpc_html = ob_get_clean();
+	    	} else {
+	    		include dirname( __FILE__ ) . '/template/content-wpcloudy-theme1.php';
+		    	$wpc_html = ob_get_clean();
+	    	}
 	    }
-	    elseif ( $wpcloudy_skin == 'theme2' ) {//Theme2 actif
+	   	elseif ( $wpcloudy_skin == 'theme2' ) {//Theme2 actif
 	    	ob_start();
-	    	include dirname( __FILE__ ) . '/template/content-wpcloudy-theme2.php';
-	    	$wpc_html = ob_get_clean();
-	    } 
+	    	if ( $wpc_exists_in_theme2 != '' ) {
+		    	include get_stylesheet_directory() . '/wp-cloudy/content-wpcloudy-theme2.php';
+		    	$wpc_html = ob_get_clean();
+	    	} else {
+	    		include dirname( __FILE__ ) . '/template/content-wpcloudy-theme2.php';
+		    	$wpc_html = ob_get_clean();
+	    	}
+	    }
 	    else { //Default
 	    	ob_start();
 	    	include ( dirname( __FILE__ ) . '/template/content-wpcloudy.php');
 	    	$wpc_html = ob_get_clean();
 	    }
-
+	    
 	  	$response = array();
 	  	$response['weather'] = $id;
 	  	$response['html'] = $wpc_html;
@@ -2548,6 +2563,5 @@ function wpc_set_messages($messages) {
 }
 
 add_filter('post_updated_messages', 'wpc_set_messages' );
-
 
 ?>
