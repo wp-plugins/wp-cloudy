@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.4.1
+Version: 3.4
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -1099,7 +1099,6 @@ function wpc_get_my_weather_id($attr) {
     }
 
 	return '<div id="wpc-weather-id-'.$wpc_id.'" class="wpc-weather-id" data_id="'.$wpc_id.'" data_map="'.$wpcloudy_map.'" data_detect_geolocation="'.$_COOKIE['wpc-detectGeolocation'].'" data_manual_geolocation="'.$_COOKIE['wpc-manualGeolocation'].'" data_wpc_lat="'.$_COOKIE['wpc-posLat'].'" data_wpc_lon="'.$_COOKIE['wpc-posLon'].'" data_wpc_city_id="'.$_COOKIE['wpc-posCityId'].'" data_wpc_city_name="'.$_COOKIE['wpc-posCityName'].'" data_custom_font="'.wpc_css_webfont($attr).'"></div>';
-	
 }
 
 add_action( 'wp_ajax_wpc_get_my_weather', 'wpc_get_my_weather' );
@@ -2462,6 +2461,7 @@ function wpc_get_my_weather($attr) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Fix shortcode bug in widget text
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+add_filter( 'widget_text', 'shortcode_unautop');
 add_filter( 'widget_text', 'do_shortcode', 11);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
 Tested up to: 4.3
-Stable tag: 3.4.1
+Stable tag: 3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,8 +105,6 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 6. WP Cloudy in action
 
 == Changelog ==
-= 3.4.1 =
-* FIX Shortcode in text widget loading twice
 = 3.4 =
 * NEW Import/Export global settings, useful if you have multiple websites (weathers can be exported too via the Tools Exporter Screen)
 * INFO WordPress 4.3 compatibility
