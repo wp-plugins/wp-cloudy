@@ -65,22 +65,48 @@ class wpc_options
 				<span class="wpc-info-version"><?php print_r($wpc_info_version['Version']); ?></span>
 				<div id="wpcloudy-notice">
 					<p><?php _e( 'Not just another WordPress Weather plugin!', 'wpcloudy' ); ?></p>
-					<p class="small">
-						<a href="http://wordpress.org/support/view/plugin-reviews/wp-cloudy" target="_blank">
-							<div class="dashicons dashicons-wordpress"></div>
-							<?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?>
-						</a>
-						|
+					<div class="small">
+						<span class="dashicons dashicons-wordpress"></span>
+						<?php _e( 'You like WP Cloudy? Don\'t forget to rate it 5 stars!', 'wpcloudy' ); ?>
+
+                        <div class="wporg-ratings rating-stars">
+                            <a href="//wordpress.org/support/view/plugin-reviews/wp-cloudy?rate=1#postform" data-rating="1" title="" target="_blank"><span class="dashicons dashicons-star-filled" style="color:#e6b800 !important;"></span></a>
+                            <a href="//wordpress.org/support/view/plugin-reviews/wp-cloudy?rate=2#postform" data-rating="2" title="" target="_blank"><span class="dashicons dashicons-star-filled" style="color:#e6b800 !important;"></span></a>
+                            <a href="//wordpress.org/support/view/plugin-reviews/wp-cloudy?rate=3#postform" data-rating="3" title="" target="_blank"><span class="dashicons dashicons-star-filled" style="color:#e6b800 !important;"></span></a>
+                            <a href="//wordpress.org/support/view/plugin-reviews/wp-cloudy?rate=4#postform" data-rating="4" title="" target="_blank"><span class="dashicons dashicons-star-filled" style="color:#e6b800 !important;"></span></a>
+                            <a href="//wordpress.org/support/view/plugin-reviews/wp-cloudy?rate=5#postform" data-rating="5" title="" target="_blank"><span class="dashicons dashicons-star-filled" style="color:#e6b800 !important;"></span></a>
+                        </div>
+                        <script>
+                            jQuery(document).ready( function($) {
+                                $('.rating-stars').find('a').hover(
+                                    function() {
+                                        $(this).nextAll('a').children('span').removeClass('dashicons-star-filled').addClass('dashicons-star-empty');
+                                        $(this).prevAll('a').children('span').removeClass('dashicons-star-empty').addClass('dashicons-star-filled');
+                                        $(this).children('span').removeClass('dashicons-star-empty').addClass('dashicons-star-filled');
+                                    }, function() {
+                                        var rating = $('input#rating').val();
+                                        if (rating) {
+                                            var list = $('.rating-stars a');
+                                            list.children('span').removeClass('dashicons-star-filled').addClass('dashicons-star-empty');
+                                            list.slice(0, rating).children('span').removeClass('dashicons-star-empty').addClass('dashicons-star-filled');
+                                        }
+                                    }
+                                );
+                            });
+                        </script>
+						
+                        <br />
+						
 						<a href="http://wpcloudy.com/" target="_blank">
-							<div class="dashicons dashicons-info"></div>
+							<span class="dashicons dashicons-info"></span>
 							<?php _e( 'Plugin website', 'wpcloudy' ); ?>
 						</a>
 						|
 						<a href="http://twitter.com/wpcloudy" target="_blank">
-							<div class="dashicons dashicons-twitter"></div>
+							<span class="dashicons dashicons-twitter"></span>
 							<?php _e( 'Follow us on Twitter!', 'wpcloudy' ); ?>
 						</a>
-					</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -443,7 +469,7 @@ class wpc_options
 		
 		add_settings_field(
             'wpc_display_forecast', // ID
-            __("7-Day Forecast","wpcloudy"), // Title 
+            __("16-Day Forecast","wpcloudy"), // Title 
             array( $this, 'wpc_display_forecast_callback' ), // Callback
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
@@ -981,6 +1007,8 @@ class wpc_options
 			echo ' value="sk">'. __( 'Slovak', 'wpcloudy' ) .'</option>';
 			
 		echo '</select>';
+
+        echo '<br /><br /><span class="dashicons dashicons-editor-help"></span><a href="http://www.wpcloudy.com/support/guides/translate-wp-cloudy-language/" target="_blank">'.__('Learn more about how translations works','wpcloudy').'</a>';
 		
 		if (isset($this->options['wpc_basic_lang'])) {
 			esc_attr( $this->options['wpc_basic_lang']);
@@ -997,7 +1025,6 @@ class wpc_options
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
 		echo '<label for="wpc_display_current_weather">'. __( 'Display current weather on all weather?', 'wpcloudy' ) .'</label>';
-		
 		if (isset($this->options['wpc_display_current_weather'])) {
 			esc_attr( $this->options['wpc_display_current_weather']);
 		}
@@ -1252,7 +1279,7 @@ class wpc_options
         echo '<input id="wpc_display_forecast" name="wpc_option_name[wpc_display_forecast]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
-		echo '<label for="wpc_display_forecast">'. __( 'Display 7-day Forecast on all weather?', 'wpcloudy' ) .'</label>';
+		echo '<label for="wpc_display_forecast">'. __( 'Display 16-day Forecast on all weather?', 'wpcloudy' ) .'</label>';
 		
 		if (isset($this->options['wpc_display_forecast'])) {
 			esc_attr( $this->options['wpc_display_forecast']);
@@ -1515,6 +1542,7 @@ class wpc_options
 		'<input name="wpc_option_name[wpc_advanced_cache_time]" type="text" value="%s" />',
 		esc_attr( $this->options['wpc_advanced_cache_time'])
 		);
+        echo '<br /><br /><span class="dashicons dashicons-editor-help"></span>'.__('Default value: 30 minutes','wpcloudy');
 	}
 	
     public function wpc_advanced_api_key_callback()

@@ -106,7 +106,13 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 
 == Changelog ==
 = 3.4.1 =
-* FIX Shortcode in text widget loading twice
+* FIX 5 notices: Undefined index (wpc-detectGeolocation, wpc-manualGeolocation, wpc-posLat, wpc-posLon, wpc-posCityId, wpc-posCityName), thanks to thib3113
+* FIX Improve performance in WP Admin
+* FIX Wrong label for 16 days forecast in global settings
+* INFO Set a default value for cache time (30 minutes)
+* INFO Improve UX by adding support links
+* INFO New logo for WP Cloudy using Dashicons font
+* INFO Remove TinyMCE v3 compatibility
 = 3.4 =
 * NEW Import/Export global settings, useful if you have multiple websites (weathers can be exported too via the Tools Exporter Screen)
 * INFO WordPress 4.3 compatibility

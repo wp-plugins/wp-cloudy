@@ -156,9 +156,6 @@ global $post;
 			
 		}
 	}
-	
-	wp_register_style( 'wpcloudy-admin', plugins_url('css/wpcloudy-admin.min.css', __FILE__));
-	wp_enqueue_style( 'wpcloudy-admin' );
 }
 add_action( 'admin_enqueue_scripts', 'wpc_add_admin_scripts', 10, 1 );
 
@@ -181,36 +178,6 @@ if (isset($_GET['page']) && ($_GET['page'] == 'wpc-settings-admin')) {
 //Add weather button in tinymce editor
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-//TinyMCE v3.x--------------------------------------------------------------------------------------
-// init process for registering our button
- add_action('init', 'wpc_shortcode_button_init');
- function wpc_shortcode_button_init() {
-
-      //Abort early if the user will never see TinyMCE
-      if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') && get_user_option('rich_editing') == 'true')
-           return;
-
-      //Add a callback to regiser our tinymce plugin   
-      add_filter("mce_external_plugins", "wpc_register_tinymce_plugin"); 
-
-      // Add a callback to add our button to the TinyMCE toolbar
-      add_filter('mce_buttons', 'wpc_add_tinymce_button');
-}
-
-
-//This callback registers our plug-in
-function wpc_register_tinymce_plugin($plugin_array) {
-    $plugin_array['wpc_button'] = plugins_url( 'js/wpc-tinymce.js', __FILE__ );
-    return $plugin_array;
-}
-
-//This callback adds our button to the toolbar
-function wpc_add_tinymce_button($buttons) {
-            //Add the button ID to the $button array
-    $buttons[] = "wpc_button";
-    return $buttons;
-}
-
 //TinyMCE v4.x--------------------------------------------------------------------------------------
 add_action('admin_head', 'wpc_add_button_v4');
 
@@ -228,6 +195,7 @@ function wpc_add_button_v4() {
 		add_filter("mce_external_plugins", "wpc_add_button_v4_plugin");
 		add_filter('mce_buttons', 'wpc_add_button_v4_register');
 	}
+	wpc_get_all_weather_id();
 }
 function wpc_add_button_v4_plugin($plugin_array) {
     $plugin_array['wpc_button_v4'] = plugins_url( 'js/wpc-tinymce.js', __FILE__ );
@@ -236,6 +204,21 @@ function wpc_add_button_v4_plugin($plugin_array) {
 function wpc_add_button_v4_register($buttons) {
    array_push($buttons, "wpc_button_v4");
    return $buttons;
+}
+function wpc_get_all_weather_id() {
+	// The Query
+	$args = array('post_type' => 'wpc-weather', 'posts_per_page' => '-1' );
+	$wpc_all_weather_query = new WP_Query( $args );
+
+	// The Loop
+	if ( $wpc_all_weather_query->have_posts() ) {
+		while ( $wpc_all_weather_query->have_posts() ) {
+			$wpc_all_weather_query->the_post();
+			echo '<div class="wpc-weather-all-id" data-name="'.get_the_title().'" data-id="'.get_the_ID().'"></div>';
+		}
+	}
+	/* Restore original Post Data */
+	wp_reset_postdata();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +241,7 @@ function wpcloudy_shortcode($post){
 	
 	echo '<div class="shortcode-php">';
 	_e( 'If you need to display this weather anywhere in your theme, simply copy and paste this code snippet in your PHP file like sidebar.php: ', 'wpcloudy' );
-	echo "<span class='wpc-highlight'>echo do_shortcode('[wpc-weather id=\"YOUR_ID\"]');</span>";
+	echo "<span class='wpc-highlight'>echo do_shortcode('[wpc-weather id=\"".get_the_ID()."\"]');</span>";
 	echo "</div>";
 }
 
@@ -317,7 +300,7 @@ function wpcloudy_basic($post){
 			
 			<div id="tabs-1">
 				<p>
-					<label for="wpcloudy_city_meta">'. __( 'City', 'wpcloudy' ) .'</label>
+					<label for="wpcloudy_city_meta">'. __( 'City', 'wpcloudy' ) .' <span class="mandatory">*</span></label>
 					<input id="wpcloudy_city_meta" class="cities typeahead" type="text" name="wpcloudy_city" placeholder="'.__('Enter your city','wpcloudy').'" value="'.$wpcloudy_city.'" />
 				</p>
 				<p>
@@ -329,7 +312,7 @@ function wpcloudy_basic($post){
 					<input id="wpcloudy_state_name_meta" class="states typeahead" type="text" name="wpcloudy_state_name" value="'.$wpcloudy_state_name.'" />
 				</p>
 				<p>
-					<label for="wpcloudy_country_meta">'. __( 'Country?', 'wpcloudy' ) .'</label>
+					<label for="wpcloudy_country_meta">'. __( 'Country?', 'wpcloudy' ) .' <span class="mandatory">*</span></label>
 					<input id="wpcloudy_country_meta" class="countries typeahead" type="text" name="wpcloudy_country_code" value="'.$wpcloudy_country_code.'" />
 				</p>
 				<p>
@@ -373,6 +356,7 @@ function wpcloudy_basic($post){
 						<option ' . selected( 'mk', $wpcloudy_lang, false ) . ' value="mk">'. __( 'Macedonian', 'wpcloudy' ) .'</option>
 						<option ' . selected( 'sk', $wpcloudy_lang, false ) . ' value="sk">'. __( 'Slovak', 'wpcloudy' ) .'</option>
 					</select>
+					<br /><br /><span class="dashicons dashicons-editor-help"></span><a href="http://www.wpcloudy.com/support/guides/translate-wp-cloudy-language/" target="_blank">'.__('Learn more about how translations works','wpcloudy').'</a>
 				</p>		
 			</div>
 			<div id="tabs-2">
@@ -464,6 +448,8 @@ function wpcloudy_basic($post){
 						<option ' . selected( '5', $wpcloudy_hour_forecast_nd, false ) . ' value="5">'. __( '5', 'wpcloudy' ) .'</option>
 						<option ' . selected( '6', $wpcloudy_hour_forecast_nd, false ) . ' value="6">'. __( '6', 'wpcloudy' ) .'</option>
 					</select>
+					<br />
+					<span class="dashicons dashicons-editor-help"></span><a href="'.get_bloginfo('url').'/wp-admin/options-general.php" target="_blank">'.__('Make sure you have properly set the date of your site in WordPress settings.','wpcloudy').'</a>
 				</p>
 				<p class="forecast">
 					'. __( '16-Day Forecast', 'wpcloudy' ) .'
@@ -1098,8 +1084,14 @@ function wpc_get_my_weather_id($attr) {
         } 
     }
 
-	return '<div id="wpc-weather-id-'.$wpc_id.'" class="wpc-weather-id" data_id="'.$wpc_id.'" data_map="'.$wpcloudy_map.'" data_detect_geolocation="'.$_COOKIE['wpc-detectGeolocation'].'" data_manual_geolocation="'.$_COOKIE['wpc-manualGeolocation'].'" data_wpc_lat="'.$_COOKIE['wpc-posLat'].'" data_wpc_lon="'.$_COOKIE['wpc-posLon'].'" data_wpc_city_id="'.$_COOKIE['wpc-posCityId'].'" data_wpc_city_name="'.$_COOKIE['wpc-posCityName'].'" data_custom_font="'.wpc_css_webfont($attr).'"></div>';
-	
+    $wpc_detectGeolocation 		= !empty($_COOKIE['wpc-detectGeolocation'])? $_COOKIE['wpc-detectGeolocation'] : "" ;
+	$wpc_manualGeolocation 		= !empty($_COOKIE['wpc-manualGeolocation'])? $_COOKIE['wpc-manualGeolocation'] : "" ;
+	$wpc_posLat 				= !empty($_COOKIE['wpc-posLat'])? $_COOKIE['wpc-posLat'] : "" ;
+	$wpc_posLon 				= !empty($_COOKIE['wpc-posLon'])? $_COOKIE['wpc-posLon'] : "" ;
+	$wpc_posCityId 				= !empty($_COOKIE['wpc-posCityId'])? $_COOKIE['wpc-posCityId'] : "" ;
+	$wpc_posCityName 			= !empty($_COOKIE['wpc-posCityName'])? $_COOKIE['wpc-posCityName'] : "" ;
+
+	return '<div id="wpc-weather-id-'.$wpc_id.'" class="wpc-weather-id" data_id="'.$wpc_id.'" data_map="'.$wpcloudy_map.'" data_detect_geolocation="'.$wpc_detectGeolocation.'" data_manual_geolocation="'.$wpc_manualGeolocation.'" data_wpc_lat="'.$wpc_posLat.'" data_wpc_lon="'.$wpc_posLon.'" data_wpc_city_id="'.$wpc_posCityId.'" data_wpc_city_name="'.$wpc_posCityName.'" data_custom_font="'.wpc_css_webfont($attr).'"></div>';	
 }
 
 add_action( 'wp_ajax_wpc_get_my_weather', 'wpc_get_my_weather' );
@@ -1232,7 +1224,11 @@ function wpc_get_my_weather($attr) {
 		$wpcloudy_last_update           			= null;
 		$wpc_html_owm_link              			= null;
 		$wpc_html_last_update           			= null;
-
+		
+		//Set a default value for cache
+		if ($wpc_advanced_set_cache_time =='') {
+			$wpc_advanced_set_cache_time = '30';
+		}
 
 		if (isset($_COOKIE['wpc-posLat'])) {
 			$wpcloudy_lat         					= $_COOKIE['wpc-posLat'];
@@ -2462,6 +2458,7 @@ function wpc_get_my_weather($attr) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Fix shortcode bug in widget text
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+add_filter( 'widget_text', 'shortcode_unautop');
 add_filter( 'widget_text', 'do_shortcode', 11);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2522,6 +2519,7 @@ function wpcloudy_weather() {
 		'show_in_nav_menus'   => false,
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 20,
+		'menu_icon'           => 'dashicons-cloud',
 		'can_export'          => true,
 		'has_archive'         => false,
 		'exclude_from_search' => true,
