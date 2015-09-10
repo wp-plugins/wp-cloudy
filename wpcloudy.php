@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.4.1
+Version: 3.4.2
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -40,7 +40,7 @@ register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
 
-define( 'WPCLOUDY_VERSION', '3.4' );
+define( 'WPCLOUDY_VERSION', '3.4.2' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Shortcut settings page
@@ -195,7 +195,6 @@ function wpc_add_button_v4() {
 		add_filter("mce_external_plugins", "wpc_add_button_v4_plugin");
 		add_filter('mce_buttons', 'wpc_add_button_v4_register');
 	}
-	wpc_get_all_weather_id();
 }
 function wpc_add_button_v4_plugin($plugin_array) {
     $plugin_array['wpc_button_v4'] = plugins_url( 'js/wpc-tinymce.js', __FILE__ );
@@ -204,21 +203,6 @@ function wpc_add_button_v4_plugin($plugin_array) {
 function wpc_add_button_v4_register($buttons) {
    array_push($buttons, "wpc_button_v4");
    return $buttons;
-}
-function wpc_get_all_weather_id() {
-	// The Query
-	$args = array('post_type' => 'wpc-weather', 'posts_per_page' => '-1' );
-	$wpc_all_weather_query = new WP_Query( $args );
-
-	// The Loop
-	if ( $wpc_all_weather_query->have_posts() ) {
-		while ( $wpc_all_weather_query->have_posts() ) {
-			$wpc_all_weather_query->the_post();
-			echo '<div class="wpc-weather-all-id" data-name="'.get_the_title().'" data-id="'.get_the_ID().'"></div>';
-		}
-	}
-	/* Restore original Post Data */
-	wp_reset_postdata();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
