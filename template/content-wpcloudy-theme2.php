@@ -12,6 +12,7 @@
 
 	<!-- Geolocation Add-on -->
 	<?php echo $wpc_html_geolocation; ?>
+	<?php echo $display_bg_opacity_overlay; ?>
 	<?php if ($wpc_html_today_temp_day || $wpc_html_infos_wind || $wpc_html_infos_humidity || $wpc_html_infos_pressure || $wpc_html_infos_cloudiness || $wpc_html_today_sun ) { ?>
 		<button class="wpc-btn-toggle-infos">
 		<span class="icon-bar"></span>

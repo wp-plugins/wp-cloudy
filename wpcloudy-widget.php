@@ -28,6 +28,8 @@ function wpc_dashboard_widget_function() {
 	// Display selected weather.
     if ( $my_weather = get_option( 'wpc_dashboard_widget_option' ) ) {
 		echo do_shortcode('[wpc-weather id="'.$my_weather['weather_db'].'"]');
+	} else {
+		_e('Please select a weather via configure link','wpcloudy');
 	}
 }
 /**
@@ -58,7 +60,6 @@ function wpc_dashboard_widget_option($widget_id) {
 			$query = new WP_Query( array( 'post_type' => array( 'wpc-weather' ) ) );
 	
 				while ( $query->have_posts() ) : $query->the_post();
-	
 					echo '<option value="'.get_the_ID().'"';
 							selected( $weather_db, get_the_ID() );
 					echo '>';

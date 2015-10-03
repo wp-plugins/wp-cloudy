@@ -49,8 +49,30 @@ function wpc_import_settings() {
     update_option( 'wpc_option_name', $wpc_settings["wpc_option_name"] ); 
     update_option( 'wpc_dashboard_widget_option', $wpc_settings["wpc_dashboard_widget_option"] ); 
      
-    wp_safe_redirect( admin_url( 'options-general.php?page=wpc-settings-admin#tab-export' ) ); exit;
+    wp_safe_redirect( admin_url( 'options-general.php?page=wpc-settings-admin#tab_export' ) ); exit;
     ob_end_flush();
 }
 add_action( 'admin_init', 'wpc_import_settings' );
+
+//Reset WP Cloudy Settings
+function wpc_reset_settings() {
+    if( empty( $_POST['wpc_action'] ) || 'wpc_reset_settings' != $_POST['wpc_action'] )
+        return;
+    if( ! wp_verify_nonce( $_POST['wpc_reset_nonce'], 'wpc_reset_nonce' ) )
+        return;
+    if( ! current_user_can( 'manage_options' ) )
+        return;
+
+    ob_start();
+
+    $wpc_settings = null;
+
+    update_option( 'wpc_option_name', $wpc_settings["wpc_option_name"] ); 
+    update_option( 'wpc_dashboard_widget_option', $wpc_settings["wpc_dashboard_widget_option"] ); 
+     
+    wp_safe_redirect( admin_url( 'options-general.php?page=wpc-settings-admin#tab_export' ) ); exit;
+
+    ob_end_flush();
+}
+add_action( 'admin_init', 'wpc_reset_settings' );
 ?>

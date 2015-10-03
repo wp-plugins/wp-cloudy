@@ -13,6 +13,7 @@
 	<div class="top">
 		<!-- Geolocation Add-on -->
 		<?php echo $wpc_html_geolocation; ?>
+		<?php echo $display_bg_opacity_overlay; ?>
 		<?php echo $wpc_html_today_temp_day; ?>
 		<?php echo $wpc_html_now_location_name; ?>
 	</div>

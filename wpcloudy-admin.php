@@ -145,6 +145,20 @@ class wpc_options
                             </form>
                         </div><!-- .inside -->
                     </div><!-- .postbox -->
+
+                    <div class="postbox">
+                        <h3><span><?php _e( 'Reset Settings' ); ?></span></h3>
+                        <div class="inside">
+                            <p><?php _e( 'Reset all WP Cloudy global settings. It will not delete your weathers and their indivuals settings.', 'wpcloudy' ); ?></p>
+                            <form method="post" enctype="multipart/form-data">
+                                <p>
+                                    <input type="hidden" name="wpc_action" value="wpc_reset_settings" />
+                                    <?php wp_nonce_field( 'wpc_reset_nonce', 'wpc_reset_nonce' ); ?>
+                                    <?php submit_button( __( 'Reset settings' ), 'secondary', 'submit', false ); ?>
+                                </p>
+                            </form>
+                        </div><!-- .inside -->
+                    </div><!-- .postbox -->
                 </div><!-- .metabox-holder -->
                 <?php
 
@@ -163,7 +177,7 @@ class wpc_options
 						<li><a href="#tab_display" class="nav-tab"><?php _e( 'Display', 'wpcloudy' ); ?></a></li>
 						<li><a href="#tab_advanced" class="nav-tab"><?php _e( 'Advanced', 'wpcloudy' ); ?></a></li>
 						<li><a href="#tab_map" class="nav-tab"><?php _e( 'Map', 'wpcloudy' ); ?></a></li>
-                        <li><a href="#tab_export" class="nav-tab"><?php _e( 'Import/Export', 'wpcloudy' ); ?></a></li>
+                        <li><a href="#tab_export" class="nav-tab"><?php _e( 'Import/Export/Reset', 'wpcloudy' ); ?></a></li>
 						<li><a href="#tab_support" class="nav-tab"><?php _e( 'Support', 'wpcloudy' ); ?></a></li>
                 	</ul>
 				</h2>
@@ -178,7 +192,7 @@ class wpc_options
 				</div>
             </div>
             <script>jQuery("#wpc_export_form").detach().appendTo('#tab_export')</script>    
-             <?php submit_button( __( 'Save changes' ), 'primary', 'submit', false ); ?>
+             <?php submit_button( __( 'Save changes', 'wpcloudy' ), 'primary', 'submit', false ); ?>
         </form>
 
         <div class="wpcloudy-sidebar">	
@@ -319,22 +333,6 @@ class wpc_options
             'wpc_basic_date', // ID
             __("Date","wpcloudy"), // Title 
             array( $this, 'wpc_basic_date_callback' ), // Callback
-            'wpc-settings-admin-basic', // Page
-            'wpc_setting_section_basic' // Section           
-        );
-		
-		add_settings_field(
-            'wpc_basic_bypass_lang', // ID
-           __("Bypass language?","wpcloudy"), // Title
-            array( $this, 'wpc_basic_bypass_lang_callback' ), // Callback
-            'wpc-settings-admin-basic', // Page
-            'wpc_setting_section_basic' // Section           
-        );
-		
-		add_settings_field(
-            'wpc_basic_lang', // ID
-            __("Language","wpcloudy"), // Title 
-            array( $this, 'wpc_basic_lang_callback' ), // Callback
             'wpc-settings-admin-basic', // Page
             'wpc_setting_section_basic' // Section           
         );
@@ -888,130 +886,6 @@ class wpc_options
 
 		if (isset($this->options['wpc_basic_date'])) {
 			esc_attr( $this->options['wpc_basic_date']);
-		}
-	}
-	
-	public function wpc_basic_bypass_lang_callback()
-    {
-		$options = get_option( 'wpc_option_name' );    
-		 
-		$check = isset($options['wpc_basic_bypass_lang']);
-		
-        echo '<input id="wpc_basic_bypass_lang" name="wpc_option_name[wpc_basic_bypass_lang]" type="checkbox"';
-		if ('1' == $check) echo 'checked="yes"'; 
-		echo ' value="1"/>';
-		echo '<label for="wpc_basic_bypass_lang">'. __( 'Enable bypass language on all weather?', 'wpcloudy' ) .'</label>';
-		
-		if (isset($this->options['wpc_basic_bypass_lang'])) {
-			esc_attr( $this->options['wpc_basic_bypass_lang']);
-		}
-    }
-	
-	public function wpc_basic_lang_callback()
-    {
-		$options = get_option( 'wpc_option_name' );    
-		$selected = $options['wpc_basic_lang'];
-		
-		echo ' <select id="wpc_basic_lang" name="wpc_option_name[wpc_basic_lang]"> ';
-		
-			echo ' <option '; 
-			if ('fr' == $selected) echo 'selected="selected"'; 
-			echo ' value="fr">'. __( 'French', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('en' == $selected) echo 'selected="selected"'; 
-			echo ' value="en">'. __( 'English', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('ru' == $selected) echo 'selected="selected"'; 
-			echo ' value="ru">'. __( 'Russian', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('it' == $selected) echo 'selected="selected"'; 
-			echo ' value="it">'. __( 'Italian', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('sp' == $selected) echo 'selected="selected"'; 
-			echo ' value="sp">'. __( 'Spanish', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('ua' == $selected) echo 'selected="selected"'; 
-			echo ' value="ua">'. __( 'Ukrainian', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('de' == $selected) echo 'selected="selected"'; 
-			echo ' value="de">'. __( 'German', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('pt' == $selected) echo 'selected="selected"'; 
-			echo ' value="pt">'. __( 'Portuguese', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('ro' == $selected) echo 'selected="selected"'; 
-			echo ' value="ro">'. __( 'Romanian', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('pl' == $selected) echo 'selected="selected"'; 
-			echo ' value="pl">'. __( 'Polish', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('fi' == $selected) echo 'selected="selected"'; 
-			echo ' value="fi">'. __( 'Finnish', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('nl' == $selected) echo 'selected="selected"'; 
-			echo ' value="nl">'. __( 'Dutch', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('bg' == $selected) echo 'selected="selected"'; 
-			echo ' value="bg">'. __( 'Bulgarian', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('se' == $selected) echo 'selected="selected"'; 
-			echo ' value="se">'. __( 'Swedish', 'wpcloudy' ) .'</option>';
-					
-			echo '<option '; 
-			if ('zh_tw' == $selected) echo 'selected="selected"'; 
-			echo ' value="zh_tw">'. __( 'Chinese Traditional', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('zh_cn' == $selected) echo 'selected="selected"'; 
-			echo ' value="zh_cn">'. __( 'Chinese Simplified', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('tr' == $selected) echo 'selected="selected"'; 
-			echo ' value="tr">'. __( 'Turkish', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('cz' == $selected) echo 'selected="selected"'; 
-			echo ' value="cz">'. __( 'Czech', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('gl' == $selected) echo 'selected="selected"'; 
-			echo ' value="gl">'. __( 'Galician', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('vi' == $selected) echo 'selected="selected"'; 
-			echo ' value="vi">'. __( 'Vietnamese', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('ar' == $selected) echo 'selected="selected"'; 
-			echo ' value="ar">'. __( 'Arabic', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('mk' == $selected) echo 'selected="selected"'; 
-			echo ' value="mk">'. __( 'Macedonian', 'wpcloudy' ) .'</option>';
-			
-			echo '<option '; 
-			if ('sk' == $selected) echo 'selected="selected"'; 
-			echo ' value="sk">'. __( 'Slovak', 'wpcloudy' ) .'</option>';
-			
-		echo '</select>';
-
-        echo '<br /><br /><span class="dashicons dashicons-editor-help"></span><a href="http://www.wpcloudy.com/support/guides/translate-wp-cloudy-language/" target="_blank">'.__('Learn more about how translations works','wpcloudy').'</a>';
-		
-		if (isset($this->options['wpc_basic_lang'])) {
-			esc_attr( $this->options['wpc_basic_lang']);
 		}
 	}
 

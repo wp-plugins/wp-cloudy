@@ -12,6 +12,7 @@
 	font-style: normal;
 }
 #wpc-weather {
+	position: relative;
     font-family: helvetica neue,segoe ui,arial;
     font-size: 14px;
     margin: 10px 0;

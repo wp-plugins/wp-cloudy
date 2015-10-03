@@ -5,8 +5,8 @@ msgstr ""
 "POT-Creation-Date: 2015-10-01 19:21+0200\n"
 "PO-Revision-Date: 2015-10-01 19:21+0200\n"
 "Last-Translator: \n"
-"Language-Team: Benjamin DENIS <contact@wpcloudy.com>\n"
-"Language: en\n"
+"Language-Team: contact@wpcloudy.com\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,56 +14,60 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: js\n"
 
 #: wpcloudy-admin.php:63
 msgid "WP Cloudy"
-msgstr ""
+msgstr "WP Cloudy"
 
 #: wpcloudy-admin.php:67
 msgid "Not just another WordPress Weather plugin!"
-msgstr ""
+msgstr "‎לא סתם עוד תוסף מזג אוויר לוורדפרס‫!‬"
 
 #: wpcloudy-admin.php:70
 msgid "You like WP Cloudy? Don't forget to rate it 5 stars!"
-msgstr ""
+msgstr "‎אהבת את התוסף‫?‬ אל תשכח לדרג אותו 5 כוכבים‫!‬"
 
 #: wpcloudy-admin.php:102
 msgid "Plugin website"
-msgstr ""
+msgstr "‎אתר התוסף"
 
 #: wpcloudy-admin.php:107
 msgid "Follow us on Twitter!"
-msgstr ""
+msgstr "‎עקוב אחרינו בטוויטר‫!‬"
 
 #: wpcloudy-admin.php:119
 msgid "Export Settings"
-msgstr ""
+msgstr "‎ייצא הגדרות"
 
 #: wpcloudy-admin.php:121
 msgid ""
 "Export the plugin settings for this site as a .json file. This allows you to "
 "easily import the configuration into another site."
 msgstr ""
+"‎ייצא את הגדרות התוסף לקובץ .json‫.‬ זה יאפשר לך לייבא את ההגדרות לאתר אחר‫.‬"
 
 #: wpcloudy-admin.php:126
 msgid "Export"
-msgstr ""
+msgstr "‎ייצא"
 
 #: wpcloudy-admin.php:133
 msgid "Import Settings"
-msgstr ""
+msgstr "‎ייבא הגדרות"
 
 #: wpcloudy-admin.php:135
 msgid ""
 "Import the plugin settings from a .json file. This file can be obtained by "
 "exporting the settings on another site using the form above."
 msgstr ""
+"‏‎ייבא את הגדרות התוסף לקובץ .json‫.‬ ניתן להשיג קובץ זה על ידי ייצוא ההגדרות "
+"מאתר אחר באמצעות הטופס שמופיע למעלה."
 
 #: wpcloudy-admin.php:143
 msgid "Import"
-msgstr ""
+msgstr "‎ייבא"
 
 #: wpcloudy-admin.php:150
 msgid "Reset Settings"
@@ -81,19 +85,19 @@ msgstr ""
 
 #: wpcloudy-admin.php:176
 msgid "Basic"
-msgstr ""
+msgstr "בסיסי"
 
 #: wpcloudy-admin.php:177 wpcloudy.php:278
 msgid "Display"
-msgstr ""
+msgstr "‎תצוגה"
 
 #: wpcloudy-admin.php:178 wpcloudy.php:279
 msgid "Advanced"
-msgstr ""
+msgstr "‎מתקדם"
 
 #: wpcloudy-admin.php:179 wpcloudy.php:280
 msgid "Map"
-msgstr ""
+msgstr "‎מפה"
 
 #: wpcloudy-admin.php:180
 msgid "Import/Export/Reset"
@@ -101,922 +105,924 @@ msgstr ""
 
 #: wpcloudy-admin.php:181
 msgid "Support"
-msgstr ""
+msgstr "‎תמיכה"
 
 #: wpcloudy-admin.php:195
 msgid "Save changes"
-msgstr ""
+msgstr "‎שמור שינויים"
 
 #: wpcloudy-admin.php:201
 msgid "WP Cloudy cache"
-msgstr ""
+msgstr "‎מטמון WP Cloudy"
 
 #: wpcloudy-admin.php:205
 msgid "cache system"
-msgstr ""
+msgstr "‎מטמון מערכת"
 
 #: wpcloudy-admin.php:208
 msgid "Click this button to refresh weather cache."
-msgstr ""
+msgstr "‎לחץ על הכפתור הזה כדי לרענן את מטמון מזג האוויר‫.‬"
 
 #: wpcloudy-admin.php:247
 msgid "WP Cloudy Geolocation"
-msgstr ""
+msgstr "WP Cloudy גיאו‫-‬מיקום"
 
 #: wpcloudy-admin.php:251
 msgid "$ 39"
-msgstr ""
+msgstr "$39"
 
 #: wpcloudy-admin.php:253 wpcloudy-admin.php:271
 msgid "Enabled"
-msgstr ""
+msgstr "‎פועל"
 
 #: wpcloudy-admin.php:257
 msgid "Geolocated weather for your visitors."
-msgstr ""
+msgstr "‎הצגת מזג אוויר על בסיס מיקום הגולשים שלך‫.‬"
 
 #: wpcloudy-admin.php:261 wpcloudy-admin.php:279
 msgid "Learn more"
-msgstr ""
+msgstr "‎קרא עוד"
 
 #: wpcloudy-admin.php:265
 msgid "WP Cloudy Skins"
-msgstr ""
+msgstr "‎ערכות עיצוב WP Cloudy"
 
 #: wpcloudy-admin.php:269
 msgid "$ 10"
-msgstr ""
+msgstr "$10"
 
 #: wpcloudy-admin.php:275
 msgid "10 beautiful skins for your weather."
-msgstr ""
+msgstr "‎10 ערכות עיצוב יפות למזג האוויר שלך‫.‬"
 
 #: wpcloudy-admin.php:303 wpcloudy.php:277
 msgid "Basic settings"
-msgstr ""
+msgstr "‎הגדרות בסיסיות"
 
 #: wpcloudy-admin.php:310
 msgid "Bypass unit?"
-msgstr ""
+msgstr "‎מעקף יחידה‫?‬"
 
 #: wpcloudy-admin.php:318
 msgid "Unit"
-msgstr ""
+msgstr "‎יחידה"
 
 #: wpcloudy-admin.php:326
 msgid "Bypass date format?"
-msgstr ""
+msgstr "‎מעקב פורמט תאריך‫?‬"
 
 #: wpcloudy-admin.php:334
 msgid "Date"
-msgstr ""
+msgstr "‎תאריך"
 
 #: wpcloudy-admin.php:342
 msgid "Bypass language?"
-msgstr ""
+msgstr "‎מעקף שפה‫?‬"
 
 #: wpcloudy-admin.php:350
 msgid "Language"
-msgstr ""
+msgstr "‎שפה"
 
 #: wpcloudy-admin.php:359
 msgid "Display settings"
-msgstr ""
+msgstr "‎הגדרות תצוגה"
 
 #: wpcloudy-admin.php:366 wpcloudy.php:348
 msgid "Current weather?"
-msgstr ""
+msgstr "‎מזג אוויר נוכחי‫?‬"
 
 #: wpcloudy-admin.php:374 wpcloudy.php:354
 msgid "Short condition?"
-msgstr ""
+msgstr "מצב קצר?"
 
 #: wpcloudy-admin.php:382
 msgid "Today date + Temperatures?"
-msgstr ""
+msgstr "‎תאריך היום ‫+‬ טמפרטורות‫?‬"
 
 #: wpcloudy-admin.php:390 wpcloudy.php:405
 msgid "Temperatures unit (C / F)?"
-msgstr ""
+msgstr "‎יחידת טמפרטורה ‫(‬פרנהייט ‫/‬ צלזיוס‫)?‬"
 
 #: wpcloudy-admin.php:398
 msgid "Sunrise + sunset?"
-msgstr ""
+msgstr "‎זריחה ‫+‬ שקיעה‫?‬"
 
 #: wpcloudy-admin.php:406 wpcloudy-admin.php:735 wpcloudy.php:372
 msgid "Wind?"
-msgstr ""
+msgstr "‎רוח‫?‬"
 
 #: wpcloudy-admin.php:414 wpcloudy.php:378
 msgid "Humidity?"
-msgstr ""
+msgstr "‎לחות‫?‬"
 
 #: wpcloudy-admin.php:422 wpcloudy-admin.php:751 wpcloudy.php:384
 msgid "Pressure?"
-msgstr ""
+msgstr "‎לחץ ברומטרי‫?‬"
 
 #: wpcloudy-admin.php:430 wpcloudy.php:390
 msgid "Cloudiness?"
-msgstr ""
+msgstr "‎מצב העננים‫?‬"
 
 #: wpcloudy-admin.php:438 wpcloudy.php:396
 msgid "Precipitation?"
-msgstr ""
+msgstr "משקעים?"
 
 #: wpcloudy-admin.php:446
 msgid "Hour forecast?"
-msgstr ""
+msgstr "‎תחזית שעה‫?‬"
 
 #: wpcloudy-admin.php:454
 msgid "Bypass number of hours forecast settings?"
-msgstr ""
+msgstr "‎מעקף הגדרות מספר שעות התחזית‫?‬"
 
 #: wpcloudy-admin.php:462
 msgid "Number of range hours forecast?"
-msgstr ""
+msgstr "‎טווח שעות התחזית‫?‬"
 
 #: wpcloudy-admin.php:470 wpcloudy-admin.php:1264
 msgid "Bypass individual temperatures settings?"
-msgstr ""
+msgstr "‎מעקף הגדרות טמפרטורה יחודיות‫?‬"
 
 #: wpcloudy-admin.php:478
 msgid "Today date + current temperature"
-msgstr ""
+msgstr "‎תאריך היום ‫+‬ טמפרטורה נוכחית"
 
 #: wpcloudy-admin.php:486 wpcloudy.php:437
 msgid "16-Day Forecast"
-msgstr ""
+msgstr "‎תחזית 16 ימים"
 
 #: wpcloudy-admin.php:494
 msgid "Bypass number of days forecast settings?"
-msgstr ""
+msgstr "מעקף הגדרות מספר ימי התחזית?"
 
 #: wpcloudy-admin.php:502
 msgid "Number of days forecast"
-msgstr ""
+msgstr "מספר ימי התחזית"
 
 #: wpcloudy-admin.php:510 wpcloudy-admin.php:1387
 msgid "Bypass the length of name days?"
-msgstr ""
+msgstr "מעקף אורך שמות הימים?"
 
 #: wpcloudy-admin.php:518
 msgid "Lenght name days:"
-msgstr ""
+msgstr "‎אורך שמות הימים‫:‬"
 
 #: wpcloudy-admin.php:526 wpcloudy.php:480
 msgid "Link to OpenWeatherMap?"
-msgstr ""
+msgstr "‎קישור לאתר OpenWeatherMap‫?‬"
 
 #: wpcloudy-admin.php:534 wpcloudy.php:488
 msgid "Update date?"
-msgstr ""
+msgstr "‎לעדכן תאריך‫?‬"
 
 #: wpcloudy-admin.php:543
 msgid "Advanced settings"
-msgstr ""
+msgstr "‎הגדרות מתקדמות"
 
 #: wpcloudy-admin.php:550
 msgid "CSS 3 Animations"
-msgstr ""
+msgstr "‎אנימציות CSS3"
 
 #: wpcloudy-admin.php:558 wpcloudy.php:500
 msgid "Background color"
-msgstr ""
+msgstr "‎צבע רקע"
 
 #: wpcloudy-admin.php:566 wpcloudy.php:504
 msgid "Text color"
-msgstr ""
+msgstr "‎צבע טקסט"
 
 #: wpcloudy-admin.php:574 wpcloudy.php:508
 msgid "Border color"
-msgstr ""
+msgstr "‏‎צבע מסגרת"
 
 #: wpcloudy-admin.php:582
 msgid "Bypass size?"
-msgstr ""
+msgstr "‎מעקף גודל‫?‬"
 
 #: wpcloudy-admin.php:590
 msgid "Size"
-msgstr ""
+msgstr "‎גודל"
 
 #: wpcloudy-admin.php:598
 msgid "Disable cache"
-msgstr ""
+msgstr "‎לבטל מטמון"
 
 #: wpcloudy-admin.php:606
 msgid "Time cache refresh (in minutes)"
-msgstr ""
+msgstr "זמן רענון מטמון (דקות)"
 
 #: wpcloudy-admin.php:614
 msgid "Open Weather Map API key"
-msgstr ""
+msgstr "מפתח API עבור Open Weather Map"
 
 #: wpcloudy-admin.php:622
 msgid "Disable Bootstrap Modal JS?"
-msgstr ""
+msgstr "לבטל Bootstrap Modal JS?"
 
 #: wpcloudy-admin.php:632
 msgid "Map settings"
-msgstr ""
+msgstr "‎הגדרות מפה"
 
 #: wpcloudy-admin.php:639
 msgid "Load JS/CSS from:"
-msgstr ""
+msgstr "‎לטעון JS/CSS מ‫:‬"
 
 #: wpcloudy-admin.php:647
 msgid "Map?"
-msgstr ""
+msgstr "‎מפה‫?‬"
 
 #: wpcloudy-admin.php:655
 msgid "Map height"
-msgstr ""
+msgstr "‎גובה מפה"
 
 #: wpcloudy-admin.php:663
 msgid "Bypass layers opacity?"
-msgstr ""
+msgstr "‎מעקף שקיפות שכבות‫?‬"
 
 #: wpcloudy-admin.php:671 wpcloudy.php:536
 msgid "Layers opacity"
-msgstr ""
+msgstr "‎שקיפות שכבות"
 
 #: wpcloudy-admin.php:679
 msgid "Bypass zoom?"
-msgstr ""
+msgstr "‏‎מעקף הגדלה?‬"
 
 #: wpcloudy-admin.php:687 wpcloudy.php:552
 msgid "Zoom"
-msgstr ""
+msgstr "הגדלה"
 
 #: wpcloudy-admin.php:695
 msgid "Disable zoom wheel?"
-msgstr ""
+msgstr "‏‎לבטל גלגל הגדלה?‬"
 
 #: wpcloudy-admin.php:703
 msgid "Stations?"
-msgstr ""
+msgstr "‎תחנות‫?‬"
 
 #: wpcloudy-admin.php:711
 msgid "Clouds?"
-msgstr ""
+msgstr "‎עננים‫?‬"
 
 #: wpcloudy-admin.php:719
 msgid "Precipitations?"
-msgstr ""
+msgstr "משקעים?"
 
 #: wpcloudy-admin.php:727
 msgid "Snow?"
-msgstr ""
+msgstr "‎שלג‫?‬"
 
 #: wpcloudy-admin.php:743
 msgid "Temperatures?"
-msgstr ""
+msgstr "‎טמפרטורות‫?‬"
 
 #: wpcloudy-admin.php:809
 msgid "Basic settings to bypass:"
-msgstr ""
+msgstr "‎הגדרות בסיסיות למעקף‫:‬"
 
 #: wpcloudy-admin.php:814
 msgid "Display settings to bypass:"
-msgstr ""
+msgstr "‎הגדרות תצוגה למעקף‫:‬"
 
 #: wpcloudy-admin.php:819
 msgid "Advanced settings to bypass:"
-msgstr ""
+msgstr "‎הגדרות מתקדמות למעקף‫:‬"
 
 #: wpcloudy-admin.php:824
 msgid "Map settings to bypass:"
-msgstr ""
+msgstr "‎הגדרות מפה למעקף‫:‬"
 
 #: wpcloudy-admin.php:829
 msgid "&nbsp;"
-msgstr ""
+msgstr "‏&nbsp;"
 
 #: wpcloudy-admin.php:845
 msgid "Enable bypass unit on all weather?"
-msgstr ""
+msgstr "הפעל מעקף יחידות על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:861 wpcloudy.php:303
 msgid "Imperial"
-msgstr ""
+msgstr "שיטה אימפריאלית"
 
 #: wpcloudy-admin.php:864 wpcloudy.php:304
 msgid "Metric"
-msgstr ""
+msgstr "‎שיטה מטרית"
 
 #: wpcloudy-admin.php:881
 msgid "Enable bypass date format on all weather?"
-msgstr ""
+msgstr "הפעל מעקף פורמט תאריך על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:897 wpcloudy.php:310
 msgid "12 h"
-msgstr ""
+msgstr "‎12 שעות"
 
 #: wpcloudy-admin.php:900 wpcloudy.php:311
 msgid "24 h"
-msgstr ""
+msgstr "‎24 שעות"
 
 #: wpcloudy-admin.php:917
 msgid "Enable bypass language on all weather?"
-msgstr ""
+msgstr "הפעל מעקף שפה על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:933 wpcloudy.php:317
 msgid "French"
-msgstr ""
+msgstr "‎צרפתית"
 
 #: wpcloudy-admin.php:937 wpcloudy.php:318
 msgid "English"
-msgstr ""
+msgstr "‎אנגלית"
 
 #: wpcloudy-admin.php:941 wpcloudy.php:319
 msgid "Russian"
-msgstr ""
+msgstr "‎רוסית"
 
 #: wpcloudy-admin.php:945 wpcloudy.php:320
 msgid "Italian"
-msgstr ""
+msgstr "‎איטלקית"
 
 #: wpcloudy-admin.php:949 wpcloudy.php:321
 msgid "Spanish"
-msgstr ""
+msgstr "‎ספרדית"
 
 #: wpcloudy-admin.php:953 wpcloudy.php:322
 msgid "Ukrainian"
-msgstr ""
+msgstr "‎אוקראינית"
 
 #: wpcloudy-admin.php:957 wpcloudy.php:323
 msgid "German"
-msgstr ""
+msgstr "‎גרמנית"
 
 #: wpcloudy-admin.php:961 wpcloudy.php:324
 msgid "Portuguese"
-msgstr ""
+msgstr "‎פורטוגזית"
 
 #: wpcloudy-admin.php:965 wpcloudy.php:325
 msgid "Romanian"
-msgstr ""
+msgstr "‎רומנית"
 
 #: wpcloudy-admin.php:969 wpcloudy.php:326
 msgid "Polish"
-msgstr ""
+msgstr "‎פולנית"
 
 #: wpcloudy-admin.php:973 wpcloudy.php:327
 msgid "Finnish"
-msgstr ""
+msgstr "‎פינית"
 
 #: wpcloudy-admin.php:977 wpcloudy.php:328
 msgid "Dutch"
-msgstr ""
+msgstr "‎הולנדית"
 
 #: wpcloudy-admin.php:981 wpcloudy.php:329
 msgid "Bulgarian"
-msgstr ""
+msgstr "‎בולגרית"
 
 #: wpcloudy-admin.php:985 wpcloudy.php:330
 msgid "Swedish"
-msgstr ""
+msgstr "‎שוודית"
 
 #: wpcloudy-admin.php:989 wpcloudy.php:331
 msgid "Chinese Traditional"
-msgstr ""
+msgstr "‎סינית מסורתית"
 
 #: wpcloudy-admin.php:993 wpcloudy.php:332
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "‎סינית"
 
 #: wpcloudy-admin.php:997 wpcloudy.php:333
 msgid "Turkish"
-msgstr ""
+msgstr "‎טורקית"
 
 #: wpcloudy-admin.php:1001 wpcloudy.php:334
 msgid "Czech"
-msgstr ""
+msgstr "‎צ׳כית"
 
 #: wpcloudy-admin.php:1005 wpcloudy.php:335
 msgid "Galician"
-msgstr ""
+msgstr "‎גליציאנית"
 
 #: wpcloudy-admin.php:1009 wpcloudy.php:336
 msgid "Vietnamese"
-msgstr ""
+msgstr "‎ויאטנמית"
 
 #: wpcloudy-admin.php:1013 wpcloudy.php:337
 msgid "Arabic"
-msgstr ""
+msgstr "‎ערבית"
 
 #: wpcloudy-admin.php:1017 wpcloudy.php:338
 msgid "Macedonian"
-msgstr ""
+msgstr "‎מקדונית"
 
 #: wpcloudy-admin.php:1021 wpcloudy.php:339
 msgid "Slovak"
-msgstr ""
+msgstr "‎סלובקית"
 
 #: wpcloudy-admin.php:1025 wpcloudy.php:341
 msgid "Learn more about how translations works"
-msgstr ""
+msgstr "‎קרא עוד על איך תרגומים עובדים"
 
 #: wpcloudy-admin.php:1041
 msgid "Display current weather on all weather?"
-msgstr ""
+msgstr "‏‎הצג מזג אוויר נוכחי על כל מזג האוויר‫?‬"
 
 #: wpcloudy-admin.php:1056
 msgid "Display short condition on all weather?"
-msgstr ""
+msgstr "הצג מצב קצר על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1072
 msgid "Display today date + temperatures on all weather?"
-msgstr ""
+msgstr "הצג תאריך היום + טמפרטורות על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1088
 msgid "Display temperatures unit (C / F)?"
-msgstr ""
+msgstr "הצג יחידת טמפרטורה (צלזיוס / פרנהייט)?"
 
 #: wpcloudy-admin.php:1104
 msgid "Display sunrise - sunset on all weather?"
-msgstr ""
+msgstr "הצג זריחה - שקיעה על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1120
 msgid "Display wind on all weather?"
-msgstr ""
+msgstr "הצג רוח על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1136
 msgid "Display humidity on all weather?"
-msgstr ""
+msgstr "הצג לחות על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1152
 msgid "Display pressure on all weather?"
-msgstr ""
+msgstr "הצג לחץ ברומטרי על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1168
 msgid "Display cloudiness on all weather?"
-msgstr ""
+msgstr "הצג עננות על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1184
 msgid "Display precipitation on all weather?"
-msgstr ""
+msgstr "הצג משקעים על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1200
 msgid "Display hour forecast on all weather?"
-msgstr ""
+msgstr "הצג תחזית שעתית על כל מזג האוורי?"
 
 #: wpcloudy-admin.php:1216
 msgid "Enable bypass number of hours forecast on all weather?"
-msgstr ""
+msgstr "הפעל מעקף מספר שעות תחזית על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1232 wpcloudy.php:426
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: wpcloudy-admin.php:1235 wpcloudy.php:427
 msgid "2"
-msgstr ""
+msgstr "2"
 
 #: wpcloudy-admin.php:1238 wpcloudy.php:428
 msgid "3"
-msgstr ""
+msgstr "3"
 
 #: wpcloudy-admin.php:1241 wpcloudy.php:429
 msgid "4"
-msgstr ""
+msgstr "4"
 
 #: wpcloudy-admin.php:1244 wpcloudy.php:430
 msgid "5"
-msgstr ""
+msgstr "5"
 
 #: wpcloudy-admin.php:1247 wpcloudy.php:431
 msgid "6"
-msgstr ""
+msgstr "6"
 
 #: wpcloudy-admin.php:1280
 msgid "Display Today date on all weather?"
-msgstr ""
+msgstr "הצג את תאריך היום על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1296
 msgid "Display 16-day Forecast on all weather?"
-msgstr ""
+msgstr "הצג 16 ימי תחזית על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1312
 msgid "Enable bypass number of days forecast on all weather?"
-msgstr ""
+msgstr "הפעל מעקף מספר ימי התחזית על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1328 wpcloudy.php:448
 msgid "1 day"
-msgstr ""
+msgstr "‏‎יום אחד"
 
 #: wpcloudy-admin.php:1331 wpcloudy.php:449
 msgid "2 days"
-msgstr ""
+msgstr "‎2 ימים"
 
 #: wpcloudy-admin.php:1334 wpcloudy.php:450
 msgid "3 days"
-msgstr ""
+msgstr "‎3 ימים"
 
 #: wpcloudy-admin.php:1337 wpcloudy.php:451
 msgid "4 days"
-msgstr ""
+msgstr "‎4 ימים"
 
 #: wpcloudy-admin.php:1340 wpcloudy.php:452
 msgid "5 days"
-msgstr ""
+msgstr "‎5 ימים"
 
 #: wpcloudy-admin.php:1343 wpcloudy.php:453
 msgid "6 days"
-msgstr ""
+msgstr "‎6 ימים"
 
 #: wpcloudy-admin.php:1346 wpcloudy.php:454
 msgid "7 days"
-msgstr ""
+msgstr "‎7 ימים"
 
 #: wpcloudy-admin.php:1349 wpcloudy.php:455
 msgid "8 days"
-msgstr ""
+msgstr "‎8 ימים"
 
 #: wpcloudy-admin.php:1352 wpcloudy.php:456
 msgid "9 days"
-msgstr ""
+msgstr "‎9 ימים"
 
 #: wpcloudy-admin.php:1355 wpcloudy.php:457
 msgid "10 days"
-msgstr ""
+msgstr "‎10 ימים"
 
 #: wpcloudy-admin.php:1358 wpcloudy.php:458
 msgid "11 days"
-msgstr ""
+msgstr "‎11 ימים"
 
 #: wpcloudy-admin.php:1361 wpcloudy.php:459
 msgid "12 days"
-msgstr ""
+msgstr "‎12 ימים"
 
 #: wpcloudy-admin.php:1364 wpcloudy.php:460
 msgid "13 days"
-msgstr ""
+msgstr "‎13 ימים"
 
 #: wpcloudy-admin.php:1367 wpcloudy.php:461
 msgid "14 days"
-msgstr ""
+msgstr "‎14 ימים"
 
 #: wpcloudy-admin.php:1370 wpcloudy.php:462
 msgid "15 days"
-msgstr ""
+msgstr "‎15 ימים"
 
 #: wpcloudy-admin.php:1404
 msgid "Short days names"
-msgstr ""
+msgstr "‎שמות ימים קצרים"
 
 #: wpcloudy-admin.php:1412
 msgid "Normal days names"
-msgstr ""
+msgstr "‎שמות ימים רגילים"
 
 #: wpcloudy-admin.php:1428
 msgid "Display link to full weather on OpenWeatherMap?"
-msgstr ""
+msgstr "הצג קישור למזג אוויר מלא באתר OpenWeatherMap?"
 
 #: wpcloudy-admin.php:1445
 msgid "Display update date on all weather?"
-msgstr ""
+msgstr "הצג עדכון תאריך על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1462
 msgid "Disable CSS3 animations, transformations and transitions?"
-msgstr ""
+msgstr "בטל אנימציות CSS3, אפקטים ומעברים?"
 
 #: wpcloudy-admin.php:1507
 msgid "Enable bypass size on all weather?"
-msgstr ""
+msgstr "הפעל מעקף גודל על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1523 wpcloudy.php:518
 msgid "Small"
-msgstr ""
+msgstr "‎קטן"
 
 #: wpcloudy-admin.php:1526 wpcloudy.php:519
 msgid "Medium"
-msgstr ""
+msgstr "‎בינוני"
 
 #: wpcloudy-admin.php:1529 wpcloudy.php:520
 msgid "Large"
-msgstr ""
+msgstr "‎גדול"
 
 #: wpcloudy-admin.php:1546
 msgid "Disable weather cache? (not recommended)"
-msgstr ""
+msgstr "בטל מטמון מזג אוויר? (לא מומלץ)"
 
 #: wpcloudy-admin.php:1559
 msgid "Default value: 30 minutes"
-msgstr ""
+msgstr "ערך ברירת מחדל: 30 דקות"
 
 #: wpcloudy-admin.php:1580
 msgid ""
-"Disable Bootstrap Modal JS? (disable this if you already include Bootstrap "
-"JS in your theme)"
-msgstr ""
+"Disable Bootstrap Modal JS? (disable this if you already include Bootstrap JS "
+"in your theme)"
+msgstr "בטל Bootstrap Modal JS? (בטל אם כבר כללת סקריפט זה בערכת העיצוב שלך)"
 
 #: wpcloudy-admin.php:1596
 msgid "Enable map on all weather?"
-msgstr ""
+msgstr "הפעל מפה על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1641
 msgid "Enable bypass map opacity on all weather?"
-msgstr ""
+msgstr "הפעל מעקף שקיפות מפה על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1704
 msgid "Enable bypass map zoom on all weather?"
-msgstr ""
+msgstr "הפעל מעקף הגדלת מפה על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1788
 msgid "Disable zoom wheel on all weather?"
-msgstr ""
+msgstr "בטל גלגל הגדלה על כל מזג האוויר?"
 
 #: wpcloudy-admin.php:1804
 msgid "Display stations on all weather maps?"
-msgstr ""
+msgstr "הצג תחנות על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1820
 msgid "Display clouds on all weather maps?"
-msgstr ""
+msgstr "הצג עננים על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1836
 msgid "Display precipitations on all weather maps?"
-msgstr ""
+msgstr "הצג משקעים על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1853
 msgid "Display snow on all weather maps?"
-msgstr ""
+msgstr "הצג שלג על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1869
 msgid "Display wind on all weather maps?"
-msgstr ""
+msgstr "הצג רוח על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1885
 msgid "Display temperatures on all weather maps?"
-msgstr ""
+msgstr "הצג טמפרטורה על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1901
 msgid "Display pressure on all weather maps?"
-msgstr ""
+msgstr "הצג לחץ ברומטרי על כל מפות מזג האוויר?"
 
 #: wpcloudy-admin.php:1911
 msgid "Problem with WP Cloudy?"
-msgstr ""
+msgstr "יש לך בעיה עם WP Cloudy?"
 
 #: wpcloudy-admin.php:1912
 msgid "FAQ"
-msgstr ""
+msgstr "‎שאלות נפוצות"
 
 #: wpcloudy-admin.php:1912
 msgid "Read our FAQ"
-msgstr ""
+msgstr "‎קרא את השאלות הנפוצות"
 
 #: wpcloudy-admin.php:1913
 msgid "Guides"
-msgstr ""
+msgstr "‎מדריכים"
 
 #: wpcloudy-admin.php:1913
 msgid "Read our Guides"
-msgstr ""
+msgstr "‎קרא את המדריכים"
 
 #: wpcloudy-admin.php:1914
 msgid "Forum"
-msgstr ""
+msgstr "‎פורום"
 
 #: wpcloudy-admin.php:1914
 msgid "WP Cloudy Forum"
-msgstr ""
+msgstr "פורום WP Cloudy"
 
 #: wpcloudy-admin.php:1915
 msgid "WP Cloudy Forum on WordPress.org"
-msgstr ""
+msgstr "פורום WP Cloudy באתר וורדפרס"
 
 #: wpcloudy-export.php:40
 msgid "Please upload a valid .json file"
-msgstr ""
+msgstr "העלה קובץ json תקני בבקשה"
 
 #: wpcloudy-export.php:44
 msgid "Please upload a file to import"
-msgstr ""
+msgstr "העלה קובץ לייבוא בבקשה"
 
 #: wpcloudy-widget.php:53
 msgid "Select the weather to display:"
-msgstr ""
+msgstr "בחר את מזג האוויר להצגה:"
 
 #: wpcloudy.php:217
 msgid "Copy and paste this shortcode anywhere in posts, pages, text widgets: "
-msgstr ""
+msgstr "העתק והדבק את הקיצור הזה בכל מקום בפוסטים, עמודים או ווידג׳טים: "
 
 #: wpcloudy.php:225
 msgid ""
 "If you need to display this weather anywhere in your theme, simply copy and "
 "paste this code snippet in your PHP file like sidebar.php: "
 msgstr ""
+"אם אתה צריך להציג את מזג האוויר הזה בכל מקום בערכת העיצוב שלך, פשוט העתק "
+"והדבק את הקוד הזה בתוך קובץ PHP בערכת העיצוב: "
 
 #: wpcloudy.php:285
 msgid "City"
-msgstr ""
+msgstr "‎עיר"
 
 #: wpcloudy.php:286
 msgid "Enter your city"
-msgstr ""
+msgstr "‎הכנס את העיר שלך"
 
 #: wpcloudy.php:289
 msgid "Custom city title"
-msgstr ""
+msgstr "כותרת עיר מותאמת-אישית:"
 
 #: wpcloudy.php:293
 msgid "State?"
-msgstr ""
+msgstr "‎מדינה"
 
 #: wpcloudy.php:297
 msgid "Country?"
-msgstr ""
+msgstr "‎ארץ"
 
 #: wpcloudy.php:301
 msgid "Imperial or metric units?"
-msgstr ""
+msgstr "יחידות אימפריאליות או מטריות?"
 
 #: wpcloudy.php:308
 msgid "12h / 24h date format?"
-msgstr ""
+msgstr "פורמט שעה 12 שעות / 24 שעות?"
 
 #: wpcloudy.php:315
 msgid "Display language?"
-msgstr ""
+msgstr "הצג שפה?"
 
 #: wpcloudy.php:360
 msgid "Date + temperatures?"
-msgstr ""
+msgstr "תאריך + טמפרטורות?"
 
 #: wpcloudy.php:366
 msgid "Sunrise + sunset? appears only if date + temperatures is checked"
-msgstr ""
+msgstr "זריחה + שקיעה? מוצג רק אם תאריך + טמפרטורות נבחר"
 
 #: wpcloudy.php:400
 msgid "Temperatures"
-msgstr ""
+msgstr "‎טמפרטורות"
 
 #: wpcloudy.php:411
 msgid "Today date?"
-msgstr ""
+msgstr "תאריך היום?"
 
 #: wpcloudy.php:415
 msgid "Hourly Forecast"
-msgstr ""
+msgstr "תחזית שעתית"
 
 #: wpcloudy.php:420
 msgid "Hour Forecast?"
-msgstr ""
+msgstr "תחזית שעה?"
 
 #: wpcloudy.php:424
 msgid "How hours ranges ?"
-msgstr ""
+msgstr "טווח שעות?"
 
 #: wpcloudy.php:434
 msgid ""
 "Make sure you have properly set the date of your site in WordPress settings."
-msgstr ""
+msgstr "וודא שהתאריך הנכון קבוע בהגדרות וורדפרס."
 
 #: wpcloudy.php:442
 msgid "16-Day Forecast? (today + 15 days max)"
-msgstr ""
+msgstr "תחזית 16 ימים? (היום + 15 יום מקסימום)"
 
 #: wpcloudy.php:446
 msgid "How many days?"
-msgstr ""
+msgstr "כמה ימים?"
 
 #: wpcloudy.php:468
 msgid "Short days names?"
-msgstr ""
+msgstr "שמות ימים קצרים?"
 
 #: wpcloudy.php:474
 msgid "Normal days names?"
-msgstr ""
+msgstr "שמות ימים רגילים?"
 
 #: wpcloudy.php:496
 msgid "Disable CSS3 animations?"
-msgstr ""
+msgstr "בטל אנימציות CSS3?"
 
 #: wpcloudy.php:512
 msgid "Custom CSS"
-msgstr ""
+msgstr "‏CSS מותאם-אישית"
 
 #: wpcloudy.php:516
 msgid "Weather size?"
-msgstr ""
+msgstr "גודל מזג אוויר?"
 
 #: wpcloudy.php:528
 msgid "Display map?"
-msgstr ""
+msgstr "הצג מפה?"
 
 #: wpcloudy.php:532
 msgid "Map height (in px)"
-msgstr ""
+msgstr "גובה מפה (בפיקסלים)"
 
 #: wpcloudy.php:577
 msgid "Disable zoom wheel on map?"
-msgstr ""
+msgstr "בטל גלגל הגדלה במפה?"
 
 #: wpcloudy.php:581
 msgid "Layers"
-msgstr ""
+msgstr "שכבות"
 
 #: wpcloudy.php:586
 msgid "Display stations?"
-msgstr ""
+msgstr "הצג תחנות?"
 
 #: wpcloudy.php:592
 msgid "Display clouds?"
-msgstr ""
+msgstr "הצג עננים?"
 
 #: wpcloudy.php:598
 msgid "Display precipitation?"
-msgstr ""
+msgstr "הצג משקעים?"
 
 #: wpcloudy.php:604
 msgid "Display snow?"
-msgstr ""
+msgstr "הצג שלג?"
 
 #: wpcloudy.php:610
 msgid "Display wind?"
-msgstr ""
+msgstr "הצג רוח?"
 
 #: wpcloudy.php:616
 msgid "Display temperature?"
-msgstr ""
+msgstr "הצג טמפרטורה?"
 
 #: wpcloudy.php:622
 msgid "Display pressure?"
-msgstr ""
+msgstr "הצג לחץ ברומטרי?"
 
 #: wpcloudy.php:1317 wpcloudy.php:1327 wpcloudy.php:1338 wpcloudy.php:1401
 #: wpcloudy.php:1410 wpcloudy.php:1420 wpcloudy.php:1478 wpcloudy.php:1487
 #: wpcloudy.php:1497
 msgid "Unable to retrieve weather data"
-msgstr ""
+msgstr "לא ניתן לקבל מידע אודות מזג האוויר"
 
 #: wpcloudy.php:1562
 msgid "Full weather on OpenWeatherMap"
-msgstr ""
+msgstr "תחזית מלאה באתר OpenWeatherMap"
 
 #: wpcloudy.php:1562
 msgid "Full weather"
-msgstr ""
+msgstr "תחזית מלאה"
 
 #: wpcloudy.php:1563
 msgid "Last update: "
-msgstr ""
+msgstr "עדכון אחרון: "
 
 #: wpcloudy.php:1584 wpcloudy.php:1659 wpcloudy.php:1684
 msgid "Sunday"
-msgstr ""
+msgstr "‎ראשון"
 
 #: wpcloudy.php:1587 wpcloudy.php:1662 wpcloudy.php:1687
 msgid "Monday"
-msgstr ""
+msgstr "‎שני"
 
 #: wpcloudy.php:1590 wpcloudy.php:1665 wpcloudy.php:1690
 msgid "Tuesday"
-msgstr ""
+msgstr "‎שלישי"
 
 #: wpcloudy.php:1593 wpcloudy.php:1668 wpcloudy.php:1693
 msgid "Wednesday"
-msgstr ""
+msgstr "‎רביעי"
 
 #: wpcloudy.php:1596 wpcloudy.php:1671 wpcloudy.php:1696
 msgid "Thursday"
-msgstr ""
+msgstr "‎חמישי"
 
 #: wpcloudy.php:1599 wpcloudy.php:1674 wpcloudy.php:1699
 msgid "Friday"
-msgstr ""
+msgstr "‎שישי"
 
 #: wpcloudy.php:1602 wpcloudy.php:1677 wpcloudy.php:1702
 msgid "Saturday"
-msgstr ""
+msgstr "‎שבת"
 
 #: wpcloudy.php:1634
 msgid "Sun"
-msgstr ""
+msgstr "‎א׳"
 
 #: wpcloudy.php:1637
 msgid "Mon"
-msgstr ""
+msgstr "‎ב׳"
 
 #: wpcloudy.php:1640
 msgid "Tue"
-msgstr ""
+msgstr "‎ג׳"
 
 #: wpcloudy.php:1643
 msgid "Wed"
-msgstr ""
+msgstr "‎ד׳"
 
 #: wpcloudy.php:1646
 msgid "Thu"
-msgstr ""
+msgstr "‎ה׳"
 
 #: wpcloudy.php:1649
 msgid "Fri"
-msgstr ""
+msgstr "‎ו׳"
 
 #: wpcloudy.php:1652
 msgid "Sat"
-msgstr ""
+msgstr "‎ש׳"
 
 #: wpcloudy.php:1720
 msgid "clear sky"
@@ -1236,126 +1242,129 @@ msgstr ""
 
 #: wpcloudy.php:2038
 msgid "Today"
-msgstr ""
+msgstr "‎היום"
 
 #: wpcloudy.php:2043
 msgid "Wind"
-msgstr ""
+msgstr "‎רוח"
 
 #: wpcloudy.php:2046
 msgid "Humidity"
-msgstr ""
+msgstr "‎לחות"
 
 #: wpcloudy.php:2049
 msgid "Pressure"
-msgstr ""
+msgstr "לחץ ברומטרי"
 
 #: wpcloudy.php:2052
 msgid "Cloudiness"
-msgstr ""
+msgstr "‎עננות"
 
 #: wpcloudy.php:2056 wpcloudy.php:2061
 msgid "Precipitation"
-msgstr ""
+msgstr "משקעים"
 
 #: wpcloudy.php:2070 wpcloudy.php:2078
 msgid "Now"
-msgstr ""
+msgstr "‎עכשיו"
 
 #: wpcloudy.php:2564
 msgid "Shortcode"
-msgstr ""
+msgstr "קיצור"
 
 #: wpcloudy.php:2586 wpcloudy.php:2587 wpcloudy.php:2588
 msgid "Weather"
-msgstr ""
+msgstr "‎מזג אוויר"
 
 #: wpcloudy.php:2589
 msgid "Parent Weather:"
-msgstr ""
+msgstr "מזג אוויר אם:"
 
 #: wpcloudy.php:2590
 msgid "All Weather"
-msgstr ""
+msgstr "כל מזג האוויר"
 
 #: wpcloudy.php:2591
 msgid "View Weather"
-msgstr ""
+msgstr "הצג מזג אוויר"
 
 #: wpcloudy.php:2592
 msgid "Add New Weather"
-msgstr ""
+msgstr "הוסף מזג אוויר חדש"
 
 #: wpcloudy.php:2593
 msgid "New Weather"
-msgstr ""
+msgstr "מזג אוויר חדש"
 
 #: wpcloudy.php:2594
 msgid "Edit Weather"
-msgstr ""
+msgstr "ערוך מזג אוויר"
 
 #: wpcloudy.php:2595
 msgid "Update Weather"
-msgstr ""
+msgstr "עדכן מזג אוויר"
 
 #: wpcloudy.php:2596
 msgid "Search Weather"
-msgstr ""
+msgstr "חפש מזג אוויר"
 
 #: wpcloudy.php:2597
 msgid "No weather found"
-msgstr ""
+msgstr "לא מצאתי מזג אוויר"
 
 #: wpcloudy.php:2598
 msgid "No weather found in Trash"
-msgstr ""
+msgstr "לא מצאתי מזג אוויר בפח"
 
 #: wpcloudy.php:2602
 msgid "weather"
-msgstr ""
+msgstr "‎מזג אוויר"
 
 #: wpcloudy.php:2603
 msgid "Listing weather"
-msgstr ""
+msgstr "רשימת מזג אוויר"
 
 #: wpcloudy.php:2640 wpcloudy.php:2643
 msgid " updated."
-msgstr ""
+msgstr "‏ ‎עודכן."
 
 #: wpcloudy.php:2641
 msgid "Custom field updated."
-msgstr ""
+msgstr "שדה מותאם-אישית עודכן."
 
 #: wpcloudy.php:2642
 msgid "Custom field deleted."
-msgstr ""
+msgstr "שדה מותאים-אישית נמחק."
 
 #: wpcloudy.php:2644
 #, php-format
 msgid " restored to revision from %s"
-msgstr ""
+msgstr " שוחזר לגירסא מתוך %s"
 
 #: wpcloudy.php:2645
 msgid " published."
-msgstr ""
+msgstr " ‏‎פורסם."
 
 #: wpcloudy.php:2646
 msgid "Page saved."
-msgstr ""
+msgstr "‎העמוד נשמר‫.‬"
 
 #: wpcloudy.php:2647
 msgid " submitted."
-msgstr ""
+msgstr " הוגש."
 
 #: wpcloudy.php:2648
 #, php-format
 msgid " scheduled for: <strong>%1$s</strong>. "
-msgstr ""
+msgstr " נקבע ל: <strong>%1$s</strong>. "
 
 #: wpcloudy.php:2648
 msgid "M j, Y @ G:i"
-msgstr ""
+msgstr "‏M j, Y @ G:i"
 
 #: wpcloudy.php:2649
 msgid " draft updated."
-msgstr ""
+msgstr " טיוטה עודכנה."
+
+#~ msgid "Import/Export"
+#~ msgstr "‎ייבוא‫/‬ייצוא"
