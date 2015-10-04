@@ -22,6 +22,8 @@ With Custom Post Types, you minimize maintenance: change some settings to automa
 
 <h4>Latest features</h4>
 <ul>
+	<li><strong>NEW!</strong> Automatic background image based on weather (Skins add-on required)</li>
+	<li><strong>NEW!</strong> Translation: huge simplification! Everything is now translated via PO/MO files! Works perfectly with WPML. No need to select language in WP Cloudy basic tab.</li>
 	<li><strong>NEW!</strong> Import/export settings from site to another site</li>
 	<li><strong>NEW!</strong> Responsive design for Skins add-on </li>
 	<li><strong>NEW!</strong> AJAX</li>
@@ -78,6 +80,8 @@ Templating system: <a href="http://www.wpcloudy.com/support/guides/create-custom
 	<li>French</li>
 	<li>Italian (thanks to <a href="www.tosolini.info" target="_blank">www.tosolini.info</a>)</li>
 	<li>Hungarian (thanks to Tom)</li>
+	<li>Hebrew (thanks to Ben Klinger)</li>
+	<li>Polish (thanks to Marcello)</li>
 	<li><a href="http://www.wpcloudy.com/support/contact/" target="_blank">Add yours!</a></li>
 </ul>
 
