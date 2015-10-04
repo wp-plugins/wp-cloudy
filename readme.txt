@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
 Tested up to: 4.3
-Stable tag: 3.4.3
+Stable tag: 3.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 7. WP Cloudy without skins add-on
 
 == Changelog ==
+= 3.5.1 =
+* FIX Skins add-on background
 = 3.5 =
 * NEW Automatic background image based on weather (Skins add-on required) 
 * NEW Translation: huge simplification! Everything is now translated via PO/MO files! Works perfectly with WPML. No need to select language in WP Cloudy basic tab.
