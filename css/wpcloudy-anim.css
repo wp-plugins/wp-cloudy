@@ -50,8 +50,7 @@
   }
 }
 #wpc-weather svg, #wpc-weather svg * {
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
+  transform-box: fill-box;
 }
 
 #wpc-weather .climacon_component-stroke {
@@ -76,6 +75,8 @@
   -moz-transform-origin: 50% 50%;
   -o-transform-origin: 50% 50%;
   transform-origin: 50% 50%;
+
+  transform-box: fill-box;
 
   -webkit-animation-timing-function: linear;
   -moz-animation-timing-function: linear;

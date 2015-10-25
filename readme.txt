@@ -4,7 +4,7 @@ Donate link: http://wpcloudy.com/
 Tags: weather, forecast, openweathermap, weather widget, hour forecast, local weather, sunset, sunrise, wind, weather map
 Requires at least: 3.8
 Tested up to: 4.3
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,7 @@ Templating system: <a href="http://www.wpcloudy.com/support/guides/create-custom
 	<li>Hungarian (thanks to Tom)</li>
 	<li>Hebrew (thanks to Ben Klinger)</li>
 	<li>Polish (thanks to Marcello)</li>
+	<li>Russian (thanks to Andrea)</li>
 	<li><a href="http://www.wpcloudy.com/support/contact/" target="_blank">Add yours!</a></li>
 </ul>
 
@@ -110,6 +111,8 @@ All the answers are on our site (at least we try): http://wpcloudy.com
 7. WP Cloudy without skins add-on
 
 == Changelog ==
+= 3.5.2 = 
+* NEW Russian language (thanks to andrea)
 = 3.5.1 =
 * FIX Skins add-on background
 = 3.5 =
