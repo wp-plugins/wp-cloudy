@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Cloudy\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/wp-cloudy\n"
-"POT-Creation-Date: 2015-10-25 18:22+0100\n"
-"PO-Revision-Date: 2015-10-25 18:22+0100\n"
+"POT-Creation-Date: 2015-10-29 20:20+0100\n"
+"PO-Revision-Date: 2015-10-29 20:20+0100\n"
 "Last-Translator: \n"
 "Language-Team: RomeAdvisor.com <ra@romeadvisor.com>\n"
 "Language: ru\n"
@@ -186,7 +186,7 @@ msgid "Short condition?"
 msgstr ""
 
 #: wpcloudy-admin.php:366
-msgid "Today date + Temperatures?"
+msgid "Today date?"
 msgstr ""
 
 #: wpcloudy-admin.php:374 wpcloudy.php:375
@@ -233,8 +233,8 @@ msgstr ""
 msgid "Bypass individual temperatures settings?"
 msgstr ""
 
-#: wpcloudy-admin.php:462
-msgid "Today date + current temperature"
+#: wpcloudy-admin.php:462 wpcloudy.php:381
+msgid "Today temperature?"
 msgstr ""
 
 #: wpcloudy-admin.php:470 wpcloudy.php:407
@@ -418,7 +418,7 @@ msgid "Display short condition on all weather?"
 msgstr ""
 
 #: wpcloudy-admin.php:932
-msgid "Display today date + temperatures on all weather?"
+msgid "Display today date on all weather?"
 msgstr ""
 
 #: wpcloudy-admin.php:948
@@ -482,7 +482,7 @@ msgid "6"
 msgstr ""
 
 #: wpcloudy-admin.php:1140
-msgid "Display Today date on all weather?"
+msgid "Display today temperature on all weather?"
 msgstr ""
 
 #: wpcloudy-admin.php:1156
@@ -734,19 +734,15 @@ msgid "12h / 24h date format?"
 msgstr ""
 
 #: wpcloudy.php:330
-msgid "Date + temperatures?"
+msgid "Today Date?"
 msgstr ""
 
 #: wpcloudy.php:336
-msgid "Sunrise + sunset? appears only if date + temperatures is checked"
+msgid "Sunrise + sunset? appears only if today date is checked"
 msgstr ""
 
 #: wpcloudy.php:370
 msgid "Temperatures"
-msgstr ""
-
-#: wpcloudy.php:381
-msgid "Today date?"
 msgstr ""
 
 #: wpcloudy.php:385
@@ -838,419 +834,419 @@ msgstr ""
 msgid "Display pressure?"
 msgstr ""
 
-#: wpcloudy.php:1212 wpcloudy.php:1222 wpcloudy.php:1233 wpcloudy.php:1296
-#: wpcloudy.php:1305 wpcloudy.php:1315 wpcloudy.php:1373 wpcloudy.php:1382
-#: wpcloudy.php:1392
+#: wpcloudy.php:1196 wpcloudy.php:1206 wpcloudy.php:1217 wpcloudy.php:1280
+#: wpcloudy.php:1289 wpcloudy.php:1299 wpcloudy.php:1357 wpcloudy.php:1366
+#: wpcloudy.php:1376
 msgid "Unable to retrieve weather data"
 msgstr ""
 
-#: wpcloudy.php:1457
+#: wpcloudy.php:1441
 msgid "Full weather on OpenWeatherMap"
 msgstr ""
 
-#: wpcloudy.php:1457
+#: wpcloudy.php:1441
 msgid "Full weather"
 msgstr ""
 
-#: wpcloudy.php:1458
+#: wpcloudy.php:1442
 msgid "Last update: "
 msgstr "Последнее обновление:"
 
-#: wpcloudy.php:1479 wpcloudy.php:1554 wpcloudy.php:1579
+#: wpcloudy.php:1463 wpcloudy.php:1538 wpcloudy.php:1563
 msgid "Sunday"
 msgstr "Воскресенье"
 
-#: wpcloudy.php:1482 wpcloudy.php:1557 wpcloudy.php:1582
+#: wpcloudy.php:1466 wpcloudy.php:1541 wpcloudy.php:1566
 msgid "Monday"
 msgstr "Понедельник"
 
-#: wpcloudy.php:1485 wpcloudy.php:1560 wpcloudy.php:1585
+#: wpcloudy.php:1469 wpcloudy.php:1544 wpcloudy.php:1569
 msgid "Tuesday"
 msgstr "Вторник"
 
-#: wpcloudy.php:1488 wpcloudy.php:1563 wpcloudy.php:1588
+#: wpcloudy.php:1472 wpcloudy.php:1547 wpcloudy.php:1572
 msgid "Wednesday"
 msgstr "Среда"
 
-#: wpcloudy.php:1491 wpcloudy.php:1566 wpcloudy.php:1591
+#: wpcloudy.php:1475 wpcloudy.php:1550 wpcloudy.php:1575
 msgid "Thursday"
 msgstr "Четверг"
 
-#: wpcloudy.php:1494 wpcloudy.php:1569 wpcloudy.php:1594
+#: wpcloudy.php:1478 wpcloudy.php:1553 wpcloudy.php:1578
 msgid "Friday"
 msgstr "Пятница"
 
-#: wpcloudy.php:1497 wpcloudy.php:1572 wpcloudy.php:1597
+#: wpcloudy.php:1481 wpcloudy.php:1556 wpcloudy.php:1581
 msgid "Saturday"
 msgstr "Суббота"
 
-#: wpcloudy.php:1529
+#: wpcloudy.php:1513
 msgid "Sun"
 msgstr "Вс"
 
-#: wpcloudy.php:1532
+#: wpcloudy.php:1516
 msgid "Mon"
 msgstr "Пн"
 
-#: wpcloudy.php:1535
+#: wpcloudy.php:1519
 msgid "Tue"
 msgstr "Вт"
 
-#: wpcloudy.php:1538
+#: wpcloudy.php:1522
 msgid "Wed"
 msgstr "Ср"
 
-#: wpcloudy.php:1541
+#: wpcloudy.php:1525
 msgid "Thu"
 msgstr "Чт"
 
-#: wpcloudy.php:1544
+#: wpcloudy.php:1528
 msgid "Fri"
 msgstr "Пт"
 
-#: wpcloudy.php:1547
+#: wpcloudy.php:1531
 msgid "Sat"
 msgstr "Сб"
 
-#: wpcloudy.php:1615
+#: wpcloudy.php:1599
 msgid "clear sky"
 msgstr "ясно"
 
-#: wpcloudy.php:1620
+#: wpcloudy.php:1604
 msgid "few clouds"
 msgstr "малооблачно"
 
-#: wpcloudy.php:1625
+#: wpcloudy.php:1609
 msgid "scattered clouds"
 msgstr "рассеянные облака"
 
-#: wpcloudy.php:1630
+#: wpcloudy.php:1614
 msgid "broken clouds"
 msgstr "кучевые облака"
 
-#: wpcloudy.php:1635
+#: wpcloudy.php:1619
 msgid "overcast clouds"
 msgstr "пасмурно"
 
-#: wpcloudy.php:1642
+#: wpcloudy.php:1626
 msgid "light rain"
 msgstr "легкий дождь"
 
-#: wpcloudy.php:1647
+#: wpcloudy.php:1631
 msgid "moderate rain"
 msgstr "небольшой дождь"
 
-#: wpcloudy.php:1652
+#: wpcloudy.php:1636
 msgid "heavy intensity rain"
 msgstr "сильный дождь"
 
-#: wpcloudy.php:1657
+#: wpcloudy.php:1641
 msgid "very heavy rain"
 msgstr "ливень"
 
-#: wpcloudy.php:1662
+#: wpcloudy.php:1646
 msgid "extreme rain"
 msgstr "сильный ливень"
 
-#: wpcloudy.php:1667
+#: wpcloudy.php:1651
 msgid "freezing rain"
 msgstr "ледяной дождь"
 
-#: wpcloudy.php:1672
+#: wpcloudy.php:1656
 msgid "light intensity shower rain"
 msgstr "легкий проливной дождь"
 
-#: wpcloudy.php:1677
+#: wpcloudy.php:1661
 msgid "shower rain"
 msgstr "проливной дождь"
 
-#: wpcloudy.php:1682
+#: wpcloudy.php:1666
 msgid "heavy intensity shower rain"
 msgstr "сильный проливной дождь"
 
-#: wpcloudy.php:1687
+#: wpcloudy.php:1671
 msgid "ragged shower rain"
 msgstr "временами проливной дождь"
 
-#: wpcloudy.php:1694
+#: wpcloudy.php:1678
 msgid "light intensity drizzle"
 msgstr "легкая изморось"
 
-#: wpcloudy.php:1699
+#: wpcloudy.php:1683
 msgid "drizzle"
 msgstr "изморось"
 
-#: wpcloudy.php:1704
+#: wpcloudy.php:1688
 msgid "heavy intensity drizzle"
 msgstr "сильная изморось"
 
-#: wpcloudy.php:1709
+#: wpcloudy.php:1693
 msgid "light intensity drizzle rain"
 msgstr "легкий моросящий дождь"
 
-#: wpcloudy.php:1714
+#: wpcloudy.php:1698
 msgid "drizzle rain"
 msgstr "моросящий дождь"
 
-#: wpcloudy.php:1719
+#: wpcloudy.php:1703
 msgid "heavy intensity drizzle rain"
 msgstr "сильный моросящий дождь"
 
-#: wpcloudy.php:1724
+#: wpcloudy.php:1708
 msgid "shower rain and drizzle"
 msgstr "проливной дождь и изморось"
 
-#: wpcloudy.php:1729
+#: wpcloudy.php:1713
 msgid "heavy shower rain and drizzle"
 msgstr "сильный ливень и изморось"
 
-#: wpcloudy.php:1734
+#: wpcloudy.php:1718
 msgid "shower drizzle"
 msgstr "проливной мелкий дождь"
 
-#: wpcloudy.php:1741
+#: wpcloudy.php:1725
 msgid "light snow"
 msgstr "небольшой снег"
 
-#: wpcloudy.php:1746
+#: wpcloudy.php:1730
 msgid "snow"
 msgstr "снег"
 
-#: wpcloudy.php:1751
+#: wpcloudy.php:1735
 msgid "heavy snow"
 msgstr "сильный снег"
 
-#: wpcloudy.php:1756
+#: wpcloudy.php:1740
 msgid "sleet"
 msgstr "дождь со снегом"
 
-#: wpcloudy.php:1761
+#: wpcloudy.php:1745
 msgid "shower sleet"
 msgstr "проливной дождь со снегом"
 
-#: wpcloudy.php:1766
+#: wpcloudy.php:1750
 msgid "light rain and snow"
 msgstr "легкий дождь со снегом"
 
-#: wpcloudy.php:1771
+#: wpcloudy.php:1755
 msgid "rain and snow"
 msgstr "дождь со снегом"
 
-#: wpcloudy.php:1776
+#: wpcloudy.php:1760
 msgid "light shower snow"
 msgstr "легкий снегопад"
 
-#: wpcloudy.php:1781
+#: wpcloudy.php:1765
 msgid "shower snow"
 msgstr "снегопад"
 
-#: wpcloudy.php:1786
+#: wpcloudy.php:1770
 msgid "heavy shower snow"
 msgstr "сильный снегопад"
 
-#: wpcloudy.php:1793
+#: wpcloudy.php:1777
 msgid "mist"
 msgstr "туман"
 
-#: wpcloudy.php:1798
+#: wpcloudy.php:1782
 msgid "smoke"
 msgstr "дымка"
 
-#: wpcloudy.php:1803
+#: wpcloudy.php:1787
 msgid "haze"
 msgstr "туман"
 
-#: wpcloudy.php:1808
+#: wpcloudy.php:1792
 msgid "sand, dust whirls"
 msgstr "песок, пыль"
 
-#: wpcloudy.php:1813
+#: wpcloudy.php:1797
 msgid "fog"
 msgstr "туман"
 
-#: wpcloudy.php:1820
+#: wpcloudy.php:1804
 msgid "tornado"
 msgstr "торнадо"
 
-#: wpcloudy.php:1825
+#: wpcloudy.php:1809
 msgid "tropical storm"
 msgstr "тропический шторм"
 
-#: wpcloudy.php:1830
+#: wpcloudy.php:1814
 msgid "hurricane"
 msgstr "ураган"
 
-#: wpcloudy.php:1835
+#: wpcloudy.php:1819
 msgid "windy"
 msgstr "ветрено"
 
-#: wpcloudy.php:1840
+#: wpcloudy.php:1824
 msgid "hail"
 msgstr "град"
 
-#: wpcloudy.php:1847
+#: wpcloudy.php:1831
 msgid "thunderstorm with light rain"
 msgstr "гроза, небольшой дождь"
 
-#: wpcloudy.php:1853
+#: wpcloudy.php:1837
 msgid "thunderstorm with rain"
 msgstr "гроза с дождем"
 
-#: wpcloudy.php:1859
+#: wpcloudy.php:1843
 msgid "thunderstorm with heavy rain"
 msgstr "гроза с сильным дождем"
 
-#: wpcloudy.php:1865
+#: wpcloudy.php:1849
 msgid "light thunderstorm"
 msgstr "небольшая гроза"
 
-#: wpcloudy.php:1871
+#: wpcloudy.php:1855
 msgid "thunderstorm"
 msgstr "гроза"
 
-#: wpcloudy.php:1877
+#: wpcloudy.php:1861
 msgid "heavy thunderstorm"
 msgstr "сильная гроза"
 
-#: wpcloudy.php:1883
+#: wpcloudy.php:1867
 msgid "ragged thunderstorm"
 msgstr "временами грозы"
 
-#: wpcloudy.php:1889
+#: wpcloudy.php:1873
 msgid "thunderstorm with light drizzle"
 msgstr "гроза с легкой изморосью"
 
-#: wpcloudy.php:1895
+#: wpcloudy.php:1879
 msgid "thunderstorm with drizzle"
 msgstr "гроза с изморосью"
 
-#: wpcloudy.php:1901
+#: wpcloudy.php:1885
 msgid "thunderstorm with heavy drizzle"
 msgstr "гроза с сильной изморосью"
 
-#: wpcloudy.php:1933
+#: wpcloudy.php:1917
 msgid "Today"
 msgstr "Сегодня"
 
-#: wpcloudy.php:1938
+#: wpcloudy.php:1922
 msgid "Wind"
 msgstr "Ветер"
 
-#: wpcloudy.php:1941
+#: wpcloudy.php:1925
 msgid "Humidity"
 msgstr "Влажность"
 
-#: wpcloudy.php:1944
+#: wpcloudy.php:1928
 msgid "Pressure"
 msgstr "Давление"
 
-#: wpcloudy.php:1947
+#: wpcloudy.php:1931
 msgid "Cloudiness"
 msgstr "Облачность"
 
-#: wpcloudy.php:1951 wpcloudy.php:1956
+#: wpcloudy.php:1935 wpcloudy.php:1940
 msgid "Precipitation"
 msgstr "Атмосферные осадки"
 
-#: wpcloudy.php:1965 wpcloudy.php:1973
+#: wpcloudy.php:1949 wpcloudy.php:1957
 msgid "Now"
 msgstr "Сейчас"
 
-#: wpcloudy.php:2459
+#: wpcloudy.php:2450
 msgid "Shortcode"
 msgstr "Обозначение"
 
-#: wpcloudy.php:2481 wpcloudy.php:2482 wpcloudy.php:2483
+#: wpcloudy.php:2472 wpcloudy.php:2473 wpcloudy.php:2474
 msgid "Weather"
 msgstr "Погода"
 
-#: wpcloudy.php:2484
+#: wpcloudy.php:2475
 msgid "Parent Weather:"
 msgstr "Источник Погоды:"
 
-#: wpcloudy.php:2485
+#: wpcloudy.php:2476
 msgid "All Weather"
 msgstr "Вся Погода"
 
-#: wpcloudy.php:2486
+#: wpcloudy.php:2477
 msgid "View Weather"
 msgstr "Посмотреть Погоду"
 
-#: wpcloudy.php:2487
+#: wpcloudy.php:2478
 msgid "Add New Weather"
 msgstr "Добавить Погоду"
 
-#: wpcloudy.php:2488
+#: wpcloudy.php:2479
 msgid "New Weather"
 msgstr "Новая Погода"
 
-#: wpcloudy.php:2489
+#: wpcloudy.php:2480
 msgid "Edit Weather"
 msgstr "Изменить Погоду"
 
-#: wpcloudy.php:2490
+#: wpcloudy.php:2481
 msgid "Update Weather"
 msgstr "Обновить Погоду"
 
-#: wpcloudy.php:2491
+#: wpcloudy.php:2482
 msgid "Search Weather"
 msgstr "Поиск Погоды"
 
-#: wpcloudy.php:2492
+#: wpcloudy.php:2483
 msgid "No weather found"
 msgstr "Погодные данные не найдены"
 
-#: wpcloudy.php:2493
+#: wpcloudy.php:2484
 msgid "No weather found in Trash"
 msgstr "Погодные данные найдены в Корзине"
 
-#: wpcloudy.php:2497
+#: wpcloudy.php:2488
 msgid "weather"
 msgstr "погода"
 
-#: wpcloudy.php:2498
+#: wpcloudy.php:2489
 msgid "Listing weather"
 msgstr "Погодный листинг"
 
-#: wpcloudy.php:2535 wpcloudy.php:2538
+#: wpcloudy.php:2526 wpcloudy.php:2529
 msgid " updated."
 msgstr " обновлено."
 
-#: wpcloudy.php:2536
+#: wpcloudy.php:2527
 msgid "Custom field updated."
 msgstr "Пользовательское поле обновлено."
 
-#: wpcloudy.php:2537
+#: wpcloudy.php:2528
 msgid "Custom field deleted."
 msgstr "Пользовательское поле удалено."
 
-#: wpcloudy.php:2539
+#: wpcloudy.php:2530
 #, php-format
 msgid " restored to revision from %s"
 msgstr " восстановлено для пересмотра из %s"
 
-#: wpcloudy.php:2540
+#: wpcloudy.php:2531
 msgid " published."
 msgstr "опубликовано."
 
-#: wpcloudy.php:2541
+#: wpcloudy.php:2532
 msgid "Page saved."
 msgstr "Страница сохранена."
 
-#: wpcloudy.php:2542
+#: wpcloudy.php:2533
 msgid " submitted."
 msgstr " отправлено."
 
-#: wpcloudy.php:2543
+#: wpcloudy.php:2534
 #, php-format
 msgid " scheduled for: <strong>%1$s</strong>. "
 msgstr " запланировано на: <strong>%1$s</strong>. "
 
-#: wpcloudy.php:2543
+#: wpcloudy.php:2534
 msgid "M j, Y @ G:i"
 msgstr "M j, Y @ G:i"
 
-#: wpcloudy.php:2544
+#: wpcloudy.php:2535
 msgid " draft updated."
 msgstr " черновик обновлен."
 

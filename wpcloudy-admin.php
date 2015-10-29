@@ -363,7 +363,7 @@ class wpc_options
 		
 		add_settings_field(
             'wpc_display_date_temp', // ID
-            __("Today date + Temperatures?","wpcloudy"), // Title 
+            __("Today date?","wpcloudy"), // Title 
             array( $this, 'wpc_display_date_temp_callback' ), // Callback
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
@@ -459,7 +459,7 @@ class wpc_options
 		
 		add_settings_field(
             'wpc_display_temperature_min_max', // ID
-			__("Today date + current temperature","wpcloudy"), // Title
+			__("Today temperature?","wpcloudy"), // Title
             array( $this, 'wpc_display_temperature_min_max_callback' ), // Callback
             'wpc-settings-admin-display', // Page
             'wpc_setting_section_display' // Section           
@@ -929,7 +929,7 @@ class wpc_options
         echo '<input id="wpc_display_date_temp" name="wpc_option_name[wpc_display_date_temp]" type="checkbox"';
 		if ('1' == $check) echo 'checked="yes"'; 
 		echo ' value="1"/>';
-		echo '<label for="wpc_display_date_temp">'. __( 'Display today date + temperatures on all weather?', 'wpcloudy' ) .'</label>';
+		echo '<label for="wpc_display_date_temp">'. __( 'Display today date on all weather?', 'wpcloudy' ) .'</label>';
 		
 		if (isset($this->options['wpc_display_date_temp'])) { 
 			esc_attr( $this->options['wpc_display_date_temp']);
@@ -1137,7 +1137,7 @@ class wpc_options
         echo '<input id="wpc_display_temperature_min_max" name="wpc_option_name[wpc_display_temperature_min_max]" type="checkbox"';
         if ('1' == $check) echo 'checked="yes"'; 
         echo ' value="1"/>';
-        echo '<label for="wpc_display_temperature_min_max">'. __( 'Display Today date on all weather?', 'wpcloudy' ) .'</label>';
+        echo '<label for="wpc_display_temperature_min_max">'. __( 'Display today temperature on all weather?', 'wpcloudy' ) .'</label>';
         
         if (isset($this->options['wpc_display_temperature_min_max'])) {
             esc_attr( $this->options['wpc_display_temperature_min_max']);

@@ -3,7 +3,7 @@
 Plugin Name: WP Cloudy
 Plugin URI: http://wpcloudy.com/
 Description: WP Cloudy is a powerful weather plugin for WordPress, based on Open Weather Map API, using Custom Post Types and shortcodes, bundled with a ton of features.
-Version: 3.5.2
+Version: 3.5.3
 Author: Benjamin DENIS
 Author URI: http://wpcloudy.com/
 License: GPLv2
@@ -40,7 +40,7 @@ register_deactivation_hook(__FILE__, 'weather_deactivation');
 
 load_plugin_textdomain('wpcloudy', false, basename( dirname( __FILE__ ) ) . '/lang' );
 
-define( 'WPCLOUDY_VERSION', '3.5.1' );
+define( 'WPCLOUDY_VERSION', '3.5.3' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Shortcut settings page
@@ -327,13 +327,13 @@ function wpcloudy_basic($post){
 				<p>
 					<label for="wpcloudy_date_temp_meta">
 						<input type="checkbox" name="wpcloudy_date_temp" id="wpcloudy_date_temp_meta" value="yes" '. checked( $wpcloudy_date_temp, 'yes', false ) .' />
-							'. __( 'Date + temperatures?', 'wpcloudy' ) .'
+							'. __( 'Today Date?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>
 					<label for="wpcloudy_sunrise_sunset_meta">
 						<input type="checkbox" name="wpcloudy_sunrise_sunset" id="wpcloudy_sunrise_sunset_meta" value="yes" '. checked( $wpcloudy_sunrise_sunset, 'yes', false ) .' />
-							'. __( 'Sunrise + sunset? appears only if date + temperatures is checked', 'wpcloudy' ) .'
+							'. __( 'Sunrise + sunset? appears only if today date is checked', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p>				
@@ -378,7 +378,7 @@ function wpcloudy_basic($post){
 				<p>
 					<label for="wpcloudy_temperature_min_max_meta">
 						<input type="checkbox" name="wpcloudy_temperature_min_max" id="wpcloudy_temperature_min_max_meta" value="yes" '. checked( $wpcloudy_temperature_min_max, 'yes', false ) .' />
-							'. __( 'Today date?', 'wpcloudy' ) .'
+							'. __( 'Today temperature?', 'wpcloudy' ) .'
 					</label>
 				</p>
 				<p class="hour">
@@ -677,7 +677,9 @@ function wpc_save_metabox($post_id){
 		  update_post_meta($post_id, '_wpcloudy_hour_forecast_nd', esc_html($_POST['wpcloudy_hour_forecast_nd']));
 		}
 		if( isset( $_POST[ 'wpcloudy_temperature_min_max' ] ) ) {
-			update_post_meta( $post_id, '_wpcloudy_temperature_min_max', $_POST[ 'wpcloudy_temperature_min_max' ] );
+			update_post_meta( $post_id, '_wpcloudy_temperature_min_max', 'yes' );
+		} else {
+			delete_post_meta( $post_id, '_wpcloudy_temperature_min_max', '' );
 		}
 		if( isset( $_POST[ 'wpcloudy_short_days_names' ] ) ) {
 			update_post_meta( $post_id, '_wpcloudy_short_days_names', $_POST[ 'wpcloudy_short_days_names' ] );
@@ -1128,7 +1130,6 @@ function wpc_get_my_weather($attr) {
 		//variable declarations
 		$wpcloudy_select_city_name          		= null;
 		$display_today_min_max_day          		= null;
-		$display_today_sun              			= null;
 		$display_today_min_max_start        		= null;
 		$display_today_min_max_end          		= null;      
 		$wpc_html_now_start             			= null;
@@ -1137,15 +1138,12 @@ function wpc_get_my_weather($attr) {
 		$wpc_html_display_now_time_temperature    	= null;
 		$wpc_html_now_end               			= null;
 		$wpc_html_custom_css            			= null;
-		$wpc_html_temp_unit_metric          		= null;
-		$wpc_html_container_end           			= null;
 		$wpc_html_weather               			= null;
 		$wpc_html_today_temp_start          		= null;
 		$wpc_html_today_temp_day          			= null;
 		$wpc_html_today_time_temp_min         		= null;
 		$wpc_html_today_time_temp_max         		= null;
 		$wpc_html_today_sun             			= null;
-		$wpc_html_today_temp_end          			= null;
 		$wpc_html_infos_start             			= null;
 		$wpc_html_infos_wind            			= null;
 		$wpc_html_infos_humidity          			= null;
@@ -1160,21 +1158,7 @@ function wpc_get_my_weather($attr) {
 		$wpc_html_map                 				= null;
 		$wpc_html_temp_unit_imperial        		= null;
 		$wpc_html_css3_anims            			= null;
-		$wpcloudy_select_city_name          		= null;
-		$display_today_min_max_day          		= null;
 		$display_today_sun              			= null;
-		$display_today_min_max_end          		= null;
-		$wpc_html_now_start             			= null;
-		$wpc_html_now_location_name         		= null;
-		$wpc_html_display_now_time_symbol       	= null;
-		$wpc_html_display_now_time_temperature    	= null;
-		$wpc_html_now_end               			= null;
-		$wpc_html_weather               			= null;
-		$wpc_html_today_temp_start          		= null;
-		$wpc_html_today_temp_day          			= null;
-		$wpc_html_today_sun             			= null;
-		$wpc_html_today_time_temp_min         		= null;
-		$wpc_html_today_time_temp_max         		= null;
 		$wpc_html_today_temp_end          			= null;
 		$wpc_html_forecast_start          			= null;
 		$wpc_html_forecast_end            			= null;
@@ -2277,11 +2261,18 @@ function wpc_get_my_weather($attr) {
 	    	}
 	    }
 	      
-	    if( $wpcloudy_current_weather ) {
+	    if( $wpcloudy_current_weather && ($wpcloudy_temperature_min_max == 'yes' || $wpcloudy_temperature_min_max == '1' )) {
 	        $wpc_html_now_start           			.= $display_now_start;
 	        $wpc_html_now_location_name       		.= $display_now_location_name;
 	        $wpc_html_display_now_time_symbol    	.= $display_now_time_symbol;
 	        $wpc_html_display_now_time_temperature  .= $display_now_time_temperature;
+	        $wpc_html_now_end             			.= $display_now_end;
+	    } 
+
+	    else {
+	        $wpc_html_now_start           			.= $display_now_start;
+	        $wpc_html_now_location_name       		.= $display_now_location_name;
+	        $wpc_html_display_now_time_symbol    	.= $display_now_time_symbol;
 	        $wpc_html_now_end             			.= $display_now_end;
 	    }
 	     
@@ -2289,7 +2280,7 @@ function wpc_get_my_weather($attr) {
 	    	$wpc_html_weather .= $display_weather;
 	    }
 	  
-	    if( $wpcloudy_date_temp && $wpcloudy_temperature_min_max == 'yes' ) {
+	    if( $wpcloudy_date_temp ) {
 	    	$wpc_html_today_temp_start  .= $display_today_min_max_start;
 	        $wpc_html_today_temp_day  .= $display_today_min_max_day;
 	        $wpc_html_today_sun       .= $display_today_sun;
@@ -2345,7 +2336,7 @@ function wpc_get_my_weather($attr) {
 	    	$wpc_html_custom_css .= $display_custom_css;
 	    }
 	      
-	    if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'metric') {
+	    if (($wpcloudy_display_temp_unit == 'yes' || $wpcloudy_display_temp_unit == '1') && $wpcloudy_unit == 'metric') {
 	    	$wpc_html_temp_unit_metric .= '
 	    		<style>
 	            	#wpc-weather.small .now .time_temperature:after,
@@ -2366,7 +2357,7 @@ function wpc_get_my_weather($attr) {
 	        ';
 	    }
 	      
-	    if ($wpcloudy_display_temp_unit == 'yes' && $wpcloudy_unit == 'imperial') {
+	    if (($wpcloudy_display_temp_unit == 'yes' || $wpcloudy_display_temp_unit == '1') && $wpcloudy_unit == 'imperial') {
 	        $wpc_html_temp_unit_imperial .= '
 	        	<style>
 	            	#wpc-weather.small .now .time_temperature:after,

@@ -486,8 +486,8 @@ function get_admin_display_temp_unit() {
 	if ( ! empty ( $wpc_admin_display_temp_unit_option ) ) {
 		foreach ($wpc_admin_display_temp_unit_option as $key => $wpc_admin_display_temp_unit_value)
 			$options[$key] = $wpc_admin_display_temp_unit_value;
-		if (isset($wpc_admin_display_temp_unit_option['wpc_display_temp_unit'])) {
-			return $wpc_admin_display_temp_unit_option['wpc_display_temp_unit'];
+		if (isset($wpc_admin_display_temp_unit_option['wpc_display_date_temp_unit'])) {
+			return $wpc_admin_display_temp_unit_option['wpc_display_date_temp_unit'];
 		}
 	}
 };
@@ -744,7 +744,7 @@ function get_display_temp($attr) {
 };
 
 function get_bypass_temp($attr) {
-	if (get_admin_display_temp() && (get_admin_bypass_temp())) {
+	if (get_admin_display_temp() && get_admin_bypass_temp()) {
 		return get_admin_display_temp(); 
 	}
 	else {
